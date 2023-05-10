@@ -1,0 +1,14 @@
+TODO
+----
+
+[x] read source code
+    [x] check indentation
+    [x] trim input
+[ ] parsing
+    [x] cleanize
+        [x] comments
+        [x] strings
+    [x] create tokens
+    [ ] hash maps
+    [ ] create trees
+    [ ] classify scopes
