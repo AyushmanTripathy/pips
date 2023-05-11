@@ -261,6 +261,7 @@ int getChildCount(TokenNode * t) {
     if (t->type > 0) {
       switch ((char) t->type) {
         case '|':
+          if (isBlock != 0) break; 
           return count + 1;
         case '[':
           if (isBlock == 0) count++;
@@ -272,7 +273,6 @@ int getChildCount(TokenNode * t) {
           break;
       }
     } else if (!isBlock) count++;
-    printf("[%d, %d] %s\n", isBlock, count, t->data);
     t = t->next;
   }
   if (isBlock != 0) printError("] Missing!", 0);
@@ -293,6 +293,7 @@ Token * analyseTokenNode(TokenNode * t) {
     if (t->type > 0) {
       switch ((char) t->type) {
         case '|':
+          if (isBlock != 0) break;
           if (t->next == NULL) printError("Empty pipe.", 0);
           childrens[i++] = analyseTokenNode(t->next);
           printf("%d -> %s\n", childrens[i-1]->type, root->data);
