@@ -13,11 +13,19 @@ typedef struct Line_tag {
   struct Line_tag * next;
 } Line;
 
+typedef struct TokenNode_tag {
+  int type;
+  char * data;
+  struct TokenNode_tag * next;
+  struct TokenNode_tag * prev;
+} TokenNode;
+
 typedef struct Token_tag {
   int type;
   char * data;
+  int childTokensCount;
   struct Token_tag * next;
-  struct Token_tag * prev;
+  struct Token_tag ** childTokens;
 } Token;
 
 void freeLine(Line * l) {
@@ -77,13 +85,12 @@ char * trimStr(char * str) {
     else break;
   }
   if (startCount == length) return NULL;
-  char * newStr = (char *) malloc((length - startCount - endCount) * sizeof(char));
+  char * newStr = (char *) malloc((length - startCount - endCount + 1) * sizeof(char));
   endCount = length - endCount;
   for (int i = startCount; i < endCount; i++) newStr[index++] = str[i];
   newStr[index] = '\0'; 
   return newStr;
 }
-
 
 int calcSpaces(char * str) {
   int count = 0, len = strlen(str);
@@ -178,8 +185,8 @@ int isKeyword(char * s) {
   return 0;
 }
 
-Token * createToken(char * str, int type) {
-  Token * t = (Token *) malloc(sizeof(Token)); 
+TokenNode * createTokenNode(char * str, int type) {
+  TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
   t->data = str;
 
   if (!type) {
@@ -204,9 +211,9 @@ int isSymbol(char s) {
   return 0;
 }
 
-Token * parseLine(Line * l) {
-  Token head = { next : NULL };
-  Token * t = &head;
+TokenNode * parseLine(Line * l) {
+  TokenNode head = { next : NULL };
+  TokenNode * t = &head;
 
   char * str = l->data;
   int len = strlen(str), start = 0;
@@ -214,14 +221,18 @@ Token * parseLine(Line * l) {
     if (isSymbol(str[i])) {
       char * s = trimStr(sliceStr(str, start, i));
       if (s != NULL) {
-        t->next = createToken(s, 0);
+        t->next = createTokenNode(s, 0);
         t = t->next;
       }
-      t->next = createToken(NULL, (int) str[i]);
+      t->next = createTokenNode(NULL, (int) str[i]);
       start = i + 1;
-    } else if (str[i] == ' ' || i + 1 == len) {
+    } else if (str[i] == ' ' ) {
       char * s = trimStr(sliceStr(str, start, i + 1));
-      if (s != NULL) t->next = createToken(s, 0);
+      if (s != NULL) t->next = createTokenNode(s, 0);
+      start = i;
+    } else if (i + 1 == len) {
+      char * s = trimStr(sliceStr(str, start, i + 1));
+      if (s != NULL) t->next = createTokenNode(s, 0);
       start = i;
     }
     if(t->next != NULL) t = t->next;
@@ -229,21 +240,124 @@ Token * parseLine(Line * l) {
   return head.next; 
 }
 
+Token * createToken(int type, char * data, int childCount) {
+  Token * t = (Token *) malloc(sizeof(Token));
+
+  if (childCount > 0) 
+    t->childTokens = (Token **) malloc(childCount * sizeof(Token *));
+  else t->childTokens = NULL;
+
+  t->type = type;
+  t->data = data;
+  t->childTokensCount = childCount;
+
+  return t;
+}
+
+int getChildCount(TokenNode * t) {
+  int count = -1;
+  int isBlock = 0;
+  while (t != NULL) {
+    if (t->type > 0) {
+      switch ((char) t->type) {
+        case '|':
+          return count + 1;
+        case '[':
+          if (isBlock == 0) count++;
+          isBlock++;
+          break;
+        case ']':
+          if (!isBlock) return count;
+          else isBlock--;
+          break;
+      }
+    } else if (!isBlock) count++;
+    printf("[%d, %d] %s\n", isBlock, count, t->data);
+    t = t->next;
+  }
+  if (isBlock != 0) printError("] Missing!", 0);
+  return count;
+}
+
+// add [func 9 2  | f x y]  | eq 10
+Token * analyseTokenNode(TokenNode * t) {
+  //printf("called: %s\n", t->data);
+  int childCount = getChildCount(t);
+  printf("%s [%d]\n", t->data, childCount);
+  Token * root = createToken(-10, t->data, childCount);
+  t = t->next;
+  if (t == NULL) return root;
+  int i = 0, isBlock = 0; 
+  Token ** childrens = root->childTokens;
+  while(t != NULL) {
+    if (t->type > 0) {
+      switch ((char) t->type) {
+        case '|':
+          if (t->next == NULL) printError("Empty pipe.", 0);
+          childrens[i++] = analyseTokenNode(t->next);
+          printf("%d -> %s\n", childrens[i-1]->type, root->data);
+          return root;
+        case '[':
+          if (isBlock == 0) {
+            childrens[i++] = analyseTokenNode(t->next); 
+            printf("%d -> %s\n", childrens[i-1]->type, root->data);
+          }
+          isBlock++;
+          break;
+        case ']':
+          isBlock--;
+          if(isBlock < 0) return root;
+          break;
+      }
+    } else if (isBlock == 0) {
+      childrens[i++] = createToken(t->type, t->data, 0);
+      printf("%d -> %s\n", childrens[i-1]->type, root->data);
+    }
+    t = t->next;
+  }
+  return root;
+}
+
+void printTokenNode(TokenNode * n) {
+  while(n != NULL) {
+    printf("%s -> ", n->data);
+    n = n->next;
+  }
+  printf("\n");
+}
+
+void printTokenTree(Token * n, int depth) {
+  if (n == NULL) return;
+  for (int i = 1; i < depth; i++) printf("  ");
+  if (depth != 0) printf("|-");
+  if(n->type == -10) printf("[%s]\n", n->data);
+  else printf("(%s)\n", n->data);
+
+  if (n->type != -10) return;
+  Token ** childrens = n->childTokens;
+  for (int i = 0; i < n->childTokensCount; i++) {
+    printTokenTree(childrens[i] , depth + 1);
+  }
+}
+
 int main(int argc, char *argv[]) {
   Line * srcCode = readSourceCode(argv[1]);
   if (srcCode == NULL) return 1;
   srcCode = cleanseLines(srcCode);
 
-  Line * l = srcCode;
-  Token * t = parseLine((srcCode->next)->next);
-  while(l != NULL) {
-    Token * t = parseLine(l);
-    while(t != NULL) {
-      if (t->type > 0) printf("[%d]>", t->type);
-      else printf("(%s)>", t->data);
-      t = t->next;
-    }
-    printf("\n");
-    l = l->next;
-  } 
+  Line * l = srcCode->next;
+  TokenNode * n = parseLine(l);
+  printTokenNode(n);
+  Token * t = analyseTokenNode(n);
+  printTokenTree(t, 0);
+//  while(l != NULL) {
+//    TokenNode * t = parseLine(l);
+//    while(t != NULL) {
+//      if (t->type > 0) printf("[%d]>", t->type);
+//      else printf("%s>", t->data);
+//      t = t->next;
+//    }
+//    printf("\n");
+//    l = l->next;
+//  } 
 }

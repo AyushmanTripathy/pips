@@ -12,3 +12,12 @@ TODO
     [ ] hash maps
     [ ] create trees
     [ ] classify scopes
+
+TOKEN TYPES
+-----------
+0 -> name types
+-1 -> number types
+-10 -> function types
+
++ve number -> ascii number of special characters
+-200 + keywordIndex -> keywords
