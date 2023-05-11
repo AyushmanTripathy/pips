@@ -17,7 +17,6 @@ typedef struct TokenNode_tag {
   int type;
   char * data;
   struct TokenNode_tag * next;
-  struct TokenNode_tag * prev;
 } TokenNode;
 
 typedef struct Token_tag {
@@ -26,7 +25,23 @@ typedef struct Token_tag {
   int childTokensCount;
   struct Token_tag * next;
   struct Token_tag ** childTokens;
+
+  // for keywords
+  struct Token_tag * condition;
+  struct Token_tag * linker;
 } Token;
+
+typedef struct {
+  char * name;
+  int paramsCount;
+  Token ** params;
+  Token * execSeq;
+  Token * linker;
+} Function;
+
+typedef struct {
+  Token * head;
+} Scope;
 
 void freeLine(Line * l) {
   l->next = NULL;
@@ -180,7 +195,7 @@ Line * cleanseLines(Line * head) {
 
 int isKeyword(char * s) {
   for (int i = 0; i < keywordsLength; i++) {
-    if (!strcmp(s, keywords[i])) return -200 + i;
+    if (!strcmp(s, keywords[i])) return -250 + i;
   }
   return 0;
 }
@@ -191,7 +206,7 @@ TokenNode * createTokenNode(char * str, int type) {
 
   if (!type) {
     if (str[0] >= '0' && str[0] <= '9') type = -1;
-    else type = isKeyword(str);
+    else type = isKeyword(str); 
   } 
 
   t->type = type;
@@ -279,14 +294,12 @@ int getChildCount(TokenNode * t) {
   return count;
 }
 
-// add [func 9 2  | f x y]  | eq 10
 Token * analyseTokenNode(TokenNode * t) {
-  //printf("called: %s\n", t->data);
   int childCount = getChildCount(t);
-  printf("%s [%d]\n", t->data, childCount);
   Token * root = createToken(-10, t->data, childCount);
   t = t->next;
   if (t == NULL) return root;
+
   int i = 0, isBlock = 0; 
   Token ** childrens = root->childTokens;
   while(t != NULL) {
@@ -296,13 +309,10 @@ Token * analyseTokenNode(TokenNode * t) {
           if (isBlock != 0) break;
           if (t->next == NULL) printError("Empty pipe.", 0);
           childrens[i++] = analyseTokenNode(t->next);
-          printf("%d -> %s\n", childrens[i-1]->type, root->data);
           return root;
         case '[':
-          if (isBlock == 0) {
+          if (isBlock == 0)
             childrens[i++] = analyseTokenNode(t->next); 
-            printf("%d -> %s\n", childrens[i-1]->type, root->data);
-          }
           isBlock++;
           break;
         case ']':
@@ -312,7 +322,6 @@ Token * analyseTokenNode(TokenNode * t) {
       }
     } else if (isBlock == 0) {
       childrens[i++] = createToken(t->type, t->data, 0);
-      printf("%d -> %s\n", childrens[i-1]->type, root->data);
     }
     t = t->next;
   }
@@ -341,24 +350,67 @@ void printTokenTree(Token * n, int depth) {
   }
 }
 
-int main(int argc, char *argv[]) {
-  Line * srcCode = readSourceCode(argv[1]);
-  if (srcCode == NULL) return 1;
-  srcCode = cleanseLines(srcCode);
+int analyseKeywords(TokenNode * t) {
+  return 0;
+}
 
-  Line * l = srcCode->next;
-  TokenNode * n = parseLine(l);
-  printTokenNode(n);
-  Token * t = analyseTokenNode(n);
-  printTokenTree(t, 0);
-//  while(l != NULL) {
-//    TokenNode * t = parseLine(l);
-//    while(t != NULL) {
-//      if (t->type > 0) printf("[%d]>", t->type);
-//      else printf("%s>", t->data);
-//      t = t->next;
-//    }
-//    printf("\n");
-//    l = l->next;
-//  } 
+Function * parseFunction(TokenNode * n) {
+  Function * fn = (Function *) malloc(sizeof(Function));
+
+  // get name
+  if (n->next != NULL)  {
+    n = n->next;
+    if (n->data != NULL && !n->type) fn->name = n->data;
+    else printError("Name is required while declaring function", 0);
+  } else printError(": missing while declaring function", 0);
+
+  // get params
+  TokenNode * iterator = n;
+  int paramsCount = -1;
+  while(iterator != NULL && iterator->type != 58) {
+    paramsCount++;
+    iterator = iterator->next;
+  }
+  fn->paramsCount = paramsCount;
+  if  (paramsCount == 0) fn->params = NULL;
+  else {
+    Token ** params = (Token **) malloc(sizeof(Token));
+    iterator = n->next;
+    for(int i = 0; i < paramsCount; i++) {
+      params[i] = createToken(-11, iterator->data, 0);
+      iterator = iterator->next;
+    }
+  }
+
+  fn->execSeq = NULL;
+  fn->linker = NULL;
+  if (iterator->type != 58) printError(": missing while declaring function",0);
+  if (iterator->next == NULL) return fn;
+  fn->execSeq = analyseTokenNode(iterator->next);
+  return fn;
+}
+
+int main(int argc, char *argv[]) {
+  Line * line = readSourceCode(argv[1]);
+  line = cleanseLines(line);
+  if (line == NULL) return 0;
+
+  int lastIndent = line->indentation; 
+  if (lastIndent > 0) printError("Cannot start from non global scope.", 0);
+
+  Function * changeScope = NULL;
+  Function * fn = NULL;
+  while(line != NULL) {
+    TokenNode * n = parseLine(line);
+    if (n->type <= -250) {
+      switch (n->type) {
+        case -250:
+          fn = parseFunction(n);
+          if (fn->execSeq == NULL) changeScope = fn;
+          break;
+      }
+    }
+    if (lastIndent != line->indentation);
+    line = line->next;
+  }
 }

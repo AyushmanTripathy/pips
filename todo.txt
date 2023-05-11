@@ -10,14 +10,16 @@ TODO
         [x] strings
     [x] create tokens
     [ ] hash maps
-    [ ] create trees
+    [x] create trees
     [ ] classify scopes
 
 TOKEN TYPES
 -----------
 0 -> name types
 -1 -> number types
+
 -10 -> function types
+-11 -> function parameter
 
 +ve number -> ascii number of special characters
--200 + keywordIndex -> keywords
+-250 + keywordIndex -> keywords
