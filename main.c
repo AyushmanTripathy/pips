@@ -25,10 +25,6 @@ typedef struct Token_tag {
   int childTokensCount;
   struct Token_tag * next;
   struct Token_tag ** childTokens;
-
-  // for keywords
-  struct Token_tag * condition;
-  struct Token_tag * linker;
 } Token;
 
 typedef struct {
@@ -330,7 +326,8 @@ Token * analyseTokenNode(TokenNode * t) {
 
 void printTokenNode(TokenNode * n) {
   while(n != NULL) {
-    printf("%s -> ", n->data);
+    if (n->data) printf("(%s)-> ", n-> data);
+    else printf("[%d]-> ", n->type);
     n = n->next;
   }
   printf("\n");
@@ -341,13 +338,22 @@ void printTokenTree(Token * n, int depth) {
   for (int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
   if(n->type == -10) printf("[%s]\n", n->data);
-  else printf("(%s)\n", n->data);
+  else printf("%s\n", n->data);
 
-  if (n->type != -10) return;
-  Token ** childrens = n->childTokens;
-  for (int i = 0; i < n->childTokensCount; i++) {
-    printTokenTree(childrens[i] , depth + 1);
+  if (n->type == -10) {
+    Token ** childrens = n->childTokens;
+    for (int i = 0; i < n->childTokensCount; i++) {
+      printTokenTree(childrens[i] , depth + 1);
+    }
   }
+  if (n->type == -21) {
+    Token ** childrens = n->childTokens;
+    printTokenTree(childrens[0] , depth + 1);
+    printTokenTree(childrens[1] , depth + 1);
+  }
+  if (n->next == NULL) return;
+  printf("\n");
+  printTokenTree(n->next, depth);
 }
 
 int analyseKeywords(TokenNode * t) {
@@ -390,27 +396,84 @@ Function * parseFunction(TokenNode * n) {
   return fn;
 }
 
+Token * parseIf(TokenNode * n) {
+  Token * ifToken = createToken(-21, "IF", 2);
+
+  TokenNode * colonPointer = NULL;
+  TokenNode * iterator = n;
+
+  while(iterator->next != NULL)  {
+    if ((iterator->next)->type == 58) {
+      colonPointer = iterator->next;
+      iterator->next = NULL;
+      break;
+    }
+    iterator = iterator->next;
+  }
+  
+  if (colonPointer == NULL) printError(": missing in if statment.", 0);
+  else if (colonPointer->next != NULL) {
+    (ifToken->childTokens)[1] = analyseTokenNode(colonPointer->next);
+  } else (ifToken->childTokens)[1] = NULL;
+
+  if (n->next != NULL) {
+    TokenNode * passFunc = createTokenNode("pass", 0);
+    passFunc->next = n->next;
+    (ifToken->childTokens)[0] = analyseTokenNode(passFunc);
+  } else printError("condition missing in if statment.", 0);
+
+  return ifToken;
+}
+
+Token * classifyScopes(Line * line) {
+  int indent = line->indentation, isIf = 0; 
+ 
+  Function * fn = NULL;
+  Token * head = NULL;
+  Token * curr = NULL;
+  while(line != NULL) {
+    if (indent > line->indentation) return head;
+    else if (indent < line->indentation);
+    else {
+      TokenNode * n = parseLine(line);
+      if (n->type <= -200) {
+        switch (n->type) {
+          case -250:
+            fn = parseFunction(n);
+            break;
+          case -249:
+            curr->next = parseIf(n);
+            curr = curr->next;
+
+            if ((curr->childTokens)[1] == NULL) {
+              // problem dectected here.
+              Token * p = classifyScopes(line->next);
+            }
+            break;
+        }
+      } else {
+        if (head == NULL) {
+          curr = analyseTokenNode(n); 
+          head = curr;
+        } else {
+          curr->next = analyseTokenNode(n);
+          curr = curr->next;
+        }
+      }
+    }
+    line = line->next;
+  }
+
+  printf("---\n");
+  return head;
+}
+
 int main(int argc, char *argv[]) {
   Line * line = readSourceCode(argv[1]);
   line = cleanseLines(line);
   if (line == NULL) return 0;
 
-  int lastIndent = line->indentation; 
-  if (lastIndent > 0) printError("Cannot start from non global scope.", 0);
+  if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 
-  Function * changeScope = NULL;
-  Function * fn = NULL;
-  while(line != NULL) {
-    TokenNode * n = parseLine(line);
-    if (n->type <= -250) {
-      switch (n->type) {
-        case -250:
-          fn = parseFunction(n);
-          if (fn->execSeq == NULL) changeScope = fn;
-          break;
-      }
-    }
-    if (lastIndent != line->indentation);
-    line = line->next;
-  }
+  Token * global = classifyScopes(line);
 }

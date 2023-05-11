@@ -21,5 +21,7 @@ TOKEN TYPES
 -10 -> function types
 -11 -> function parameter
 
+-21 -> if
+
 +ve number -> ascii number of special characters
 -250 + keywordIndex -> keywords
