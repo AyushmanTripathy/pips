@@ -11,7 +11,10 @@ TODO
     [x] create tokens
     [ ] hash maps
     [x] create trees
-    [ ] classify scopes
+    [x] conditionals
+    [ ] functions
+    [x] classify scopes
+    [ ] free memory
 
 TOKEN TYPES
 -----------
@@ -22,6 +25,8 @@ TOKEN TYPES
 -11 -> function parameter
 
 -21 -> if
+-22 -> elif
+-23 -> else
 
 +ve number -> ascii number of special characters
 -250 + keywordIndex -> keywords

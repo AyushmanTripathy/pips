@@ -4,8 +4,8 @@
 
 
 int tab_space_count = 2;
-const char keywords[3][5] = { "fn", "if", "else" };
-const int keywordsLength = 3;
+const char keywords[][5] = { "fn", "if", "elif", "else" };
+const int keywordsLength = 4;
 
 typedef struct Line_tag {
   char * data;
@@ -35,14 +35,16 @@ typedef struct {
   Token * linker;
 } Function;
 
-typedef struct {
-  Token * head;
-} Scope;
-
 void freeLine(Line * l) {
   l->next = NULL;
   free(l->data);
   free(l);
+}
+
+void freeLines(Line * l) {
+  if (l == NULL) return;
+  if (l->next != NULL) freeLines(l->next);
+  freeLine(l);
 }
 
 char * getErrorCode(int code) {
@@ -340,24 +342,15 @@ void printTokenTree(Token * n, int depth) {
   if(n->type == -10) printf("[%s]\n", n->data);
   else printf("%s\n", n->data);
 
-  if (n->type == -10) {
+  if (n->childTokensCount != 0) {
     Token ** childrens = n->childTokens;
     for (int i = 0; i < n->childTokensCount; i++) {
       printTokenTree(childrens[i] , depth + 1);
     }
   }
-  if (n->type == -21) {
-    Token ** childrens = n->childTokens;
-    printTokenTree(childrens[0] , depth + 1);
-    printTokenTree(childrens[1] , depth + 1);
-  }
-  if (n->next == NULL) return;
-  printf("\n");
-  printTokenTree(n->next, depth);
-}
 
-int analyseKeywords(TokenNode * t) {
-  return 0;
+  if (n->next == NULL) return;
+  printTokenTree(n->next, depth);
 }
 
 Function * parseFunction(TokenNode * n) {
@@ -396,8 +389,8 @@ Function * parseFunction(TokenNode * n) {
   return fn;
 }
 
-Token * parseIf(TokenNode * n) {
-  Token * ifToken = createToken(-21, "IF", 2);
+Token * parseIfStatment(TokenNode * n, int isElif) {
+  Token * ifToken = isElif ? createToken(-22, "ELIF", 2): createToken(-21, "IF", 2);
 
   TokenNode * colonPointer = NULL;
   TokenNode * iterator = n;
@@ -411,7 +404,7 @@ Token * parseIf(TokenNode * n) {
     iterator = iterator->next;
   }
   
-  if (colonPointer == NULL) printError(": missing in if statment.", 0);
+  if (colonPointer == NULL) printError(": missing in conditional statment.", 0);
   else if (colonPointer->next != NULL) {
     (ifToken->childTokens)[1] = analyseTokenNode(colonPointer->next);
   } else (ifToken->childTokens)[1] = NULL;
@@ -420,9 +413,29 @@ Token * parseIf(TokenNode * n) {
     TokenNode * passFunc = createTokenNode("pass", 0);
     passFunc->next = n->next;
     (ifToken->childTokens)[0] = analyseTokenNode(passFunc);
-  } else printError("condition missing in if statment.", 0);
+  } else printError("condition missing in conditional statment.", 0);
 
   return ifToken;
+}
+
+Token * parseElseStatment(TokenNode * n) {
+  Token * elseToken = createToken(-23, "ELSE", 1);
+
+  TokenNode * colonPointer = NULL;
+  while(n->next != NULL)  {
+    if ((n->next)->type == 58) {
+      colonPointer = n->next;
+      break;
+    }
+    n = n->next;
+  }
+  
+  if (colonPointer == NULL) printError(": missing in else statment.", 0);
+  else if (colonPointer->next != NULL) {
+    (elseToken->childTokens)[0] = analyseTokenNode(colonPointer->next);
+  } else (elseToken->childTokens)[0] = NULL;
+
+  return elseToken;
 }
 
 Token * classifyScopes(Line * line) {
@@ -442,13 +455,22 @@ Token * classifyScopes(Line * line) {
             fn = parseFunction(n);
             break;
           case -249:
-            curr->next = parseIf(n);
+            curr->next = parseIfStatment(n, 0);
             curr = curr->next;
-
-            if ((curr->childTokens)[1] == NULL) {
-              // problem dectected here.
-              Token * p = classifyScopes(line->next);
-            }
+            if ((curr->childTokens)[1] == NULL)
+              (curr->childTokens)[1] = classifyScopes(line->next);
+            break;
+          case -248:
+            curr->next = parseIfStatment(n, 1);
+            curr = curr->next;
+            if ((curr->childTokens)[1] == NULL)
+              (curr->childTokens)[1] = classifyScopes(line->next);
+            break;
+          case -247:
+            curr->next = parseElseStatment(n);
+            curr = curr->next;
+            if ((curr->childTokens)[0] == NULL)
+              (curr->childTokens)[0] = classifyScopes(line->next);
             break;
         }
       } else {
@@ -460,11 +482,10 @@ Token * classifyScopes(Line * line) {
           curr = curr->next;
         }
       }
+      free(n);
     }
     line = line->next;
   }
-
-  printf("---\n");
   return head;
 }
 
@@ -476,4 +497,6 @@ int main(int argc, char *argv[]) {
   if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 
   Token * global = classifyScopes(line);
+  freeLines(line);
+  printTokenTree(global, 0);
 }
