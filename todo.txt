@@ -20,9 +20,11 @@ TOKEN TYPES
 -----------
 0 -> name types
 -1 -> number types
+-2 -> strings types
 
 -10 -> function types
--11 -> function parameter
+-11 -> function builtin
+-12 -> function parameter
 
 -21 -> if
 -22 -> elif

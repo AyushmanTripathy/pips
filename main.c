@@ -27,13 +27,20 @@ typedef struct Token_tag {
   struct Token_tag ** childTokens;
 } Token;
 
-typedef struct {
+typedef struct Function_tag {
   char * name;
   int paramsCount;
   Token ** params;
   Token * execSeq;
   Token * linker;
+  struct Function_tag * next;
 } Function;
+
+typedef struct {
+  int size;
+  int r;
+  Function ** buckets;
+} FunctionHashMap;
 
 void freeLine(Line * l) {
   l->next = NULL;
@@ -65,6 +72,47 @@ void printError(char * s, int code) {
   exit(1);
 }
 
+// HASHMAP
+int hashFunc(char * str, int size, int r) {
+  int hash = 0;
+  for (int i = 0; str[i] != '\0'; i++)
+    hash = ((r * hash) + (int) str[i]) % size;
+  return hash;
+}
+
+FunctionHashMap * initFunctionHashMap(int size, int r) {
+  FunctionHashMap * map = (FunctionHashMap *) malloc(sizeof(FunctionHashMap));
+  map->buckets = (Function **) malloc(size * sizeof(Function *));
+  for (int i = 0; i < size; i++) (map->buckets)[i] = NULL;
+  map->size = size;
+  map->r = r;
+  return map;
+}
+
+void addToFunctionHashMap(FunctionHashMap * map, Function * fn) {
+  int hashKey = hashFunc(fn->name, map->size, map->r);
+  Function ** buckets = map->buckets;
+  if (buckets[hashKey] == NULL) buckets[hashKey] = fn;
+  else {
+    Function * iterator = buckets[hashKey];
+    while(iterator->next != NULL) iterator = iterator->next;
+    iterator->next = fn;
+  }
+}
+
+Function * getFromFunctionHashMap(FunctionHashMap * map, char * name) {
+  int hashKey = hashFunc(name, map->size, map->r);
+  if ((map->buckets)[hashKey] != NULL) {
+    Function * iterator = (map->buckets)[hashKey];
+    while(strcmp(iterator->name, name) != 0) {
+      iterator = iterator->next;
+      if (iterator == NULL) return NULL; 
+    }
+    return iterator;
+  } else return NULL; 
+}
+
+// STRING METHODS
 char * sliceStr(char * str, int start, int end) {
   char * newStr = (char *) malloc((end - start) * sizeof(char));
   for (int i = 0; (i + start) < end; i++) newStr[i] = str[start + i];
@@ -121,6 +169,7 @@ Line *readSourceCode(char * path) {
   Line * src = NULL;
   Line * head = NULL;
 
+  if (source == NULL) printError("Invalid File Name", 0);
   while(fgets(buff, 255, source) != NULL) {
     // check for empty lines
     char * data = trimStr(buff);
@@ -143,6 +192,15 @@ Line *readSourceCode(char * path) {
   return src;
 }
 
+int nextQuote(char * str, int index) {
+  int counter = 0;
+  for (int i = index; str[i] != '"'; i++) {
+    if (str[i] == '\0') printError("Unescaped Quote", 1);
+    counter++;
+  }
+  return counter;
+}
+
 Line * cleanseLines(Line * head) {
   int isQuote = 0, escapedQuote = 0, isComment = 0; 
   Line * prev = NULL;
@@ -161,8 +219,7 @@ Line * cleanseLines(Line * head) {
       if (str[i] == '"') {
         if (isQuote) escapedQuote = 1;
         else isQuote = 1;
-      }
-      else if (str[i] == '#') isComment = 1;
+      } else if (str[i] == '#') isComment = 1;
 
       // handle quotes
       if (isQuote == 1);
@@ -187,7 +244,6 @@ Line * cleanseLines(Line * head) {
       l = l->next;
     }
   }
-  if (isQuote) printError("Quote not escapped.", 1);
   return head;
 }
 
@@ -326,6 +382,14 @@ Token * analyseTokenNode(TokenNode * t) {
   return root;
 }
 
+// PRINT FUNCTIONS
+void printLines(Line * line) {
+  while (line != NULL) {
+    printf("%s \n", line->data);
+    line = line->next;
+  }
+}
+
 void printTokenNode(TokenNode * n) {
   while(n != NULL) {
     if (n->data) printf("(%s)-> ", n-> data);
@@ -355,6 +419,7 @@ void printTokenTree(Token * n, int depth) {
 
 Function * parseFunction(TokenNode * n) {
   Function * fn = (Function *) malloc(sizeof(Function));
+  fn->next = NULL;
 
   // get name
   if (n->next != NULL)  {
@@ -376,7 +441,7 @@ Function * parseFunction(TokenNode * n) {
     Token ** params = (Token **) malloc(sizeof(Token));
     iterator = n->next;
     for(int i = 0; i < paramsCount; i++) {
-      params[i] = createToken(-11, iterator->data, 0);
+      params[i] = createToken(-12, iterator->data, 0);
       iterator = iterator->next;
     }
   }
@@ -438,8 +503,8 @@ Token * parseElseStatment(TokenNode * n) {
   return elseToken;
 }
 
-Token * classifyScopes(Line * line) {
-  int indent = line->indentation, isIf = 0; 
+Token * classifyScopes(Line * line, FunctionHashMap * functions) {
+  int indent = line->indentation; 
  
   Function * fn = NULL;
   Token * head = NULL;
@@ -453,31 +518,36 @@ Token * classifyScopes(Line * line) {
         switch (n->type) {
           case -250:
             fn = parseFunction(n);
+            if(fn->execSeq == NULL )
+              fn->execSeq = classifyScopes(line->next, functions);
+            addToFunctionHashMap(functions, fn);
             break;
           case -249:
             curr->next = parseIfStatment(n, 0);
             curr = curr->next;
             if ((curr->childTokens)[1] == NULL)
-              (curr->childTokens)[1] = classifyScopes(line->next);
+              (curr->childTokens)[1] = classifyScopes(line->next, functions);
             break;
           case -248:
             curr->next = parseIfStatment(n, 1);
             curr = curr->next;
             if ((curr->childTokens)[1] == NULL)
-              (curr->childTokens)[1] = classifyScopes(line->next);
+              (curr->childTokens)[1] = classifyScopes(line->next, functions);
             break;
           case -247:
             curr->next = parseElseStatment(n);
             curr = curr->next;
             if ((curr->childTokens)[0] == NULL)
-              (curr->childTokens)[0] = classifyScopes(line->next);
+              (curr->childTokens)[0] = classifyScopes(line->next, functions);
             break;
         }
       } else {
         if (head == NULL) {
           curr = analyseTokenNode(n); 
+          curr->next = NULL;
           head = curr;
         } else {
+          printTokenNode(n);
           curr->next = analyseTokenNode(n);
           curr = curr->next;
         }
@@ -489,14 +559,28 @@ Token * classifyScopes(Line * line) {
   return head;
 }
 
+Token * execFunction(Function * fn, FunctionHashMap * functions) {
+  printTokenTree(fn->execSeq, 0);
+  return NULL;
+}
+
+Function * classifyGlobalScope(Line * line, FunctionHashMap * functions) {
+  Function * global = (Function *) malloc(sizeof(Function));
+  global->name = "global";
+  global->paramsCount = 0;
+  global->execSeq = classifyScopes(line, functions);
+  return global;
+}
+
 int main(int argc, char *argv[]) {
   Line * line = readSourceCode(argv[1]);
   line = cleanseLines(line);
   if (line == NULL) return 0;
-
   if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 
-  Token * global = classifyScopes(line);
+  FunctionHashMap * functions = initFunctionHashMap(113, 31);
+  Function * global = classifyGlobalScope(line, functions);
   freeLines(line);
-  printTokenTree(global, 0);
+
+  execFunction(global, functions);
 }
