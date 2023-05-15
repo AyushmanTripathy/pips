@@ -21,10 +21,11 @@ TOKEN TYPES
 0 -> name types
 -1 -> number types
 -2 -> strings types
+-5 -> void type
 
 -10 -> function types
 -11 -> function builtin
--12 -> function parameter
+-12 -> function params
 
 -21 -> if
 -22 -> elif

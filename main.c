@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 int tab_space_count = 2;
+int hashmap_size = 113;
+int hashmap_r = 31;
+
 const char keywords[][5] = { "fn", "if", "elif", "else" };
 const int keywordsLength = 4;
 
@@ -22,6 +24,7 @@ typedef struct TokenNode_tag {
 typedef struct Token_tag {
   int type;
   char * data;
+  int int_data;
   int childTokensCount;
   struct Token_tag * next;
   struct Token_tag ** childTokens;
@@ -42,6 +45,12 @@ typedef struct {
   Function ** buckets;
 } FunctionHashMap;
 
+typedef struct FunctionPointer_tag {
+  char * key;
+  Token * (* pointer)(Token *);
+  struct FunctionPointer_tag * next;
+} FunctionPointer;
+
 void freeLine(Line * l) {
   l->next = NULL;
   free(l->data);
@@ -59,7 +68,7 @@ char * getErrorCode(int code) {
     case 1: return "PARSING";
     case 2: return "";
     case 3: return "RUNTIME";
-    case 4: return "";
+    case 4: return "TYPE";
     case 5: return "";
     case 6: return "";
   }
@@ -111,6 +120,43 @@ Function * getFromFunctionHashMap(FunctionHashMap * map, char * name) {
     return iterator;
   } else return NULL; 
 }
+
+FunctionPointer ** initFunctionPointers() {
+  FunctionPointer ** arr 
+    = (FunctionPointer **) malloc(hashmap_size * sizeof(FunctionPointer));
+  for (int i = 0; i < hashmap_size; i++) arr[i] = NULL;
+  return arr;
+}
+
+void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Token*)) {
+  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
+
+  FunctionPointer * fp = (FunctionPointer *) malloc(sizeof(FunctionPointer));
+  fp->next = NULL;
+  fp->key = key;
+  fp->pointer = fn;
+
+  if (map[hashKey] == NULL) map[hashKey] = fp;
+  else {
+    FunctionPointer * iterator = map[hashKey];
+    while (iterator->next != NULL) iterator = iterator->next;
+    iterator->next = fp;
+  }
+}
+
+FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
+  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
+
+  if (map[hashKey] != NULL) {
+    FunctionPointer * iterator = map[hashKey];
+    while(strcmp(iterator->key, key) != 0) {
+      iterator = iterator->next;
+      if (iterator == NULL) return NULL; 
+    }
+    return iterator;
+  } else return NULL; 
+}
+
 
 // STRING METHODS
 char * sliceStr(char * str, int start, int end) {
@@ -312,14 +358,22 @@ TokenNode * parseLine(Line * l) {
 Token * createToken(int type, char * data, int childCount) {
   Token * t = (Token *) malloc(sizeof(Token));
 
+  if (type == -1) {
+    t->type = -1;
+    t->int_data = childCount == 0 ? atoi(data): childCount;
+    t->data = NULL;
+    t->childTokens = NULL;
+    t->childTokensCount = 0;
+    return t;
+  }
+
   if (childCount > 0) 
     t->childTokens = (Token **) malloc(childCount * sizeof(Token *));
   else t->childTokens = NULL;
-
   t->type = type;
   t->data = data;
+  t->int_data = 0;
   t->childTokensCount = childCount;
-
   return t;
 }
 
@@ -404,6 +458,7 @@ void printTokenTree(Token * n, int depth) {
   for (int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
   if(n->type == -10) printf("[%s]\n", n->data);
+  else if(n->type == -1) printf("%d\n", n->int_data);
   else printf("%s\n", n->data);
 
   if (n->childTokensCount != 0) {
@@ -559,9 +614,66 @@ Token * classifyScopes(Line * line, FunctionHashMap * functions) {
   return head;
 }
 
-Token * execFunction(Function * fn, FunctionHashMap * functions) {
-  printTokenTree(fn->execSeq, 0);
+// DEF FUNCTIONS
+Token * pass(Token * t) {
+  return t;
+}
+
+Token * add(Token * t) {
+  int sum = 0;
+  Token ** args = t->childTokens;
+  for (int i = 0; i < t->childTokensCount; i++) {
+    if (args[i]->type != -1) printError("add function", 4);
+    sum += args[i]->int_data;
+  }
+  return createToken(-1, NULL, sum);
+}
+
+Token * subtract(Token * t) {
+  int sum = 0;
+  Token ** args = t->childTokens;
+  for (int i = 0; i < t->childTokensCount; i++) {
+    if (args[i]->type != -1) printError("subtract function", 4);
+    else if (i == 0) sum = args[i]->int_data;
+    sum = sum - args[i]->int_data;
+  }
+  return createToken(-1, NULL, sum);
+}
+
+Token * print(Token * t) {
+  Token ** args = t->childTokens;
+  for (int i = 0; i < t->childTokensCount; i++) {
+    if (args[i]->type == -1) printf("%d ", args[i]->int_data);
+    else printf("%s ", args[i]->data);
+  }
+  printf("\n");
+  return createToken(-5, NULL, 0);
+}
+
+Token * execStatment(Token * t, FunctionHashMap * functions, FunctionPointer ** defs);
+
+Token * execFunction(Function * fn, FunctionHashMap * functions, FunctionPointer ** defs) {
+  Token * iterator = fn->execSeq;
+  while(iterator != NULL) {
+    execStatment(iterator, functions, defs);
+    iterator = iterator->next;
+  }
   return NULL;
+}
+
+Token * execStatment(Token * t, FunctionHashMap * functions, FunctionPointer ** defs) {
+  Token ** children = t->childTokens;
+  for (int i = 0; i < t->childTokensCount; i++) {
+    if ((children[i])->type == -10) 
+      children[i] = execStatment(children[i], functions, defs);
+  }
+  FunctionPointer * fp = getFromFunctionPointers(defs, t->data);
+  if (fp == NULL) {
+    Function * fn = getFromFunctionHashMap(functions, t->data);
+    if(fn == NULL) printError("Function not found!", 3);
+    return execFunction(fn, functions, defs);
+  }
+  return (fp->pointer)(t);
 }
 
 Function * classifyGlobalScope(Line * line, FunctionHashMap * functions) {
@@ -578,9 +690,15 @@ int main(int argc, char *argv[]) {
   if (line == NULL) return 0;
   if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 
-  FunctionHashMap * functions = initFunctionHashMap(113, 31);
+  FunctionPointer ** defs = initFunctionPointers();
+  addToFunctionPointers(defs, "add", &add);
+  addToFunctionPointers(defs, "print", &print);
+  addToFunctionPointers(defs, "subtract", &print);
+
+  FunctionHashMap * functions = initFunctionHashMap(hashmap_size, hashmap_r);
   Function * global = classifyGlobalScope(line, functions);
   freeLines(line);
 
-  execFunction(global, functions);
+  printTokenTree(global->execSeq, 0);
+  execFunction(global, functions, defs);
 }
