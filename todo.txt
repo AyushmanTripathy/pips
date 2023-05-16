@@ -21,7 +21,8 @@ TOKEN TYPES
 0 -> name types
 -1 -> number types
 -2 -> strings types
--5 -> void type
+-3 -> boolean type
+-5 -> null type
 
 -10 -> function types
 -11 -> function builtin

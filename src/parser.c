@@ -166,10 +166,11 @@ Token * parseIfStatment(TokenNode * n, int isElif) {
   } else (ifToken->childTokens)[1] = NULL;
 
   if (n->next != NULL) {
-    TokenNode * passFunc = createTokenNode("pass", 0);
+    TokenNode * passFunc = createTokenNode("bool", 0);
     passFunc->next = n->next;
     (ifToken->childTokens)[0] = analyseTokenNode(passFunc);
-    freeTokenNode(passFunc);
+    // for freeing passFunc TokenNode
+    n = passFunc;
   } else printError("condition missing in conditional statment.", 0);
 
   return ifToken;

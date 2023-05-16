@@ -4,6 +4,13 @@
 
 #include "main.h"
 
+Token * nullToken;
+Token * trueBooleanToken;
+Token * falseBooleanToken;
+
+Function ** functions;
+FunctionPointer ** defs;
+
 void printError(char * s, int code) {
   char * c = getErrorCode(code);
   if (c == NULL) printf("[ERROR] %s\n", s);
@@ -27,10 +34,18 @@ TokenNode * createTokenNode(char * str, int type) {
 
 Token * createToken(int type, char * data, int childCount) {
   Token * t = (Token *) malloc(sizeof(Token));
+  t->next = NULL;
 
   if (type == -1) {
     t->type = -1;
     t->int_data = childCount == 0 ? atoi(data): childCount;
+    t->data = NULL;
+    t->childTokens = NULL;
+    t->childTokensCount = 0;
+    return t;
+  } else if (type == -3) {
+    t->type = -3;
+    t->int_data = childCount;
     t->data = NULL;
     t->childTokens = NULL;
     t->childTokensCount = 0;
@@ -62,6 +77,7 @@ void printTokenTree(Token * n, int depth) {
   if (depth != 0) printf("|-");
   if(n->type == -10) printf("[%s]\n", n->data);
   else if(n->type == -1) printf("%d\n", n->int_data);
+  else if(n->type == -3) printf("%s\n", n->int_data ? "True" : "False");
   else printf("%s\n", n->data);
 
   if (n->childTokensCount != 0) {
@@ -76,14 +92,23 @@ void printTokenTree(Token * n, int depth) {
 }
 
 int main(int argc, char *argv[]) {
-  FunctionPointer ** defs = initFunctionPointers();
+
+  functions = initFunctionHashMap();
+  Function * global = parseFile(argv[1], functions);
+
+  printTokenTree(global->execSeq, 0);
+  printf("------------------\n");
+
+  nullToken = createToken(-5, NULL, 0);
+  trueBooleanToken = createToken(-3, NULL, 1);
+  falseBooleanToken = createToken(-3, NULL, 0);
+
+  defs = initFunctionPointers();
+  addToFunctionPointers(defs, "pass", &pass);
+  addToFunctionPointers(defs, "bool", &boolFunc);
   addToFunctionPointers(defs, "add", &add);
   addToFunctionPointers(defs, "print", &print);
   addToFunctionPointers(defs, "subtract", &print);
 
-  Function ** functions = initFunctionHashMap();
-  Function * global = parseFile(argv[1], functions);
-  printTokenTree(global->execSeq, 0);
-  printf("------------------\n");
-  execFunction(global, functions, defs);
+  execFunction(global);
 }

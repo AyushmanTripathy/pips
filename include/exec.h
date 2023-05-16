@@ -4,7 +4,7 @@
 #include "types.h"
 #include "hashmaps.h"
 
-Token * execStatment(Token *, Function **, FunctionPointer **);
-Token * execFunction(Function *, Function **, FunctionPointer **);
+Token * execStatment(Token *);
+Token * execFunction(Function *);
 
 #endif
