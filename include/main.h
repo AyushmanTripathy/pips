@@ -3,10 +3,10 @@
 
 #include "types.h"
 
-#include "reader.h"
 #include "utils.h"
 #include "config.h"
 #include "defs.h"
 #include "hashmaps.h"
+#include "parser.h"
 
 #endif

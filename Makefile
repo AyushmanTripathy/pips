@@ -1,11 +1,14 @@
 CC = gcc
 CFLAGS = -Iinclude
 
-bulid/main: build build/main.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
-	$(CC) build/main.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -o build/main
+bulid/main: build build/main.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
+	$(CC) build/main.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -o build/main
 
 build/main.o: src/main.c include/main.h
 	$(CC) $(CFLAGS) src/main.c -c -o build/main.o
+
+build/parser.o: src/parser.c include/parser.h
+	$(CC) $(CFLAGS) src/parser.c -c -o build/parser.o
 
 build/utils.o: src/utils.c include/utils.h
 	$(CC) $(CFLAGS) src/utils.c -c -o build/utils.o

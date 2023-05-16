@@ -16,4 +16,19 @@ typedef struct TokenNode_tag {
   struct TokenNode_tag * next;
 } TokenNode;
 
+typedef struct Function_tag {
+  char * name;
+  int paramsCount;
+  Token ** params;
+  Token * execSeq;
+  Token * linker;
+  struct Function_tag * next;
+} Function;
+
+typedef struct FunctionPointer_tag {
+  char * key;
+  Token * (* pointer)(Token *);
+  struct FunctionPointer_tag * next;
+} FunctionPointer;
+
 #endif
