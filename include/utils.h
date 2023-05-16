@@ -7,7 +7,6 @@ int isSymbol(char s);
 int isTrimable(char s);
 
 char * getErrorCode(int code);
-void printError(char * s, int code);
 
 // HASHMAP
 int hashFunc(char * str);

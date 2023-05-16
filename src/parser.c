@@ -9,12 +9,12 @@ extern void addToFunctions(Function **, Function *);
 
 extern void printTokenTree(Token *, int);
 extern void printTokenNode(TokenNode *);
+extern void printError(char *, int);
 
 void freeTokenNode(TokenNode * n) {
   TokenNode * next;
   while(n != NULL) {
     next = n->next;
-    free(n->data);
     free(n);
     n = next;
   }

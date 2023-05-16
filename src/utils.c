@@ -5,6 +5,7 @@
 
 extern int keywordsLength;
 extern char keywords[][5];
+extern void printError(char *, int);
 
 // IS FUNCTIONS
 int isKeyword(char * s) {
@@ -48,12 +49,6 @@ char * getErrorCode(int code) {
     case 6: return "";
   }
   return NULL;
-}
-void printError(char * s, int code) {
-  char * c = getErrorCode(code);
-  if (c == NULL) printf("[ERROR] %s\n", s);
-  else printf("[%s ERROR] %s\n", c, s);
-  exit(1);
 }
 
 // STRING FUNCTIONS

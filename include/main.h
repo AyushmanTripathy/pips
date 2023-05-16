@@ -8,5 +8,6 @@
 #include "defs.h"
 #include "hashmaps.h"
 #include "parser.h"
+#include "exec.h"
 
 #endif

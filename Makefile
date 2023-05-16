@@ -1,11 +1,14 @@
 CC = gcc
 CFLAGS = -Iinclude
 
-bulid/main: build build/main.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
-	$(CC) build/main.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -o build/main
+bulid/main: build build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
+	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -o build/main
 
 build/main.o: src/main.c include/main.h
 	$(CC) $(CFLAGS) src/main.c -c -o build/main.o
+
+build/exec.o: src/exec.c include/exec.h
+	$(CC) $(CFLAGS) src/exec.c -c -o build/exec.o
 
 build/parser.o: src/parser.c include/parser.h
 	$(CC) $(CFLAGS) src/parser.c -c -o build/parser.o
@@ -26,10 +29,9 @@ build:
 	mkdir build
 
 run:
-	./build/main test.pipescript
-
-dev:
-	nodemon -w src/* -w include/* -w test.pipescript -e "c h" -x "make && ./build/main test.pipescript"
+	@echo "------------------"
+	@./build/main test.pipescript
+	@echo "------------------"
 
 clean:
 	@rm -rf build

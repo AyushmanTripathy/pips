@@ -4,6 +4,13 @@
 
 #include "main.h"
 
+void printError(char * s, int code) {
+  char * c = getErrorCode(code);
+  if (c == NULL) printf("[ERROR] %s\n", s);
+  else printf("[%s ERROR] %s\n", c, s);
+  exit(1);
+}
+
 TokenNode * createTokenNode(char * str, int type) {
   TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
   t->data = str;
@@ -68,31 +75,6 @@ void printTokenTree(Token * n, int depth) {
   printTokenTree(n->next, depth);
 }
 
-Token * execStatment(Token * t, Function ** functions, FunctionPointer ** defs);
-Token * execFunction(Function * fn, Function ** functions, FunctionPointer ** defs) {
-  Token * iterator = fn->execSeq;
-  while(iterator != NULL) {
-    execStatment(iterator, functions, defs);
-    iterator = iterator->next;
-  }
-  return NULL;
-}
-
-Token * execStatment(Token * t, Function ** functions, FunctionPointer ** defs) {
-  Token ** children = t->childTokens;
-  for (int i = 0; i < t->childTokensCount; i++) {
-    if ((children[i])->type == -10) 
-      children[i] = execStatment(children[i], functions, defs);
-  }
-  FunctionPointer * fp = getFromFunctionPointers(defs, t->data);
-  if (fp == NULL) {
-    Function * fn = getFromFunctions(functions, t->data);
-    if(fn == NULL) printError("Function not found!", 3);
-    return execFunction(fn, functions, defs);
-  }
-  return (fp->pointer)(t);
-}
-
 int main(int argc, char *argv[]) {
   FunctionPointer ** defs = initFunctionPointers();
   addToFunctionPointers(defs, "add", &add);
@@ -101,5 +83,7 @@ int main(int argc, char *argv[]) {
 
   Function ** functions = initFunctionHashMap();
   Function * global = parseFile(argv[1], functions);
-  //execFunction(global, functions, defs);
+  printTokenTree(global->execSeq, 0);
+  printf("------------------\n");
+  execFunction(global, functions, defs);
 }
