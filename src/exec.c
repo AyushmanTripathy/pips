@@ -31,7 +31,6 @@ Token * handleConditional(Token * t) {
   return t;
 }
 
-
 Token * execScope(Token * t) {
   while(t != NULL) {
     // IF statements
@@ -48,6 +47,7 @@ Token * execScope(Token * t) {
 }
 
 Token * execStatment(Token * t) {
+  if (t == NULL) printError("NULL execution", 3);
   Token ** children = t->childTokens;
   for (int i = 0; i < t->childTokensCount; i++) {
     if ((children[i])->type == -10) 

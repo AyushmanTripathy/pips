@@ -23,7 +23,7 @@ TokenNode * createTokenNode(char * str, int type) {
   t->data = str;
 
   if (!type) {
-    if (str[0] >= '0' && str[0] <= '9') type = -1;
+    if (isNumber(str)) type = -1;
     else type = isKeyword(str); 
   } 
 
@@ -92,7 +92,6 @@ void printTokenTree(Token * n, int depth) {
 }
 
 int main(int argc, char *argv[]) {
-
   functions = initFunctionHashMap();
   Function * global = parseFile(argv[1], functions);
 
@@ -108,7 +107,7 @@ int main(int argc, char *argv[]) {
   addToFunctionPointers(defs, "bool", &boolFunc);
   addToFunctionPointers(defs, "add", &add);
   addToFunctionPointers(defs, "print", &print);
-  addToFunctionPointers(defs, "subtract", &print);
+  addToFunctionPointers(defs, "neg", &neg);
 
   execFunction(global);
 }

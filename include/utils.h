@@ -3,6 +3,7 @@
 
 // IS FUNCTIONS
 int isKeyword(char * s);
+int isNumber(char * s);
 int isSymbol(char s);
 int isTrimable(char s);
 

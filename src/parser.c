@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "parser.h"
 
@@ -216,18 +217,20 @@ Token * classifyScopes(Line * line, Function ** functions) {
             addToFunctions(functions, fn);
             break;
           case -249:
-            curr->next = parseIfStatment(n, 0);
-            curr = curr->next;
+            if (head == NULL) curr = parseIfStatment(n, 0);
+            else curr->next = parseIfStatment(n, 0);
             if ((curr->childTokens)[1] == NULL)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
             break;
           case -248:
+            if (curr == NULL) printError("if statement expected.", 1);
             curr->next = parseIfStatment(n, 1);
             curr = curr->next;
             if ((curr->childTokens)[1] == NULL)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
             break;
           case -247:
+            if (curr == NULL) printError("if statement expected.", 1);
             curr->next = parseElseStatment(n);
             curr = curr->next;
             if ((curr->childTokens)[0] == NULL)
@@ -235,15 +238,15 @@ Token * classifyScopes(Line * line, Function ** functions) {
             break;
         }
       } else {
-        if (head == NULL) {
+        if (curr == NULL) {
           curr = analyseTokenNode(n); 
           curr->next = NULL;
-          head = curr;
         } else {
           curr->next = analyseTokenNode(n);
           curr = curr->next;
         }
       }
+      if (head == NULL) head = curr;
       freeTokenNode(n);
     }
     line = line->next;
@@ -260,6 +263,7 @@ Function * classifyGlobalScope(Line * line, Function ** functions) {
 }
 
 Function * parseFile(char * path, Function ** functions) {
+
   Line * line = readSourceCode(path);
   line = cleanseLines(line);
   if (line == NULL) return 0;

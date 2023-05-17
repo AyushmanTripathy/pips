@@ -14,8 +14,8 @@ Token * pass(Token * t) {
   return t;
 }
 
+// BOOL FUNCTIONS
 Token * boolFunc(Token * t) {
-  printf("bool returned \n" );
   if (t->childTokensCount < 1)
     printError("bool functions requires atleast one argument.", 3);
 
@@ -29,25 +29,33 @@ Token * boolFunc(Token * t) {
       else return trueBooleanToken;
     case -3: return t;
     case -5: return falseBooleanToken;
+    case 0:
+      if (strcmp(t->data, "True")) return trueBooleanToken;
+      else if (strcmp(t->data, "False")) return falseBooleanToken;
   }
   printError("boolFunc collapse", 3);
 }
 
+// INT FUNCTIONS
 Token * add(Token * t) {
-  return createToken(-1, NULL, 0);
-}
-
-Token * subtract(Token * t) {
   int sum = 0;
   Token ** args = t->childTokens;
-  for (int i = 0; i < t->childTokensCount; i++) {
-    if (args[i]->type != -1) printError("subtract function", 4);
-    else if (i == 0) sum = args[i]->int_data;
-    sum = sum - args[i]->int_data;
+  for(int i = 0; i < t->childTokensCount; i++) {
+    if (args[i]->type != -1) printError("Add function", 4);
+    else sum += args[i]->int_data;
   }
   return createToken(-1, NULL, sum);
 }
 
+Token * neg(Token * t) {
+  if (t->childTokensCount != 1)
+    printError("neg functions requires one argument.", 3);
+  t = (t->childTokens)[0];
+  if (t->type != -1) printError("Neg Function", 4);
+  return createToken(-1, NULL, -1 * t->int_data);
+}
+
+// VOID FUNCTIONS
 Token * print(Token * t) {
   Token ** args = t->childTokens;
   for (int i = 0; i < t->childTokensCount; i++) {

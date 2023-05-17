@@ -15,6 +15,20 @@ int isKeyword(char * s) {
   return 0;
 }
 
+int isNumber(char * str) {
+  int i = 0;
+  if (str[i] == '-') i++;
+
+  while(str[i] != '\0') {
+    if (!(str[i] >= '0' && str[i] <= '9')) {
+      if(i == 0) return 0;
+      else printError("Invalid Name Token", 1);
+    }
+    i++;
+  }
+  return 1;
+}
+
 int isSymbol(char s) {
   switch (s) {
     case ':': return 1;
