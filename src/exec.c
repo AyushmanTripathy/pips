@@ -59,7 +59,6 @@ Token * execStatment(Token * t) {
     if(fn == NULL) printError("Function not found!", 3);
     return execFunction(fn);
   }
-  printf("%s \n", fp->key);
   return (fp->pointer)(t);
 }
 

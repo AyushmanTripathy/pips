@@ -38,7 +38,7 @@ Token * createToken(int type, char * data, int childCount) {
 
   if (type == -1) {
     t->type = -1;
-    t->int_data = childCount == 0 ? atoi(data): childCount;
+    t->int_data = data == NULL ? childCount: atoi(data);
     t->data = NULL;
     t->childTokens = NULL;
     t->childTokensCount = 0;

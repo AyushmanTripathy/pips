@@ -34,13 +34,7 @@ Token * boolFunc(Token * t) {
 }
 
 Token * add(Token * t) {
-  int sum = 0;
-  Token ** args = t->childTokens;
-  for (int i = 0; i < t->childTokensCount; i++) {
-    if (args[i]->type != -1) printError("add function", 4);
-    sum += args[i]->int_data;
-  }
-  return createToken(-1, NULL, sum);
+  return createToken(-1, NULL, 0);
 }
 
 Token * subtract(Token * t) {
