@@ -15,12 +15,22 @@ TODO
     [ ] functions
     [x] classify scopes
     [ ] free memory
+[ ] execution
+    [ ] statments
+    [ ] if blocks
+    [ ] variables
+    [ ] functions
+
+HANDLE
+------
+
+[ ] floats and longs
 
 TOKEN TYPES
 -----------
 0 -> name types
 -1 -> number types
--2 -> strings types
+-2 -> string types
 -3 -> boolean type
 -5 -> null type
 

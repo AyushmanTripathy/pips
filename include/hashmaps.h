@@ -11,4 +11,7 @@ FunctionPointer ** initFunctionPointers();
 void addToFunctionPointers(FunctionPointer **, char *, Token* (*)(Token*));
 FunctionPointer * getFromFunctionPointers(FunctionPointer **, char *);
 
+Variable ** initVariables();
+Variable * getVariable(Variable **, char *, int);
+void addVariable(Variable **, char *, int, int, int);
 #endif

@@ -8,6 +8,7 @@ Token * nullToken;
 Token * trueBooleanToken;
 Token * falseBooleanToken;
 
+Variable ** vars;
 Function ** functions;
 FunctionPointer ** defs;
 
@@ -109,5 +110,6 @@ int main(int argc, char *argv[]) {
   addToFunctionPointers(defs, "print", &print);
   addToFunctionPointers(defs, "neg", &neg);
 
-  execFunction(global);
+  vars = initVariables();
+  //execFunction(global);
 }

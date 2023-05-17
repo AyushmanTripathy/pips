@@ -16,6 +16,13 @@ typedef struct TokenNode_tag {
   struct TokenNode_tag * next;
 } TokenNode;
 
+typedef struct Variable_tag {
+  char * key;
+  int type;
+  int int_data;
+  struct Variable_tag * next;
+} Variable;
+
 typedef struct Function_tag {
   char * name;
   int paramsCount;
