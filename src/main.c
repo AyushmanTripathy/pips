@@ -111,5 +111,5 @@ int main(int argc, char *argv[]) {
   addToFunctionPointers(defs, "neg", &neg);
 
   vars = initVariables();
-  //execFunction(global);
+  execFunction(global);
 }
