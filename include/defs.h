@@ -3,10 +3,10 @@
 
 #include "types.h"
 
-Token * pass(Token * t);
-Token * boolFunc(Token * t);
-Token * add(Token * t);
-Token * neg(Token * t);
-Token * print(Token * t);
+Token * pass(Tokens , int);
+Token * boolFunc(Tokens , int);
+Token * add(Tokens , int);
+Token * neg(Tokens , int);
+Token * print(Tokens , int);
 
 #endif

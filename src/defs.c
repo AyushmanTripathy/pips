@@ -10,60 +10,56 @@ extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
-Token * pass(Token * t) {
-  return t;
+Token * pass(Tokens t, int l) {
+  return t[0];
 }
 
 // BOOL FUNCTIONS
-Token * boolFunc(Token * t) {
-  if (t->childTokensCount < 1)
+Token * boolFunc(Tokens t, int l) {
+  if (l < 1)
     printError("bool functions requires atleast one argument.", 3);
 
-  t = (t->childTokens)[0];
-  switch (t->type) {
+  switch (t[0]->type) {
     case -1:
-      if (t->int_data == 0) return falseBooleanToken;
+      if (t[0]->int_data == 0) return falseBooleanToken;
       else return trueBooleanToken;
     case -2:
-      if (strcmp(t->data, "") == 0) return falseBooleanToken;
+      if (strcmp(t[0]->data, "") == 0) return falseBooleanToken;
       else return trueBooleanToken;
-    case -3: return t;
+    case -3: return t[0];
     case -5: return falseBooleanToken;
     case 0:
-      if (strcmp(t->data, "True")) return trueBooleanToken;
-      else if (strcmp(t->data, "False")) return falseBooleanToken;
+      if (strcmp(t[0]->data, "True")) return trueBooleanToken;
+      else if (strcmp(t[0]->data, "False")) return falseBooleanToken;
   }
   printError("boolFunc collapse", 3);
 }
 
 // INT FUNCTIONS
-Token * add(Token * t) {
+Token * add(Tokens t, int l) {
   int sum = 0;
-  Token ** args = t->childTokens;
-  for(int i = 0; i < t->childTokensCount; i++) {
-    if (args[i]->type != -1) printError("Add function", 4);
-    else sum += args[i]->int_data;
+  for(int i = 0; i < l; i++) {
+    if (t[i]->type != -1) printError("Add function", 4);
+    else sum += t[i]->int_data;
   }
   return createToken(-1, NULL, sum);
 }
 
-Token * neg(Token * t) {
-  if (t->childTokensCount != 1)
+Token * neg(Tokens t, int l) {
+  if (l != 1)
     printError("neg functions requires one argument.", 3);
-  t = (t->childTokens)[0];
-  if (t->type != -1) printError("Neg Function", 4);
-  return createToken(-1, NULL, -1 * t->int_data);
+  if (t[0]->type != -1) printError("Neg Function", 4);
+  return createToken(-1, NULL, -1 * t[0]->int_data);
 }
 
 // VOID FUNCTIONS
-Token * print(Token * t) {
-  Token ** args = t->childTokens;
-  for (int i = 0; i < t->childTokensCount; i++) {
-    if (args[i]->type == -1) printf("%d ", args[i]->int_data);
-    else if(args[i]->type == -3) {
-      printf("%s ", args[i]->int_data ? "True":"False" );
+Token * print(Tokens t, int l) {
+  for (int i = 0; i < l; i++) {
+    if (t[i]->type == -1) printf("%d ", t[i]->int_data);
+    else if(t[i]->type == -3) {
+      printf("%s ", t[i]->int_data ? "True":"False" );
     }
-    else printf("%s ", args[i]->data);
+    else printf("%s ", t[i]->data);
   }
   printf("\n");
   return nullToken;

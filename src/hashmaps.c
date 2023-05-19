@@ -6,13 +6,17 @@
 
 extern int hashmap_size;
 extern int hashmap_r;
+extern int variable_hashmap_size;
+extern int variable_hashmap_r;
+extern int DEBUG_VARIABLES;
+
 extern void printError(char *, int);
 
 // HASHMAP
-int hashFunc(char * str) {
+int hashFunc(char * str, int size, int r) {
   int hash = 0;
   for (int i = 0; str[i] != '\0'; i++)
-    hash = ((hashmap_r * hash) + (int) str[i]) % hashmap_size;
+    hash = ((r * hash) + (int) str[i]) % size;
   return hash;
 }
 
@@ -23,7 +27,7 @@ Function ** initFunctionHashMap() {
 }
 
 void addToFunctions(Function ** buckets, Function * fn) {
-  int hashKey = hashFunc(fn->name);
+  int hashKey = hashFunc(fn->name, hashmap_size, hashmap_r);
   if (buckets[hashKey] == NULL) buckets[hashKey] = fn;
   else {
     Function * iterator = buckets[hashKey];
@@ -33,7 +37,7 @@ void addToFunctions(Function ** buckets, Function * fn) {
 }
 
 Function * getFromFunctions(Function ** buckets, char * name) {
-  int hashKey = hashFunc(name);
+  int hashKey = hashFunc(name, hashmap_size, hashmap_r);
   if (buckets[hashKey] != NULL) {
     Function * iterator = buckets[hashKey];
     while(strcmp(iterator->name, name) != 0) {
@@ -51,8 +55,8 @@ FunctionPointer ** initFunctionPointers() {
   return arr;
 }
 
-void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Token*)) {
-  int hashKey = hashFunc(key);
+void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Tokens, int)) {
+  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
   
   FunctionPointer * fp = (FunctionPointer *) malloc(sizeof(FunctionPointer));
   fp->next = NULL;
@@ -68,7 +72,7 @@ void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Toke
 }
 
 FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
-  int hashKey = hashFunc(key);
+  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
   
   if (map[hashKey] != NULL) {
     FunctionPointer * iterator = map[hashKey];
@@ -81,33 +85,29 @@ FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
 }
 
 Variable ** initVariables() {
-  Variable ** arr = (Variable **) malloc(hashmap_size * sizeof(Variable));
-  for (int i = 0; i < hashmap_size; i++) arr[i] = NULL;
+  Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
+  for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
   return arr;
 }
 
-char * generateVariableKey(char * name, int scopeId) {
-  int nameLen = strlen(name);
-  int idLen = ((int) log10(scopeId)) + 1;
-  char * str = (char *) malloc((nameLen + idLen + 1) * sizeof(char));
-
-  for (int i = 0; i < idLen; i++) {
-    str[i] = (char) ((scopeId % 10) + 48);
-    scopeId /= 10;
-  }
-  for (int i = 0; i < nameLen; i++) str[i + idLen] = name[i];
-
-  str[nameLen + idLen] = '\0';
-  return str;
+void freeVariable(Variable * v) {
+  if (v->next != NULL) freeVariable(v->next);
+  free(v);
 }
 
-void addVariable(Variable ** map, char * name, int scopeId, int type, int int_data) {
-  char * key = generateVariableKey(name, scopeId);
-  int hashKey = hashFunc(key);
+void freeVariables(Variable ** map) {
+  for (int i = 0; i < variable_hashmap_size; i++) {
+    if (map[i] != NULL) freeVariable(map[i]);
+  }
+  free(map);
+}
+
+void addVariable(Variable ** map, char * name, int type, int int_data) {
+  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   Variable * v = (Variable *) malloc(sizeof(Variable));
   v->next = NULL;
-  v->key = key;
+  v->key = name;
   v->int_data = int_data;
   v->type = type;
   
@@ -119,17 +119,15 @@ void addVariable(Variable ** map, char * name, int scopeId, int type, int int_da
   }
 }
 
-Variable * getVariable(Variable ** map, char * name, int scopeId) {
-  char * key = generateVariableKey(name, scopeId);
-  int hashKey = hashFunc(key);
+Variable * getVariable(Variable ** map, char * name) {
+  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   if (map[hashKey] != NULL) {
     Variable * iterator = map[hashKey];
-    while(strcmp(iterator->key, key) != 0) {
+    while(strcmp(iterator->key, name) != 0) {
       iterator = iterator->next;
       if (iterator == NULL) printError("Variable not defined.", 3); 
     }
-    free(key);
     return iterator;
   } else printError("Variable not defined.", 3);
 }

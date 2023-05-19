@@ -8,7 +8,6 @@ Token * nullToken;
 Token * trueBooleanToken;
 Token * falseBooleanToken;
 
-Variable ** vars;
 Function ** functions;
 FunctionPointer ** defs;
 
@@ -54,13 +53,27 @@ Token * createToken(int type, char * data, int childCount) {
   }
 
   if (childCount > 0) 
-    t->childTokens = (Token **) malloc(childCount * sizeof(Token *));
+    t->childTokens = (Tokens) malloc(childCount * sizeof(Token *));
   else t->childTokens = NULL;
   t->type = type;
   t->data = data;
   t->int_data = 0;
   t->childTokensCount = childCount;
   return t;
+}
+
+void freeToken(Token * t) {
+  free(t->childTokens);
+  free(t->data);
+  free(t);
+}
+
+void freeTokenTree(Token * t) {
+  for (int i = 0; i < t->childTokensCount; i++)
+    freeTokenTree(t->childTokens[i]);
+  if (t->next != NULL)
+    freeTokenTree(t->next);
+  freeToken(t);
 }
 
 void printTokenNode(TokenNode * n) {
@@ -76,6 +89,7 @@ void printTokenTree(Token * n, int depth) {
   if (n == NULL) return;
   for (int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
+
   if(n->type == -10) printf("[%s]\n", n->data);
   else if(n->type == -1) printf("%d\n", n->int_data);
   else if(n->type == -3) printf("%s\n", n->int_data ? "True" : "False");
@@ -94,9 +108,9 @@ void printTokenTree(Token * n, int depth) {
 
 int main(int argc, char *argv[]) {
   functions = initFunctionHashMap();
-  Function * global = parseFile(argv[1], functions);
+  Token * global = parseFile(argv[1], functions);
 
-  printTokenTree(global->execSeq, 0);
+  printTokenTree(global, 0);
   printf("------------------\n");
 
   nullToken = createToken(-5, NULL, 0);
@@ -110,6 +124,6 @@ int main(int argc, char *argv[]) {
   addToFunctionPointers(defs, "print", &print);
   addToFunctionPointers(defs, "neg", &neg);
 
-  vars = initVariables();
-  execFunction(global);
+  execGlobal(global);
+  freeTokenTree(global);
 }

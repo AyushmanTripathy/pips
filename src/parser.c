@@ -102,7 +102,12 @@ Token * analyseTokenNode(TokenNode * t) {
           break;
       }
     } else if (isBlock == 0) {
-      childrens[i++] = createToken(t->type, t->data, 0);
+      // variables
+      if (t->type == 0) {
+        Token * pass = createToken(-10, "%", 1);
+        pass->childTokens[0] = createToken(t->type, t->data, 0);
+        childrens[i++] = pass;
+      } else childrens[i++] = createToken(t->type, t->data, 0);
     }
     t = t->next;
   }
@@ -133,9 +138,12 @@ Function * parseFunction(TokenNode * n) {
     Token ** params = (Token **) malloc(sizeof(Token));
     iterator = n->next;
     for(int i = 0; i < paramsCount; i++) {
-      params[i] = createToken(-12, iterator->data, 0);
+      if (iterator->type != 0)
+        printError("Name Token expected as function parameter", 1);
+      params[i] = createToken(iterator->type, iterator->data, 0);
       iterator = iterator->next;
     }
+    fn->params = params;
   }
 
   fn->execSeq = NULL;
@@ -254,22 +262,13 @@ Token * classifyScopes(Line * line, Function ** functions) {
   return head;
 }
 
-Function * classifyGlobalScope(Line * line, Function ** functions) {
-  Function * global = (Function *) malloc(sizeof(Function));
-  global->name = "global";
-  global->paramsCount = 0;
-  global->execSeq = classifyScopes(line, functions);
-  return global;
-}
-
-Function * parseFile(char * path, Function ** functions) {
-
+Token * parseFile(char * path, Function ** functions) {
   Line * line = readSourceCode(path);
   line = cleanseLines(line);
   if (line == NULL) return 0;
   if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 
-  Function * global = classifyGlobalScope(line, functions);
+  Token * global = classifyScopes(line, functions);
   freeLines(line);
   return global;
 }

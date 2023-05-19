@@ -10,6 +10,8 @@ typedef struct Token_tag {
   struct Token_tag ** childTokens;
 } Token;
 
+typedef Token ** Tokens;
+
 typedef struct TokenNode_tag {
   int type;
   char * data;
@@ -34,7 +36,7 @@ typedef struct Function_tag {
 
 typedef struct FunctionPointer_tag {
   char * key;
-  Token * (* pointer)(Token *);
+  Token * (* pointer)(Token **, int);
   struct FunctionPointer_tag * next;
 } FunctionPointer;
 

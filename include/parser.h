@@ -5,6 +5,6 @@
 #include "reader.h"
 #include "utils.h"
 
-Function * parseFile(char * name, Function ** functions);
+Token * parseFile(char * name, Function ** functions);
 
 #endif
