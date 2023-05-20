@@ -1,0 +1,1916 @@
+==40055== Memcheck, a memory error detector
+==40055== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==40055== Using Valgrind-3.21.0-d97fed7c3e-20230428 and LibVEX; rerun with -h for copyright info
+==40055== Command: make run
+==40055== Parent PID: 1628
+==40055== 
+--40055-- 
+--40055-- Valgrind options:
+--40055--    --leak-check=full
+--40055--    --show-leak-kinds=all
+--40055--    --track-origins=yes
+--40055--    --verbose
+--40055--    --log-file=valgrind-out.txt
+--40055-- Contents of /proc/version:
+--40055--   Linux version 5.4.0-146-generic (buildd@lcy02-amd64-026) (gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1)) #163-Ubuntu SMP Fri Mar 17 18:26:02 UTC 2023
+--40055-- 
+--40055-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--40055-- Page sizes: currently 4096, max supported 4096
+--40055-- Valgrind library directory: /usr/local/libexec/valgrind
+--40055-- Reading syms from /usr/bin/make
+--40055--    object doesn't have a symbol table
+--40055-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.31.so
+--40055--   Considering /usr/lib/debug/.build-id/45/87364908de169dec62ffa538170118c1c3a078.debug ..
+--40055--   .. build-id is valid
+--40055-- Reading syms from /usr/local/libexec/valgrind/memcheck-amd64-linux
+--40055--    object doesn't have a dynamic symbol table
+--40055-- Scheduler: using generic scheduler lock implementation.
+--40055-- Reading suppressions file: /usr/local/libexec/valgrind/default.supp
+==40055== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-40055-by-suprada-on-???
+==40055== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-40055-by-suprada-on-???
+==40055== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-40055-by-suprada-on-???
+==40055== 
+==40055== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==40055== don't want to do, unless you know exactly what you're doing,
+==40055== or are doing some strange experiment):
+==40055==   /usr/local/libexec/valgrind/../../bin/vgdb --pid=40055 ...command...
+==40055== 
+==40055== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==40055==   /path/to/gdb make
+==40055== and then give GDB the following command
+==40055==   target remote | /usr/local/libexec/valgrind/../../bin/vgdb --pid=40055
+==40055== --pid is optional if only one valgrind process is running
+==40055== 
+--40055-- REDIR: 0x4022e20 (ld-linux-x86-64.so.2:strlen) redirected to 0x580d2d52 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--40055-- REDIR: 0x4022bf0 (ld-linux-x86-64.so.2:index) redirected to 0x580d2d6c (vgPlain_amd64_linux_REDIR_FOR_index)
+--40055-- Reading syms from /usr/local/libexec/valgrind/vgpreload_core-amd64-linux.so
+--40055-- Reading syms from /usr/local/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+==40055== WARNING: new redirection conflicts with existing -- ignoring it
+--40055--     old: 0x04022e20 (strlen              ) R-> (0000.0) 0x580d2d52 vgPlain_amd64_linux_REDIR_FOR_strlen
+--40055--     new: 0x04022e20 (strlen              ) R-> (2007.0) 0x04842dc0 strlen
+--40055-- REDIR: 0x401f600 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4843e10 (strcmp)
+--40055-- REDIR: 0x4023380 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4847d10 (mempcpy)
+--40055-- Reading syms from /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+--40055--   Considering /usr/lib/debug/.build-id/c0/f40155b3f8bf8c494fa800f9ab197ebe20ed6e.debug ..
+--40055--   .. build-id is valid
+--40055-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.31.so
+--40055--   Considering /usr/lib/debug/.build-id/18/78e6b475720c7c51969e69ab2d276fae6d1dee.debug ..
+--40055--   .. build-id is valid
+==40055== WARNING: new redirection conflicts with existing -- ignoring it
+--40055--     old: 0x04905250 (memalign            ) R-> (1011.0) 0x04841bff memalign
+--40055--     new: 0x04905250 (memalign            ) R-> (1017.0) 0x048420f5 aligned_alloc
+==40055== WARNING: new redirection conflicts with existing -- ignoring it
+--40055--     old: 0x04905250 (memalign            ) R-> (1011.0) 0x04841bff memalign
+--40055--     new: 0x04905250 (memalign            ) R-> (1017.0) 0x0484207f aligned_alloc
+==40055== WARNING: new redirection conflicts with existing -- ignoring it
+--40055--     old: 0x04905250 (memalign            ) R-> (1011.0) 0x04841bff memalign
+--40055--     new: 0x04905250 (memalign            ) R-> (1017.0) 0x048420f5 aligned_alloc
+==40055== WARNING: new redirection conflicts with existing -- ignoring it
+--40055--     old: 0x04905250 (memalign            ) R-> (1011.0) 0x04841bff memalign
+--40055--     new: 0x04905250 (memalign            ) R-> (1017.0) 0x0484207f aligned_alloc
+--40055-- REDIR: 0x490a480 (libc.so.6:memmove) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+==40055== Preferring higher priority redirection:
+--40055--     old: 0x049f56e0 (__memcpy_avx_unalign) R-> (2018.0) 0x04845240 __memcpy_avx_unaligned_erms
+--40055--     new: 0x049f56e0 (__memcpy_avx_unalign) R-> (2018.1) 0x04846ce0 memmove
+--40055-- REDIR: 0x4909780 (libc.so.6:strncpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a7b0 (libc.so.6:strcasecmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x49090a0 (libc.so.6:strcat) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x49097e0 (libc.so.6:rindex) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490bc50 (libc.so.6:rawmemchr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4926ce0 (libc.so.6:wmemchr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4926820 (libc.so.6:wcscmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a5e0 (libc.so.6:mempcpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a410 (libc.so.6:bcmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909710 (libc.so.6:strncmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909150 (libc.so.6:strcmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a540 (libc.so.6:memset) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x49267e0 (libc.so.6:wcschr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909670 (libc.so.6:strnlen) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909230 (libc.so.6:strcspn) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a800 (libc.so.6:strncasecmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x49091d0 (libc.so.6:strcpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a950 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4927f50 (libc.so.6:wcsnlen) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4926860 (libc.so.6:wcscpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909820 (libc.so.6:strpbrk) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909100 (libc.so.6:index) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909630 (libc.so.6:strlen) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4912bb0 (libc.so.6:memrchr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a850 (libc.so.6:strcasecmp_l) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a3d0 (libc.so.6:memchr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4926930 (libc.so.6:wcslen) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4909ae0 (libc.so.6:strspn) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a750 (libc.so.6:stpncpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a6f0 (libc.so.6:stpcpy) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4926d20 (libc.so.6:wmemcmp) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490bc90 (libc.so.6:strchrnul) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a8a0 (libc.so.6:strncasecmp_l) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x4997850 (libc.so.6:__memcpy_chk) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x490a2f0 (libc.so.6:strstr) redirected to 0x48311bb (_vgnU_ifunc_wrapper)
+--40055-- REDIR: 0x49f2500 (libc.so.6:__strrchr_avx2) redirected to 0x4842770 (rindex)
+--40055-- REDIR: 0x49edbd0 (libc.so.6:__strcmp_avx2) redirected to 0x4843d10 (strcmp)
+--40055-- REDIR: 0x49f26d0 (libc.so.6:__strlen_avx2) redirected to 0x4842ca0 (strlen)
+--40055-- REDIR: 0x49ee010 (libc.so.6:__strncmp_avx2) redirected to 0x48433d0 (strncmp)
+--40055-- REDIR: 0x49f20e0 (libc.so.6:__strchr_avx2) redirected to 0x4842950 (index)
+--40055-- REDIR: 0x49ee530 (libc.so.6:__memchr_avx2) redirected to 0x4843e90 (memchr)
+--40055-- REDIR: 0x49040e0 (libc.so.6:malloc) redirected to 0x483c79f (malloc)
+--40055-- REDIR: 0x49f56e0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4846ce0 (memmove)
+--40055-- REDIR: 0x49046d0 (libc.so.6:free) redirected to 0x483f249 (free)
+--40055-- REDIR: 0x4905b10 (libc.so.6:calloc) redirected to 0x48417c9 (calloc)
+--40055-- REDIR: 0x49f2870 (libc.so.6:__strnlen_avx2) redirected to 0x4842c40 (strnlen)
+--40055-- REDIR: 0x49ed960 (libc.so.6:__strpbrk_sse42) redirected to 0x4848090 (strpbrk)
+--40055-- REDIR: 0x49f2310 (libc.so.6:__strchrnul_avx2) redirected to 0x4847830 (strchrnul)
+--40055-- REDIR: 0x49f5b60 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4846bd0 (memset)
+--40055-- REDIR: 0x4909fa0 (libc.so.6:__GI_strstr) redirected to 0x4847f90 (__strstr_sse2)
+--40055-- REDIR: 0x49f3c10 (libc.so.6:__strcpy_avx2) redirected to 0x4842df0 (strcpy)
+--40055-- REDIR: 0x4904e80 (libc.so.6:realloc) redirected to 0x48419e3 (realloc)
+--40055-- REDIR: 0x49f3fa0 (libc.so.6:__strncpy_avx2) redirected to 0x4842f90 (strncpy)
+--40055-- REDIR: 0x49253f0 (libc.so.6:__strstr_sse2_unaligned) redirected to 0x4847f10 (strstr)
+==40055== 
+==40055== HEAP SUMMARY:
+==40055==     in use at exit: 149,093 bytes in 1,284 blocks
+==40055==   total heap usage: 1,736 allocs, 452 frees, 272,339 bytes allocated
+==40055== 
+==40055== Searching for pointers to 1,284 not-freed blocks
+==40055== Checked 223,544 bytes
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 1 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111B70: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 2 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BA4: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 3 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C08: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 4 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1311C9: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 5 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112887: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 6 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122D48: ??? (in /usr/bin/make)
+==40055==    by 0x112F80: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 7 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122DF3: ??? (in /usr/bin/make)
+==40055==    by 0x112F80: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 8 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114BF0: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 9 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C1C: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 10 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C78: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 11 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x1248DF: xrealloc (in /usr/bin/make)
+==40055==    by 0x1151C5: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 12 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114E2D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 13 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x1248DF: xrealloc (in /usr/bin/make)
+==40055==    by 0x115235: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 14 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115028: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 15 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x11506D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 1 bytes in 1 blocks are still reachable in loss record 16 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1150A9: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 17 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13108A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 18 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114BF0: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 19 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C1C: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 20 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C48: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 21 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C78: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 22 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114E2D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 23 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x1248DF: xrealloc (in /usr/bin/make)
+==40055==    by 0x115201: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 24 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115028: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 25 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x11506D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 2 bytes in 1 blocks are still reachable in loss record 26 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1150A9: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 27 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BD8: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 28 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13120C: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 29 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131242: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 30 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131278: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 31 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312AE: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 32 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312E4: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 33 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13131A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 34 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131350: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 35 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131386: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 36 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313BC: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 37 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313F2: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 38 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131428: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 39 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13145E: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 40 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131494: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 41 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1314CA: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 3 bytes in 1 blocks are still reachable in loss record 42 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x115694: chop_commands (in /usr/bin/make)
+==40055==    by 0x12D614: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 4 bytes in 1 blocks are still reachable in loss record 43 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1236BF: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 4 bytes in 1 blocks are still reachable in loss record 44 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x13225F: try_variable_definition (in /usr/bin/make)
+==40055==    by 0x129B5A: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 4 bytes in 1 blocks are still reachable in loss record 45 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C48: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 5 bytes in 1 blocks are still reachable in loss record 46 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FC7: main (in /usr/bin/make)
+==40055== 
+==40055== 5 bytes in 1 blocks are still reachable in loss record 47 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FFA: main (in /usr/bin/make)
+==40055== 
+==40055== 6 bytes in 1 blocks are still reachable in loss record 48 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x112217: main (in /usr/bin/make)
+==40055== 
+==40055== 6 bytes in 1 blocks are still reachable in loss record 49 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131100: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 7 bytes in 1 blocks are still reachable in loss record 50 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112360: main (in /usr/bin/make)
+==40055== 
+==40055== 7 bytes in 1 blocks are still reachable in loss record 51 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122D48: ??? (in /usr/bin/make)
+==40055==    by 0x1126A9: main (in /usr/bin/make)
+==40055== 
+==40055== 7 bytes in 1 blocks are still reachable in loss record 52 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x13225F: try_variable_definition (in /usr/bin/make)
+==40055==    by 0x129B5A: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 8 bytes in 1 blocks are still reachable in loss record 53 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C08: main (in /usr/bin/make)
+==40055== 
+==40055== 8 bytes in 1 blocks are still reachable in loss record 54 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x131197: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 9 bytes in 1 blocks are still reachable in loss record 55 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115BB0: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 56 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C38: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 57 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x112230: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 58 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13108A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 59 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131130: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 60 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1311C9: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 61 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122DF3: ??? (in /usr/bin/make)
+==40055==    by 0x1126A9: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 62 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x12B1DF: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 10 bytes in 1 blocks are still reachable in loss record 63 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x13225F: try_variable_definition (in /usr/bin/make)
+==40055==    by 0x129B5A: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 11 bytes in 1 blocks are still reachable in loss record 64 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111B70: main (in /usr/bin/make)
+==40055== 
+==40055== 11 bytes in 1 blocks are still reachable in loss record 65 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112631: main (in /usr/bin/make)
+==40055== 
+==40055== 11 bytes in 1 blocks are still reachable in loss record 66 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1125C6: main (in /usr/bin/make)
+==40055== 
+==40055== 11 bytes in 1 blocks are still reachable in loss record 67 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x12ACE6: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 12 bytes in 1 blocks are still reachable in loss record 68 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BD8: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 69 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111D74: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 70 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1236BF: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 71 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112631: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 72 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1125C6: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 73 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FC7: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 74 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131100: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 75 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131386: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 76 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313BC: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 77 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313F2: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 78 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131428: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 79 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13145E: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 80 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131494: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 13 bytes in 1 blocks are still reachable in loss record 81 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1314CA: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 14 bytes in 1 blocks are still reachable in loss record 82 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BA4: main (in /usr/bin/make)
+==40055== 
+==40055== 14 bytes in 1 blocks are still reachable in loss record 83 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x128B88: construct_include_path (in /usr/bin/make)
+==40055==    by 0x112300: main (in /usr/bin/make)
+==40055== 
+==40055== 14 bytes in 1 blocks are still reachable in loss record 84 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1126FC: main (in /usr/bin/make)
+==40055== 
+==40055== 14 bytes in 1 blocks are still reachable in loss record 85 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x12B50B: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 15 bytes in 1 blocks are still reachable in loss record 86 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x128250: ??? (in /usr/bin/make)
+==40055==    by 0x129CB0: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 16 bytes in 1 blocks are still reachable in loss record 87 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FFA: main (in /usr/bin/make)
+==40055== 
+==40055== 16 bytes in 1 blocks are still reachable in loss record 88 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x11629C: ??? (in /usr/bin/make)
+==40055==    by 0x116563: file_exists_p (in /usr/bin/make)
+==40055==    by 0x12B644: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 16 bytes in 4 blocks are still reachable in loss record 89 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF8D: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 19 bytes in 1 blocks are still reachable in loss record 90 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x111B3B: main (in /usr/bin/make)
+==40055== 
+==40055== 19 bytes in 1 blocks are still reachable in loss record 91 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112360: main (in /usr/bin/make)
+==40055== 
+==40055== 20 bytes in 1 blocks are still reachable in loss record 92 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131130: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 20 bytes in 5 blocks are still reachable in loss record 93 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF8D: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 24 bytes in 1 blocks are still reachable in loss record 94 of 221
+==40055==    at 0x4841A67: realloc (vg_replace_malloc.c:1649)
+==40055==    by 0x1248C9: xrealloc (in /usr/bin/make)
+==40055==    by 0x11566F: chop_commands (in /usr/bin/make)
+==40055==    by 0x12D614: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 24 bytes in 1 blocks are still reachable in loss record 95 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x131D49: initialize_file_variables (in /usr/bin/make)
+==40055==    by 0x1157B9: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 96 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13120C: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 97 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131242: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 98 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131278: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 99 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312AE: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 100 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312E4: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 101 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13131A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 27 bytes in 1 blocks are still reachable in loss record 102 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131350: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 32 bytes in 2 blocks are still reachable in loss record 103 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x11629C: ??? (in /usr/bin/make)
+==40055==    by 0x116478: dir_file_exists_p (in /usr/bin/make)
+==40055==    by 0x12EE76: count_implicit_rule_limits (in /usr/bin/make)
+==40055==    by 0x11296B: main (in /usr/bin/make)
+==40055== 
+==40055== 32 bytes in 4 blocks are still reachable in loss record 104 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF71: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 32 bytes in 4 blocks are still reachable in loss record 105 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF7F: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 40 bytes in 1 blocks are still reachable in loss record 106 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x128CD1: construct_include_path (in /usr/bin/make)
+==40055==    by 0x112300: main (in /usr/bin/make)
+==40055== 
+==40055== 40 bytes in 5 blocks are still reachable in loss record 107 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF71: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 40 bytes in 5 blocks are still reachable in loss record 108 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF7F: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 45 bytes in 1 blocks are still reachable in loss record 109 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x13083A: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x128B88: construct_include_path (in /usr/bin/make)
+==40055==    by 0x112300: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 110 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111B70: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 111 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BA4: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 112 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111BD8: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 113 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C08: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 114 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C38: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 115 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111D74: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 116 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1236BF: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 117 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112631: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 118 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1125C6: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 119 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FC7: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 120 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111FFA: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 121 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x128B88: construct_include_path (in /usr/bin/make)
+==40055==    by 0x112300: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 122 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x112360: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 123 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115BB0: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 124 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13108A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 125 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131100: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 126 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131130: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 127 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1311C9: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 128 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13120C: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 129 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131242: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 130 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131278: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 131 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312AE: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 132 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1312E4: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 133 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13131A: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 134 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131350: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 135 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131386: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 136 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313BC: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 137 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1313F2: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 138 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131428: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 139 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13145E: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 140 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x131494: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 141 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1314CA: define_automatic_variables (in /usr/bin/make)
+==40055==    by 0x1126A0: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 142 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122D48: ??? (in /usr/bin/make)
+==40055==    by 0x1126A9: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 143 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x122DF3: ??? (in /usr/bin/make)
+==40055==    by 0x1126A9: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 144 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1126FC: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 145 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x12B50B: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 146 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x13197E: do_variable_definition (in /usr/bin/make)
+==40055==    by 0x13225F: try_variable_definition (in /usr/bin/make)
+==40055==    by 0x129B5A: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 147 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114BF0: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 148 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C1C: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 149 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C48: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 150 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114C78: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 151 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x114E2D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 152 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115028: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 153 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x11506D: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 1 blocks are still reachable in loss record 154 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x1150A9: set_file_variables (in /usr/bin/make)
+==40055==    by 0x1157C1: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 48 bytes in 2 blocks are still reachable in loss record 155 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x116622: file_impossible (in /usr/bin/make)
+==40055==    by 0x11E90D: ??? (in /usr/bin/make)
+==40055==    by 0x11F32F: try_implicit_rule (in /usr/bin/make)
+==40055==    by 0x12D37E: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112AEB: main (in /usr/bin/make)
+==40055== 
+==40055== 56 bytes in 1 blocks are still reachable in loss record 156 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x128219: ??? (in /usr/bin/make)
+==40055==    by 0x129CB0: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 56 bytes in 14 blocks are still reachable in loss record 157 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F0BC: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F3A3: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 64 bytes in 1 blocks are still reachable in loss record 158 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x1236D5: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 64 bytes in 1 blocks are still reachable in loss record 159 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12B156: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 77 bytes in 4 blocks are still reachable in loss record 160 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x12F044: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 84 bytes in 3 blocks are still reachable in loss record 161 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x11564F: chop_commands (in /usr/bin/make)
+==40055==    by 0x12D614: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 88 bytes in 1 blocks are still reachable in loss record 162 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x131D56: initialize_file_variables (in /usr/bin/make)
+==40055==    by 0x1157B9: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 112 bytes in 1 blocks are still reachable in loss record 163 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x116359: ??? (in /usr/bin/make)
+==40055==    by 0x116563: file_exists_p (in /usr/bin/make)
+==40055==    by 0x12B644: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 112 bytes in 14 blocks are still reachable in loss record 164 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F152: ??? (in /usr/bin/make)
+==40055==    by 0x12F3A3: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 112 bytes in 14 blocks are still reachable in loss record 165 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F15F: ??? (in /usr/bin/make)
+==40055==    by 0x12F3A3: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 126 bytes in 5 blocks are still reachable in loss record 166 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x12F044: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 134 bytes in 1 blocks are still reachable in loss record 167 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111C38: main (in /usr/bin/make)
+==40055== 
+==40055== 136 bytes in 34 blocks are still reachable in loss record 168 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F0BC: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F43F: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 140 bytes in 35 blocks are still reachable in loss record 169 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F0BC: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F37D: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 170 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x1235D4: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 171 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x115AB8: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 172 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x1126C6: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 173 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x12B3F7: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 174 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x127F8B: ??? (in /usr/bin/make)
+==40055==    by 0x129E6F: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 144 bytes in 1 blocks are still reachable in loss record 175 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x127F8B: ??? (in /usr/bin/make)
+==40055==    by 0x129CB0: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 147 bytes in 1 blocks are still reachable in loss record 176 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x1248DF: xrealloc (in /usr/bin/make)
+==40055==    by 0x129394: parse_file_seq (in /usr/bin/make)
+==40055==    by 0x115B41: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 147 bytes in 1 blocks are still reachable in loss record 177 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115BB0: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 192 bytes in 8 blocks are still reachable in loss record 178 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x116622: file_impossible (in /usr/bin/make)
+==40055==    by 0x11E90D: ??? (in /usr/bin/make)
+==40055==    by 0x11E8CF: ??? (in /usr/bin/make)
+==40055==    by 0x11E8CF: ??? (in /usr/bin/make)
+==40055==    by 0x11F32F: try_implicit_rule (in /usr/bin/make)
+==40055==    by 0x12D37E: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112AEB: main (in /usr/bin/make)
+==40055== 
+==40055== 200 bytes in 1 blocks are still reachable in loss record 179 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x116D47: ??? (in /usr/bin/make)
+==40055==    by 0x117594: variable_expand_string (in /usr/bin/make)
+==40055==    by 0x124441: ??? (in /usr/bin/make)
+==40055==    by 0x111D43: main (in /usr/bin/make)
+==40055== 
+==40055== 200 bytes in 5 blocks are still reachable in loss record 180 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12908D: parse_file_seq (in /usr/bin/make)
+==40055==    by 0x12EFDE: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 216 bytes in 9 blocks are still reachable in loss record 181 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x116622: file_impossible (in /usr/bin/make)
+==40055==    by 0x11E90D: ??? (in /usr/bin/make)
+==40055==    by 0x11E8CF: ??? (in /usr/bin/make)
+==40055==    by 0x11F32F: try_implicit_rule (in /usr/bin/make)
+==40055==    by 0x12D37E: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112AEB: main (in /usr/bin/make)
+==40055== 
+==40055== 224 bytes in 4 blocks are still reachable in loss record 182 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF5B: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 224 bytes in 4 blocks are still reachable in loss record 183 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F01D: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 240 bytes in 6 blocks are still reachable in loss record 184 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12908D: parse_file_seq (in /usr/bin/make)
+==40055==    by 0x12EFDE: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115C8D: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 256 bytes in 1 blocks are still reachable in loss record 185 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x131D7D: initialize_file_variables (in /usr/bin/make)
+==40055==    by 0x1157B9: execute_file_commands (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 272 bytes in 34 blocks are still reachable in loss record 186 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F152: ??? (in /usr/bin/make)
+==40055==    by 0x12F43F: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 272 bytes in 34 blocks are still reachable in loss record 187 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F15F: ??? (in /usr/bin/make)
+==40055==    by 0x12F43F: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 280 bytes in 5 blocks are still reachable in loss record 188 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12EF5B: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 280 bytes in 5 blocks are still reachable in loss record 189 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F01D: install_pattern_rule (in /usr/bin/make)
+==40055==    by 0x115CB8: install_default_implicit_rules (in /usr/bin/make)
+==40055==    by 0x112966: main (in /usr/bin/make)
+==40055== 
+==40055== 280 bytes in 35 blocks are still reachable in loss record 190 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F152: ??? (in /usr/bin/make)
+==40055==    by 0x12F37D: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 280 bytes in 35 blocks are still reachable in loss record 191 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F15F: ??? (in /usr/bin/make)
+==40055==    by 0x12F37D: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 312 bytes in 13 blocks are still reachable in loss record 192 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x11612C: ??? (in /usr/bin/make)
+==40055==    by 0x11656F: file_exists_p (in /usr/bin/make)
+==40055==    by 0x12B644: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 472 bytes in 63 blocks are still reachable in loss record 193 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115D2A: define_default_variables (in /usr/bin/make)
+==40055==    by 0x1126B2: main (in /usr/bin/make)
+==40055== 
+==40055== 560 bytes in 10 blocks are still reachable in loss record 194 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x128219: ??? (in /usr/bin/make)
+==40055==    by 0x129E6F: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 560 bytes in 14 blocks are still reachable in loss record 195 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12F20B: ??? (in /usr/bin/make)
+==40055==    by 0x12F3A3: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 570 bytes in 10 blocks are still reachable in loss record 196 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x128250: ??? (in /usr/bin/make)
+==40055==    by 0x129E6F: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 757 bytes in 58 blocks are still reachable in loss record 197 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x49093CE: strndup (strndup.c:43)
+==40055==    by 0x124ADA: xstrndup (in /usr/bin/make)
+==40055==    by 0x1308AC: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111CDF: main (in /usr/bin/make)
+==40055== 
+==40055== 784 bytes in 14 blocks are still reachable in loss record 198 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F099: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F3A3: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 920 bytes in 23 blocks are still reachable in loss record 199 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12908D: parse_file_seq (in /usr/bin/make)
+==40055==    by 0x1187F6: split_prereqs (in /usr/bin/make)
+==40055==    by 0x1280D7: ??? (in /usr/bin/make)
+==40055==    by 0x129E6F: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 1,024 bytes in 1 blocks are still reachable in loss record 200 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x11D949: hash_init_function_table (in /usr/bin/make)
+==40055==    by 0x111B0B: main (in /usr/bin/make)
+==40055== 
+==40055== 1,024 bytes in 1 blocks are still reachable in loss record 201 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x1163DC: ??? (in /usr/bin/make)
+==40055==    by 0x116563: file_exists_p (in /usr/bin/make)
+==40055==    by 0x12B644: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 1,360 bytes in 34 blocks are still reachable in loss record 202 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12F20B: ??? (in /usr/bin/make)
+==40055==    by 0x12F43F: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 1,400 bytes in 35 blocks are still reachable in loss record 203 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x12908D: parse_file_seq (in /usr/bin/make)
+==40055==    by 0x115B41: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 1,472 bytes in 62 blocks are still reachable in loss record 204 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115D2A: define_default_variables (in /usr/bin/make)
+==40055==    by 0x1126B2: main (in /usr/bin/make)
+==40055== 
+==40055== 1,638 bytes in 49 blocks are still reachable in loss record 205 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x115C1C: install_default_suffix_rules (in /usr/bin/make)
+==40055==    by 0x11269B: main (in /usr/bin/make)
+==40055== 
+==40055== 1,904 bytes in 34 blocks are still reachable in loss record 206 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F099: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F43F: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 1,960 bytes in 35 blocks are still reachable in loss record 207 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F099: create_pattern_rule (in /usr/bin/make)
+==40055==    by 0x12F23F: ??? (in /usr/bin/make)
+==40055==    by 0x12F37D: convert_to_pattern (in /usr/bin/make)
+==40055==    by 0x112961: main (in /usr/bin/make)
+==40055== 
+==40055== 2,048 bytes in 1 blocks are still reachable in loss record 208 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x116CE9: hash_init_directories (in /usr/bin/make)
+==40055==    by 0x111B06: main (in /usr/bin/make)
+==40055== 
+==40055== 2,048 bytes in 1 blocks are still reachable in loss record 209 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x111B06: main (in /usr/bin/make)
+==40055== 
+==40055== 2,744 bytes in 49 blocks are still reachable in loss record 210 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x115C05: install_default_suffix_rules (in /usr/bin/make)
+==40055==    by 0x11269B: main (in /usr/bin/make)
+==40055== 
+==40055== 2,784 bytes in 58 blocks are still reachable in loss record 211 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111CDF: main (in /usr/bin/make)
+==40055== 
+==40055== 2,855 bytes in 57 blocks are still reachable in loss record 212 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x490938E: strdup (strdup.c:42)
+==40055==    by 0x124A98: xstrdup (in /usr/bin/make)
+==40055==    by 0x1308DD: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x111CDF: main (in /usr/bin/make)
+==40055== 
+==40055== 3,024 bytes in 63 blocks are still reachable in loss record 213 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x13089E: define_variable_in_set (in /usr/bin/make)
+==40055==    by 0x115D2A: define_default_variables (in /usr/bin/make)
+==40055==    by 0x1126B2: main (in /usr/bin/make)
+==40055== 
+==40055== 3,312 bytes in 23 blocks are still reachable in loss record 214 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x118A98: enter_prereqs (in /usr/bin/make)
+==40055==    by 0x12874F: ??? (in /usr/bin/make)
+==40055==    by 0x129E6F: ??? (in /usr/bin/make)
+==40055==    by 0x12B21E: ??? (in /usr/bin/make)
+==40055==    by 0x12B657: read_all_makefiles (in /usr/bin/make)
+==40055==    by 0x112826: main (in /usr/bin/make)
+==40055== 
+==40055== 4,078 bytes in 1 blocks are still reachable in loss record 215 of 221
+==40055==    at 0x4841A67: realloc (vg_replace_malloc.c:1649)
+==40055==    by 0x1248C9: xrealloc (in /usr/bin/make)
+==40055==    by 0x1249E7: concat (in /usr/bin/make)
+==40055==    by 0x131773: target_environment (in /usr/bin/make)
+==40055==    by 0x120EB0: ??? (in /usr/bin/make)
+==40055==    by 0x121811: ??? (in /usr/bin/make)
+==40055==    by 0x121E27: new_job (in /usr/bin/make)
+==40055==    by 0x12DD46: ??? (in /usr/bin/make)
+==40055==    by 0x12E6DE: update_goal_chain (in /usr/bin/make)
+==40055==    by 0x112F3E: main (in /usr/bin/make)
+==40055== 
+==40055== 5,040 bytes in 35 blocks are still reachable in loss record 216 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x118A98: enter_prereqs (in /usr/bin/make)
+==40055==    by 0x115B52: set_default_suffixes (in /usr/bin/make)
+==40055==    by 0x112696: main (in /usr/bin/make)
+==40055== 
+==40055== 5,040 bytes in 35 blocks are still reachable in loss record 217 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x118019: enter_file (in /usr/bin/make)
+==40055==    by 0x115BF8: install_default_suffix_rules (in /usr/bin/make)
+==40055==    by 0x11269B: main (in /usr/bin/make)
+==40055== 
+==40055== 8,176 bytes in 1 blocks are still reachable in loss record 218 of 221
+==40055==    at 0x483C815: malloc (vg_replace_malloc.c:431)
+==40055==    by 0x124834: xmalloc (in /usr/bin/make)
+==40055==    by 0x12F95A: ??? (in /usr/bin/make)
+==40055==    by 0x1234A0: ??? (in /usr/bin/make)
+==40055==    by 0x1235C4: ??? (in /usr/bin/make)
+==40055==    by 0x123B5A: ??? (in /usr/bin/make)
+==40055==    by 0x111DE3: main (in /usr/bin/make)
+==40055== 
+==40055== 8,192 bytes in 1 blocks are still reachable in loss record 219 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x111AF7: main (in /usr/bin/make)
+==40055== 
+==40055== 8,192 bytes in 1 blocks are still reachable in loss record 220 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x111B01: main (in /usr/bin/make)
+==40055== 
+==40055== 65,536 bytes in 1 blocks are still reachable in loss record 221 of 221
+==40055==    at 0x4841853: calloc (vg_replace_malloc.c:1554)
+==40055==    by 0x124879: xcalloc (in /usr/bin/make)
+==40055==    by 0x132FC4: hash_init (in /usr/bin/make)
+==40055==    by 0x111AFC: main (in /usr/bin/make)
+==40055== 
+==40055== LEAK SUMMARY:
+==40055==    definitely lost: 0 bytes in 0 blocks
+==40055==    indirectly lost: 0 bytes in 0 blocks
+==40055==      possibly lost: 0 bytes in 0 blocks
+==40055==    still reachable: 149,093 bytes in 1,284 blocks
+==40055==         suppressed: 0 bytes in 0 blocks
+==40055== 
+==40055== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

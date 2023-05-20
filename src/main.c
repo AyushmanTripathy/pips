@@ -42,6 +42,7 @@ Token * createToken(int type, char * data, int childCount) {
     t->data = NULL;
     t->childTokens = NULL;
     t->childTokensCount = 0;
+    if (data != NULL) free(data);
     return t;
   } else if (type == -3) {
     t->type = -3;
@@ -49,6 +50,7 @@ Token * createToken(int type, char * data, int childCount) {
     t->data = NULL;
     t->childTokens = NULL;
     t->childTokensCount = 0;
+    if (data != NULL) free(data);
     return t;
   }
 
@@ -63,8 +65,9 @@ Token * createToken(int type, char * data, int childCount) {
 }
 
 void freeToken(Token * t) {
+  if (t->type == -3 || t->type == -5) return;
   free(t->childTokens);
-  free(t->data);
+  //if (t->data != NULL) free(t->data);
   free(t);
 }
 
@@ -109,7 +112,6 @@ void printTokenTree(Token * n, int depth) {
 int main(int argc, char *argv[]) {
   functions = initFunctionHashMap();
   Token * global = parseFile(argv[1], functions);
-
   printTokenTree(global, 0);
   printf("------------------\n");
 
@@ -125,5 +127,7 @@ int main(int argc, char *argv[]) {
   addToFunctionPointers(defs, "neg", &neg);
 
   execGlobal(global);
+  freeFunctionPointers(defs);
+  freeFunctionHashMap(functions);
   freeTokenTree(global);
 }

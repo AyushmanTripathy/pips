@@ -8,9 +8,10 @@ extern int hashmap_size;
 extern int hashmap_r;
 extern int variable_hashmap_size;
 extern int variable_hashmap_r;
-extern int DEBUG_VARIABLES;
 
 extern void printError(char *, int);
+extern void freeTokenTree(Token *);
+extern void freeToken(Token *);
 
 // HASHMAP
 int hashFunc(char * str, int size, int r) {
@@ -46,6 +47,21 @@ Function * getFromFunctions(Function ** buckets, char * name) {
     }
     return iterator;
   } else return NULL; 
+}
+
+void freeFunction(Function * fn) {
+  if (fn == NULL) return;
+  if (fn->next != NULL) freeFunction(fn->next);
+  freeTokenTree(fn->execSeq);
+  for (int i = 0; i < fn->paramsCount; i++)
+    freeToken(fn->params[i]);
+  free(fn->name);
+  free(fn);
+}
+ 
+void freeFunctionHashMap(Function ** buckets) {
+  for (int i = 0; i < hashmap_size; i++) freeFunction(buckets[i]);
+  free(buckets);
 }
 
 FunctionPointer ** initFunctionPointers() {
@@ -84,21 +100,15 @@ FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
   } else return NULL; 
 }
 
-Variable ** initVariables() {
-  Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
-  for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
-  return arr;
+void freeFunctionPointer(FunctionPointer * fp) {
+  if (fp->next != NULL) freeFunctionPointer(fp->next);
+  free(fp->pointer);
+  free(fp->key);
+  free(fp);
 }
 
-void freeVariable(Variable * v) {
-  if (v->next != NULL) freeVariable(v->next);
-  free(v);
-}
-
-void freeVariables(Variable ** map) {
-  for (int i = 0; i < variable_hashmap_size; i++) {
-    if (map[i] != NULL) freeVariable(map[i]);
-  }
+void freeFunctionPointers(FunctionPointer ** map) {
+  for (int i = 0; i < hashmap_size; i++) map[i];
   free(map);
 }
 
@@ -117,6 +127,26 @@ void addVariable(Variable ** map, char * name, int type, int int_data) {
     while (iterator->next != NULL) iterator = iterator->next;
     iterator->next = v;
   }
+}
+
+Variable ** initVariables() {
+  Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
+  for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
+  addVariable(arr, "True", -3, 1);
+  addVariable(arr, "False", -3, 0);
+  return arr;
+}
+
+void freeVariable(Variable * v) {
+  if (v->next != NULL) freeVariable(v->next);
+  free(v);
+}
+
+void freeVariables(Variable ** map) {
+  for (int i = 0; i < variable_hashmap_size; i++) {
+    if (map[i] != NULL) freeVariable(map[i]);
+  }
+  free(map);
 }
 
 Variable * getVariable(Variable ** map, char * name) {

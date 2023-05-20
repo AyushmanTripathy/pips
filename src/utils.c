@@ -67,7 +67,7 @@ char * getErrorCode(int code) {
 
 // STRING FUNCTIONS
 char * sliceStr(char * str, int start, int end) {
-  char * newStr = (char *) malloc((end - start) * sizeof(char));
+  char * newStr = (char *) malloc((end - start + 1) * sizeof(char));
   for (int i = 0; (i + start) < end; i++) newStr[i] = str[start + i];
   newStr[end - start] = '\0';
   return newStr;

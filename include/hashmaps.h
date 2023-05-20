@@ -5,10 +5,12 @@
 Function ** initFunctionHashMap();
 void addToFunctions(Function **, Function *);
 Function * getFromFunctions(Function **, char *);
+void freeFunctionHashMap(Function **);
 
 FunctionPointer ** initFunctionPointers();
 void addToFunctionPointers(FunctionPointer **, char *, Token* (*)(Token **, int));
 FunctionPointer * getFromFunctionPointers(FunctionPointer **, char *);
+void freeFunctionPointers(FunctionPointer **);
 
 Variable ** initVariables();
 Variable * getVariable(Variable **, char *);

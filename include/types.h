@@ -30,7 +30,6 @@ typedef struct Function_tag {
   int paramsCount;
   Token ** params;
   Token * execSeq;
-  Token * linker;
   struct Function_tag * next;
 } Function;
 

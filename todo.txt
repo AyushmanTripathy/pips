@@ -16,10 +16,11 @@ TODO
     [x] classify scopes
     [ ] free memory
 [ ] execution
-    [ ] statments
-    [ ] if blocks
-    [ ] variables
+    [x] statments
+    [x] if blocks
+    [x] variables
     [ ] functions
+    [ ] recurions
 
 HANDLE
 ------

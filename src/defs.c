@@ -29,6 +29,7 @@ Token * boolFunc(Tokens t, int l) {
     case -3: return t[0];
     case -5: return falseBooleanToken;
     case 0:
+      printf("lol\n");
       if (strcmp(t[0]->data, "True")) return trueBooleanToken;
       else if (strcmp(t[0]->data, "False")) return falseBooleanToken;
   }

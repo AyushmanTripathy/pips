@@ -5,7 +5,10 @@
 extern void printError(char *, int);
 extern void printTokenTree(Token *, int);
 extern void freeToken(Token *);
+
 extern Token * createToken(int, char *, int);
+extern Token * trueBooleanToken;
+extern Token * falseBooleanToken;
 
 extern Function ** functions;
 extern FunctionPointer ** defs;

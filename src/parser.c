@@ -147,7 +147,6 @@ Function * parseFunction(TokenNode * n) {
   }
 
   fn->execSeq = NULL;
-  fn->linker = NULL;
   if (iterator->type != 58) printError(": missing while declaring function",0);
   if (iterator->next == NULL) return fn;
   fn->execSeq = analyseTokenNode(iterator->next);
@@ -226,9 +225,13 @@ Token * classifyScopes(Line * line, Function ** functions) {
             break;
           case -249:
             if (head == NULL) curr = parseIfStatment(n, 0);
-            else curr->next = parseIfStatment(n, 0);
-            if ((curr->childTokens)[1] == NULL)
+            else {
+              curr->next = parseIfStatment(n, 0);
+              curr = curr->next;
+            }
+            if ((curr->childTokens)[1] == NULL) {
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
+            }
             break;
           case -248:
             if (curr == NULL) printError("if statement expected.", 1);
