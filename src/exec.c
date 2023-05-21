@@ -7,6 +7,7 @@ extern void printTokenTree(Token *, int);
 extern void freeToken(Token *);
 
 extern Token * createToken(int, char *, int);
+extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
@@ -15,7 +16,7 @@ extern FunctionPointer ** defs;
 
 Token * execScope(Token *, Variable **);
 Token * execStatment(Token * , Variable **);
-Token * execFunction(Function *, Token * t);
+Token * execFunction(Function *, Tokens, int);
 
 Token * handleConditional(Token * t, Variable ** vars) {
   int done = 0;
@@ -42,14 +43,14 @@ Token * execScope(Token * t, Variable ** vars) {
     // IF statements
     if (t->type == -21) {
       t = handleConditional(t, vars);
-      if (t == NULL) return NULL;
+      if (t == NULL) return nullToken;
     }
     else if (t->type == -22 || t->type == -23)
       printError("conditionals need to begin with if statments", 1);
     else execStatment(t, vars);
     t = t->next;
   }
-  return NULL;
+  return nullToken;
 }
 
 Token * execStatment(Token * t, Variable ** vars) {
@@ -69,14 +70,18 @@ Token * execStatment(Token * t, Variable ** vars) {
       copied[i] = 1;
     } else childrenCopy[i] = children[i];
   }
+
+  Token * output;
   FunctionPointer * fp = getFromFunctionPointers(defs, t->data);
   if (fp == NULL) {
     Function * fn = getFromFunctions(functions, t->data);
     if(fn == NULL) printError("Function not found!", 3);
-    return execFunction(fn, t);
+    output = execFunction(fn, childrenCopy, t->childTokensCount);
+  } else {
+    if (childrenCopy[0] == NULL) printf("calling %s\n", t->data);
+    output = (fp->pointer)(childrenCopy, t->childTokensCount);
   }
-
-  Token * output = (fp->pointer)(childrenCopy, t->childTokensCount);
+  // freeing childrens
   for (int i = 0; i < t->childTokensCount; i++) {
     if (copied[i] == 1) freeToken(childrenCopy[i]);
   }
@@ -84,20 +89,20 @@ Token * execStatment(Token * t, Variable ** vars) {
   return output;
 }
 
-Token * execFunction(Function * fn, Token * t) {
+Token * execFunction(Function * fn, Tokens children, int childCount) {
   Variable ** vars = initVariables();
   if (fn->paramsCount != 0) {
-    if (fn->paramsCount != t->childTokensCount)
+    if (fn->paramsCount != childCount)
       printError("Not sufficient arguments for function.", 3);
     for (int i = 0; i < fn->paramsCount; i++) {
       char * name = fn->params[i]->data;
-      Token * child = t->childTokens[i];
+      Token * child = children[i];
       addVariable(vars, name, child->type, child->int_data);
     }
   }
-  execScope(fn->execSeq, vars);
+  Token * output = execScope(fn->execSeq, vars);
   freeVariables(vars);
-  return NULL;
+  return output;
 }
 
 void execGlobal(Token * execSeq) {

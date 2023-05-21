@@ -130,4 +130,7 @@ int main(int argc, char *argv[]) {
   freeFunctionPointers(defs);
   freeFunctionHashMap(functions);
   freeTokenTree(global);
+  freeToken(nullToken);
+  free(falseBooleanToken);
+  free(trueBooleanToken);
 }
