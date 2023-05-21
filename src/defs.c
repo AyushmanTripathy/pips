@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 extern Token * createToken(int, char *, int);
+extern Token * copyToken(Token *);
+extern void addToFunctionPointers(FunctionPointer **, char *, Token*(*)(Tokens, int));
 extern void printError(char *, int);
 
 extern Token * nullToken;
@@ -15,39 +17,93 @@ Token * pass(Tokens t, int l) {
 }
 
 Token * returnFunc(Tokens t, int l) {
-  if (l == 0) return createToken(-15, NULL, 1);
+  if (l > 1) printError("Return Overload", 3);
+  if (l == 0) return createToken(-15, NULL, 0);
   Token * output = createToken(-15, NULL, 1);
-  output->childTokens[0] = t[0];
+  output->childTokens[0] = copyToken(t[0]);
   return output;
 }
 
 // BOOL FUNCTIONS
-Token * boolFunc(Tokens t, int l) {
-  if (l < 1)
-    printError("bool functions requires atleast one argument.", 3);
-
-  switch (t[0]->type) {
+Token * Bool(Token * t) {
+  switch (t->type) {
     case -1:
-      if (t[0]->int_data == 0) return falseBooleanToken;
+      if (t->int_data == 0) return falseBooleanToken;
       else return trueBooleanToken;
     case -2:
-      if (strcmp(t[0]->data, "") == 0) return falseBooleanToken;
+      if (strcmp(t->data, "") == 0) return falseBooleanToken;
       else return trueBooleanToken;
-    case -3: return t[0];
+    case -3: return t;
     case -5: return falseBooleanToken;
     case 0:
-      printf("lol\n");
-      if (strcmp(t[0]->data, "True")) return trueBooleanToken;
-      else if (strcmp(t[0]->data, "False")) return falseBooleanToken;
+      if (strcmp(t->data, "True")) return trueBooleanToken;
+      else if (strcmp(t->data, "False")) return falseBooleanToken;
   }
-  printError("boolFunc collapse", 3);
+  printError("Bool collapse", 3);
+}
+
+Token * boolFunc(Tokens t, int l) {
+  if (l != 1) printError("bool function takes one argument.", 3);
+  return Bool(t[0]);
+}
+
+Token * not(Tokens t, int l) {
+  if (l != 1) printError("not function takes one argument.", 3);
+  Token * input = Bool(t[0]);
+  if (input->int_data == 0) return trueBooleanToken;
+  else return falseBooleanToken;
+}
+
+void checkInputForBoolFuncs(Tokens t, int l, char * name) {
+  if (l != 2) printError("comparision function takes two argument.", 3);
+  if (t[0]->type != t[1]->type) printError(name, 4);
+}
+
+Token * eq(Tokens t, int l) {
+  checkInputForBoolFuncs(t, l, "eq function");
+  if (t[0]->type == -1 || t[0]->type == -3) {
+    if (t[0]->int_data == t[1]->int_data) return trueBooleanToken;
+    else return falseBooleanToken;
+  }
+}
+
+Token * lt(Tokens t, int l) {
+  checkInputForBoolFuncs(t, l, "lt function");
+  if (t[0]->type == -1 || t[0]->type == -3) {
+    if (t[0]->int_data < t[1]->int_data) return trueBooleanToken;
+    else return falseBooleanToken;
+  }
+}
+
+Token * gt(Tokens t, int l) {
+  checkInputForBoolFuncs(t, l, "gt function");
+  if (t[0]->type == -1 || t[0]->type == -3) {
+    if (t[0]->int_data > t[1]->int_data) return trueBooleanToken;
+    else return falseBooleanToken;
+  }
+}
+
+Token * and(Tokens t, int l) {
+  checkInputForBoolFuncs(t, l, "and function");
+  if (t[0]->type == -1 || t[0]->type == -3) {
+    if (t[0]->int_data && t[1]->int_data) return trueBooleanToken;
+    else return falseBooleanToken;
+  }
+}
+
+Token * or(Tokens t, int l) {
+  checkInputForBoolFuncs(t, l, "or function");
+  if (t[0]->type == -1 || t[0]->type == -3) {
+    if (t[0]->int_data || t[1]->int_data) return trueBooleanToken;
+    else return falseBooleanToken;
+  }
 }
 
 // INT FUNCTIONS
 Token * add(Tokens t, int l) {
   int sum = 0;
   for(int i = 0; i < l; i++) {
-    if (t[i]->type != -1) printError("Add function", 4);
+    if (t[i]->type != -1) printError("add function", 4);
     else sum += t[i]->int_data;
   }
   return createToken(-1, NULL, sum);
@@ -56,8 +112,30 @@ Token * add(Tokens t, int l) {
 Token * neg(Tokens t, int l) {
   if (l != 1)
     printError("neg functions requires one argument.", 3);
-  if (t[0]->type != -1) printError("Neg Function", 4);
+  if (t[0]->type != -1) printError("neg Function", 4);
   return createToken(-1, NULL, -1 * t[0]->int_data);
+}
+
+Token * max(Tokens t, int l) {
+  if (l <= 0)
+    printError("max function requires atleast one argument", 3);
+  int max = 0;
+  for (int i = 0; i < l; i++) {
+    if (t[i]->type != -1) printError("max function", 4);
+    else if (t[i]->int_data > max) max = t[i]->int_data;
+  }
+  return createToken(-1, NULL, max);
+}
+
+Token * min(Tokens t, int l) {
+  if (l <= 0)
+    printError("min function requires atleast one argument", 3);
+  int min = t[0]->int_data;
+  for (int i = 0; i < l; i++) {
+    if (t[i]->type != -1) printError("min function", 4);
+    else if (t[i]->int_data < min) min = t[i]->int_data;
+  }
+  return createToken(-1, NULL, min);
 }
 
 // VOID FUNCTIONS
@@ -71,4 +149,24 @@ Token * print(Tokens t, int l) {
   }
   printf("\n");
   return nullToken;
+}
+
+void addDefaultFunctions(FunctionPointer ** map) {
+  addToFunctionPointers(map, "pass", &pass);
+  addToFunctionPointers(map, "return", &returnFunc);
+
+  addToFunctionPointers(map, "bool", &boolFunc);
+  addToFunctionPointers(map, "not", &not);  
+  addToFunctionPointers(map, "eq", &eq); 
+  addToFunctionPointers(map, "lt", &lt); 
+  addToFunctionPointers(map, "gt", &gt); 
+  addToFunctionPointers(map, "and", &and);  
+  addToFunctionPointers(map, "or", &or); 
+
+  addToFunctionPointers(map, "add", &add);
+  addToFunctionPointers(map, "neg", &neg);
+  addToFunctionPointers(map, "max", &max);
+  addToFunctionPointers(map, "min", &min);
+
+  addToFunctionPointers(map, "print", &print);
 }

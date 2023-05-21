@@ -88,7 +88,7 @@ Token * execStatment(Token * t, Variable ** vars) {
     output = (fp->pointer)(childrenCopy, t->childTokensCount);
   }
   // freeing childrens
-  for (int i = output->type == -15 ? 1 : 0; i < t->childTokensCount; i++) {
+  for (int i = 0; i < t->childTokensCount; i++) {
     if (copied[i] == 1) freeToken(childrenCopy[i]);
   }
   free(childrenCopy);

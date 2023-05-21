@@ -64,6 +64,17 @@ Token * createToken(int type, char * data, int childCount) {
   return t;
 }
 
+Token * copyToken(Token * t) {
+  Token * c = (Token *) malloc(sizeof(Token));
+  c->next = NULL;
+  c->childTokensCount = 0;
+  c->childTokens = NULL;
+  c->data = t->data;
+  c->type = t->type;
+  c->int_data = t->int_data;
+  return c;
+}
+
 void freeToken(Token * t) {
   if (t->type == -3 || t->type == -5) return;
   free(t->childTokens);
@@ -120,12 +131,7 @@ int main(int argc, char *argv[]) {
   falseBooleanToken = createToken(-3, NULL, 0);
 
   defs = initFunctionPointers();
-  addToFunctionPointers(defs, "pass", &pass);
-  addToFunctionPointers(defs, "return", &returnFunc);
-  addToFunctionPointers(defs, "bool", &boolFunc);
-  addToFunctionPointers(defs, "add", &add);
-  addToFunctionPointers(defs, "print", &print);
-  addToFunctionPointers(defs, "neg", &neg);
+  addDefaultFunctions(defs);
 
   execGlobal(global);
   freeFunctionPointers(defs);
