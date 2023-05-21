@@ -136,6 +136,7 @@ int main(int argc, char *argv[]) {
   execGlobal(global);
   freeFunctionPointers(defs);
   freeFunctionHashMap(functions);
+
   freeTokenTree(global);
   freeToken(nullToken);
   free(falseBooleanToken);

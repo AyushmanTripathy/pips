@@ -88,7 +88,8 @@ Token * analyseTokenNode(TokenNode * t) {
       switch ((char) t->type) {
         case '|':
           if (isBlock != 0) break;
-          if (t->next == NULL) printError("Empty pipe.", 0);
+          if (t->next == NULL) printError("Empty pipe.", 1);
+          else if (t->next->type == (int) '|') printError("Double pipe.", 1);
           childrens[i++] = analyseTokenNode(t->next);
           return root;
         case '[':

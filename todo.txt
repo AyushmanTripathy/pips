@@ -25,7 +25,6 @@ TODO
 HANDLE
 ------
 
-[ ] empty pipe || 
 [ ] floats and longs
 [ ] executing more than once
     execStatment changing Token tree
