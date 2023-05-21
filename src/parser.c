@@ -230,7 +230,9 @@ Token * classifyScopes(Line * line, Function ** functions) {
               curr = curr->next;
             }
             if ((curr->childTokens)[1] == NULL) {
+              if (line->next->indentation > indent)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
+              else printError("Empty conditional block", 1);
             }
             break;
           case -248:
@@ -238,14 +240,18 @@ Token * classifyScopes(Line * line, Function ** functions) {
             curr->next = parseIfStatment(n, 1);
             curr = curr->next;
             if ((curr->childTokens)[1] == NULL)
+              if (line->next->indentation > indent)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
+              else printError("Empty conditional block", 1);
             break;
           case -247:
             if (curr == NULL) printError("if statement expected.", 1);
             curr->next = parseElseStatment(n);
             curr = curr->next;
             if ((curr->childTokens)[0] == NULL)
+              if (line->next->indentation > indent)
               (curr->childTokens)[0] = classifyScopes(line->next, functions);
+              else printError("Empty conditional block", 1);
             break;
         }
       } else {

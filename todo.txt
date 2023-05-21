@@ -9,7 +9,7 @@ TODO
         [x] comments
         [x] strings
     [x] create tokens
-    [ ] hash maps
+    [x] hash maps
     [x] create trees
     [x] conditionals
     [ ] functions

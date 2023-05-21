@@ -26,7 +26,7 @@ Token * handleConditional(Token * t, Variable ** vars) {
         return t->next;
       } else if (t->type == -21 || t->type == -22) {
         Token * condition = execStatment((t->childTokens)[0], vars);
-        if (condition->int_data != 1) { 
+        if (condition->int_data == 1) { 
           execScope((t->childTokens)[1], vars);
           done = 1;
         }
