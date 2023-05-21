@@ -121,6 +121,7 @@ int main(int argc, char *argv[]) {
 
   defs = initFunctionPointers();
   addToFunctionPointers(defs, "pass", &pass);
+  addToFunctionPointers(defs, "return", &returnFunc);
   addToFunctionPointers(defs, "bool", &boolFunc);
   addToFunctionPointers(defs, "add", &add);
   addToFunctionPointers(defs, "print", &print);

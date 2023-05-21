@@ -14,6 +14,13 @@ Token * pass(Tokens t, int l) {
   return t[0];
 }
 
+Token * returnFunc(Tokens t, int l) {
+  if (l == 0) return createToken(-15, NULL, 1);
+  Token * output = createToken(-15, NULL, 1);
+  output->childTokens[0] = t[0];
+  return output;
+}
+
 // BOOL FUNCTIONS
 Token * boolFunc(Tokens t, int l) {
   if (l < 1)

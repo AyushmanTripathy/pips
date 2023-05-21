@@ -23,19 +23,21 @@ Token * handleConditional(Token * t, Variable ** vars) {
   while (t != NULL) {
     if (!done) {
       if (t->type == -23) {
-        execScope((t->childTokens)[0], vars);
+        Token * output = execScope((t->childTokens)[0], vars);
+        if (output->type == -15) return output;
         return t->next;
       } else if (t->type == -21 || t->type == -22) {
         Token * condition = execStatment((t->childTokens)[0], vars);
         if (condition->int_data == 1) { 
-          execScope((t->childTokens)[1], vars);
+          Token * output = execScope((t->childTokens)[1], vars);
+          if (output->type == -15) return output;
           done = 1;
         }
       } else return t;
     }
     t = t->next;
   }
-  return t;
+  return NULL;
 }
 
 Token * execScope(Token * t, Variable ** vars) {
@@ -44,10 +46,13 @@ Token * execScope(Token * t, Variable ** vars) {
     if (t->type == -21) {
       t = handleConditional(t, vars);
       if (t == NULL) return nullToken;
-    }
-    else if (t->type == -22 || t->type == -23)
+      else if (t->type == -15) return t;
+    } else if (t->type == -22 || t->type == -23)
       printError("conditionals need to begin with if statments", 1);
-    else execStatment(t, vars);
+    else {
+      Token * output = execStatment(t, vars);
+      if (output->type == -15) return output;
+    }
     t = t->next;
   }
   return nullToken;
@@ -56,6 +61,7 @@ Token * execScope(Token * t, Variable ** vars) {
 Token * execStatment(Token * t, Variable ** vars) {
   if (t == NULL) printError("NULL execution", 3);
   if (t->data == NULL) printError("Nameless Function execution.", 3);
+
   if (t->data[0] == '%') {
     Variable * v = getVariable(vars, t->childTokens[0]->data);
     return createToken(v->type, NULL, v->int_data);
@@ -82,7 +88,7 @@ Token * execStatment(Token * t, Variable ** vars) {
     output = (fp->pointer)(childrenCopy, t->childTokensCount);
   }
   // freeing childrens
-  for (int i = 0; i < t->childTokensCount; i++) {
+  for (int i = output->type == -15 ? 1 : 0; i < t->childTokensCount; i++) {
     if (copied[i] == 1) freeToken(childrenCopy[i]);
   }
   free(childrenCopy);
@@ -102,7 +108,11 @@ Token * execFunction(Function * fn, Tokens children, int childCount) {
   }
   Token * output = execScope(fn->execSeq, vars);
   freeVariables(vars);
-  return output;
+  if (output->type == -15) {
+    if (output->childTokensCount == 0) return nullToken;
+    else return output->childTokens[0];
+  }
+  return nullToken;
 }
 
 void execGlobal(Token * execSeq) {

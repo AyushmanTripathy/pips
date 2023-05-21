@@ -40,7 +40,7 @@ TOKEN TYPES
 -10 -> function types
 -11 -> function builtin
 -12 -> function params
--13 -> return value
+-15 -> return value
 
 -21 -> if
 -22 -> elif
