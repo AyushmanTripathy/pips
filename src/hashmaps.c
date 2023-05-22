@@ -129,6 +129,28 @@ void addVariable(Variable ** map, char * name, int type, int int_data) {
   }
 }
 
+int setVariable(Variable ** map, char * name, int type, int int_data) {
+  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+  
+  Variable * v = (Variable *) malloc(sizeof(Variable));
+  v->next = NULL;
+  v->key = name;
+  v->int_data = int_data;
+  v->type = type;
+  
+  if (map[hashKey] == NULL) map[hashKey] = v;
+  else {
+    Variable * iterator = map[hashKey];
+    while (1) {
+      if (strcmp(iterator->key, name) == 0) return 1;
+      if (iterator->next != NULL) break;
+      iterator = iterator->next;
+    }
+    iterator->next = v;
+  }
+  return 0;
+}
+
 Variable ** initVariables() {
   Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
   for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;

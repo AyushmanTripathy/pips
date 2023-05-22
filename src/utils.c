@@ -35,8 +35,6 @@ int isSymbol(char s) {
     case ']': return 1;
     case '[': return 1;
     case '|': return 1;
-    case '(': return 1;
-    case ')': return 1;
   }
   return 0;
 }
@@ -59,7 +57,7 @@ char * getErrorCode(int code) {
     case 2: return "";
     case 3: return "RUNTIME";
     case 4: return "TYPE";
-    case 5: return "";
+    case 5: return "INTERNAL";
     case 6: return "";
   }
   return NULL;

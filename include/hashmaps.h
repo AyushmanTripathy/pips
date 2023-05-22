@@ -15,6 +15,7 @@ void freeFunctionPointers(FunctionPointer **);
 Variable ** initVariables();
 Variable * getVariable(Variable **, char *);
 void addVariable(Variable **, char *, int, int);
+int setVariable(Variable **, char *, int, int);
 void freeVariables(Variable ** );
 
 #endif

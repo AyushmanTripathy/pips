@@ -19,7 +19,7 @@ Token * pass(Tokens t, int l) {
 }
 
 Token * returnFunc(Tokens t, int l) {
-  if (l > 1) printError("Return Overload", 3);
+  if (l > 1) printError("Return Overload.", 3);
   if (l == 0) return createToken(-15, NULL, 0);
   Token * output = createToken(-15, NULL, 1);
   output->childTokens[0] = copyToken(t[0]);

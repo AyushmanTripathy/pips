@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "exec.h"
 
 extern void printError(char *, int);
@@ -11,6 +12,7 @@ extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
+extern Strings * strings;
 extern Function ** functions;
 extern FunctionPointer ** defs;
 
@@ -57,6 +59,17 @@ Token * execScope(Token * t, Variable ** vars) {
   return nullToken;
 }
 
+Token * set(Token * t, Variable ** vars) {
+  if (t->childTokensCount != 2) printError("set function requires 2 arguments", 3);
+  Tokens children = t->childTokens;
+  if (children[0]->type != -2) printError("set function", 4);
+  t = children[1];
+  int isMutation = 
+    setVariable(vars, strings->data[children[0]->int_data], t->type, t->int_data);
+  if (isMutation == 1) printError("Mutation", 3);
+  return nullToken;
+}
+
 Token * execStatment(Token * t, Variable ** vars) {
   if (t == NULL) printError("NULL execution", 3);
   if (t->data == NULL) printError("Nameless Function execution.", 3);
@@ -80,7 +93,10 @@ Token * execStatment(Token * t, Variable ** vars) {
   FunctionPointer * fp = getFromFunctionPointers(defs, t->data);
   if (fp == NULL) {
     Function * fn = getFromFunctions(functions, t->data);
-    if(fn == NULL) printError("Function not found!", 3);
+    if(fn == NULL) {
+      if (strcmp(t->data, "set") == 0) return set(t, vars);
+      else printError("Function not found!", 3);
+    }
     output = execFunction(fn, childrenCopy, t->childTokensCount);
   } else {
     if (childrenCopy[0] == NULL) printf("calling %s\n", t->data);
