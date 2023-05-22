@@ -1,7 +1,8 @@
-#include "defs.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#include "defs.h"
 
 extern Token * createToken(int, char *, int);
 extern Token * copyToken(Token *);
@@ -101,12 +102,39 @@ Token * or(Tokens t, int l) {
 
 // INT FUNCTIONS
 Token * add(Tokens t, int l) {
+  if (l < 1)
+    printError("add function requires atleast one argument", 3);
   int sum = 0;
   for(int i = 0; i < l; i++) {
     if (t[i]->type != -1) printError("add function", 4);
     else sum += t[i]->int_data;
   }
   return createToken(-1, NULL, sum);
+}
+
+Token * multiply(Tokens t, int l) {
+  if (l < 1)
+    printError("multiply function requires atleast one argument", 3);
+  int sum = 1;
+  for(int i = 0; i < l; i++) {
+    if (t[i]->type != -1) printError("add function", 4);
+    else sum *= t[i]->int_data;
+  }
+  return createToken(-1, NULL, sum);
+}
+
+Token * reminder(Tokens t, int l) {
+  if (l != 2) printError("reminder function takes two argument.", 3);
+  if (t[0]->type != t[1]->type || t[1]->type != -1)
+    printError("Reminder function", 4);
+  return createToken(-1, NULL, t[0]->int_data % t[1]->int_data);
+}
+
+Token * divide(Tokens t, int l) {
+  if (l != 2) printError("divide function takes two argument.", 3);
+  if (t[0]->type != t[1]->type || t[1]->type != -1)
+    printError("Divide function", 4);
+  return createToken(-1, NULL, t[0]->int_data / t[1]->int_data);
 }
 
 Token * neg(Tokens t, int l) {
@@ -164,6 +192,9 @@ void addDefaultFunctions(FunctionPointer ** map) {
   addToFunctionPointers(map, "or", &or); 
 
   addToFunctionPointers(map, "add", &add);
+  addToFunctionPointers(map, "multiply", &multiply);
+  addToFunctionPointers(map, "reminder", &reminder);
+  addToFunctionPointers(map, "divide", &divide);
   addToFunctionPointers(map, "neg", &neg);
   addToFunctionPointers(map, "max", &max);
   addToFunctionPointers(map, "min", &min);

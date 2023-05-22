@@ -71,12 +71,13 @@ int getChildCount(TokenNode * t) {
     } else if (!isBlock) count++;
     t = t->next;
   }
-  if (isBlock != 0) printError("] Missing!", 0);
+  if (isBlock != 0) printError(" ] Missing!", 1);
   return count;
 }
 
 Token * analyseTokenNode(TokenNode * t) {
   int childCount = getChildCount(t);
+  if (t->type > 0) printError("Expected Function.", 1);
   Token * root = createToken(-10, t->data, childCount);
   t = t->next;
   if (t == NULL) return root;

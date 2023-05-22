@@ -49,10 +49,9 @@ Token * execScope(Token * t, Variable ** vars) {
       else if (t->type == -15) return t;
     } else if (t->type == -22 || t->type == -23)
       printError("conditionals need to begin with if statments", 1);
-    else {
-      Token * output = execStatment(t, vars);
-      if (output->type == -15) return output;
-    }
+
+    Token * output = execStatment(t, vars);
+    if (output->type == -15) return output;
     t = t->next;
   }
   return nullToken;

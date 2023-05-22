@@ -21,13 +21,12 @@ TODO
     [x] variables
     [ ] functions
     [ ] recurions
+[ ] tail recursion
 
 HANDLE
 ------
-
+  
 [ ] floats and longs
-[ ] executing more than once
-    execStatment changing Token tree
 
 TOKEN TYPES
 -----------
