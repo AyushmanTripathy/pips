@@ -143,7 +143,7 @@ int setVariable(Variable ** map, char * name, int type, int int_data) {
     Variable * iterator = map[hashKey];
     while (1) {
       if (strcmp(iterator->key, name) == 0) return 1;
-      if (iterator->next != NULL) break;
+      if (iterator->next == NULL) break;
       iterator = iterator->next;
     }
     iterator->next = v;

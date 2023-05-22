@@ -171,13 +171,16 @@ Token * min(Tokens t, int l) {
 Token * print(Tokens t, int l) {
   for (int i = 0; i < l; i++) {
     switch (t[i]->type) {
+      case  0: printf("%s ", t[i]->data);
       case -1: printf("%d ", t[i]->int_data);
                break;
       case -2: printf("%s ", strings->data[t[i]->int_data]);
                break;
       case -3: printf("%s ", t[i]->int_data ? "True":"False" );
                break;
-      default: printf("%s ", t[i]->data);
+      case -5: printf("NULL ");
+               break;
+      default: printError("print collapse", 0);
     }
   }
   printf("\n");
