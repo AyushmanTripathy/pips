@@ -8,6 +8,7 @@ Token * nullToken;
 Token * trueBooleanToken;
 Token * falseBooleanToken;
 
+Strings * strings;
 Function ** functions;
 FunctionPointer ** defs;
 
@@ -36,22 +37,30 @@ Token * createToken(int type, char * data, int childCount) {
   Token * t = (Token *) malloc(sizeof(Token));
   t->next = NULL;
 
-  if (type == -1) {
-    t->type = -1;
-    t->int_data = data == NULL ? childCount: atoi(data);
-    t->data = NULL;
-    t->childTokens = NULL;
-    t->childTokensCount = 0;
-    if (data != NULL) free(data);
-    return t;
-  } else if (type == -3) {
-    t->type = -3;
-    t->int_data = childCount;
-    t->data = NULL;
-    t->childTokens = NULL;
-    t->childTokensCount = 0;
-    if (data != NULL) free(data);
-    return t;
+  switch (type) {
+    case -1:
+      t->type = -1;
+      t->int_data = data == NULL ? childCount: atoi(data);
+      t->data = NULL;
+      t->childTokens = NULL;
+      t->childTokensCount = 0;
+      if (data != NULL) free(data);
+      return t;
+    case -2:
+      t->type = -2;
+      t->data = NULL;
+      t->childTokens = 0;
+      t->childTokensCount = 0;
+      t->int_data = childCount;
+      return t;
+    case -3:
+      t->type = -3;
+      t->int_data = childCount;
+      t->data = NULL;
+      t->childTokens = NULL;
+      t->childTokensCount = 0;
+      if (data != NULL) free(data);
+      return t;
   }
 
   if (childCount > 0) 
@@ -90,6 +99,11 @@ void freeTokenTree(Token * t) {
   freeToken(t);
 }
 
+void freeStrings() {
+  for (int i = strings->length - 1; i > -1; i--) free(strings->data[i]);
+  free(strings);
+}
+
 void printTokenNode(TokenNode * n) {
   while(n != NULL) {
     if (n->data) printf("(%s)-> ", n-> data);
@@ -104,10 +118,17 @@ void printTokenTree(Token * n, int depth) {
   for (int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
 
-  if(n->type == -10) printf("[%s]\n", n->data);
-  else if(n->type == -1) printf("%d\n", n->int_data);
-  else if(n->type == -3) printf("%s\n", n->int_data ? "True" : "False");
-  else printf("%s\n", n->data);
+  switch (n->type) {
+    case -10: printf("[%s]\n", n->data);
+              break;
+    case -1: printf("%d\n", n->int_data);
+             break;
+    case -2: printf("\"%s\"\n", strings->data[n->int_data]);
+             break;
+    case -3: printf("%s\n", n->int_data ? "True" : "False");
+             break;
+    default: printf("%s\n", n->data);
+  }
 
   if (n->childTokensCount != 0) {
     Token ** childrens = n->childTokens;
@@ -134,8 +155,10 @@ int main(int argc, char *argv[]) {
   addDefaultFunctions(defs);
 
   execGlobal(global);
+
   freeFunctionPointers(defs);
   freeFunctionHashMap(functions);
+  freeStrings();
 
   freeTokenTree(global);
   freeToken(nullToken);

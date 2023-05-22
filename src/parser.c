@@ -4,6 +4,7 @@
 
 #include "parser.h"
 
+extern Strings * strings;
 extern TokenNode* createTokenNode(char *, int);
 extern Token* createToken(int, char *, int);
 extern void addToFunctions(Function **, Function *);
@@ -105,7 +106,10 @@ Token * analyseTokenNode(TokenNode * t) {
       }
     } else if (isBlock == 0) {
       // variables
-      if (t->type == 0) {
+      if (t->data[0] == '#') {
+        int index = ((int) t->data[1]) - 33;
+        childrens[i++] = createToken(-2, NULL, index);
+      } else if (t->type == 0) {
         Token * pass = createToken(-10, "%", 1);
         pass->childTokens[0] = createToken(t->type, t->data, 0);
         childrens[i++] = pass;
@@ -275,7 +279,11 @@ Token * classifyScopes(Line * line, Function ** functions) {
 
 Token * parseFile(char * path, Function ** functions) {
   Line * line = readSourceCode(path);
-  line = cleanseLines(line);
+
+  strings = (Strings *) malloc(sizeof(Strings));
+  strings->length = 0;
+  line = cleanseLines(line, strings);
+
   if (line == NULL) return 0;
   if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
 

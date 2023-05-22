@@ -9,6 +9,7 @@ extern Token * copyToken(Token *);
 extern void addToFunctionPointers(FunctionPointer **, char *, Token*(*)(Tokens, int));
 extern void printError(char *, int);
 
+extern Strings * strings;
 extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
@@ -169,11 +170,15 @@ Token * min(Tokens t, int l) {
 // VOID FUNCTIONS
 Token * print(Tokens t, int l) {
   for (int i = 0; i < l; i++) {
-    if (t[i]->type == -1) printf("%d ", t[i]->int_data);
-    else if(t[i]->type == -3) {
-      printf("%s ", t[i]->int_data ? "True":"False" );
+    switch (t[i]->type) {
+      case -1: printf("%d ", t[i]->int_data);
+               break;
+      case -2: printf("%s ", strings->data[t[i]->int_data]);
+               break;
+      case -3: printf("%s ", t[i]->int_data ? "True":"False" );
+               break;
+      default: printf("%s ", t[i]->data);
     }
-    else printf("%s ", t[i]->data);
   }
   printf("\n");
   return nullToken;

@@ -57,8 +57,29 @@ Line *readSourceCode(char * path) {
   return src;
 }
 
-Line * cleanseLines(Line * head) {
+void appendString(Strings * strs, char * s) {
+  char ** newArr = (char **) malloc((strs->length + 1) * sizeof(char *));
+  for (int i = 0; i < strs->length; i++) {
+    newArr[i] = strs->data[i];
+  }
+  newArr[strs->length] = s;
+  if (strs->length != 0) free(strs->data);
+  strs->length++;
+  strs->data = newArr;
+}
+
+int getStringLength(char * str, int x) {
+  for (int i = x; 1; i++) {
+    if (str[i] == '\0') printError("Expected \".", 1);
+    else if (str[i] == '"') return i - x;
+  }
+}
+
+Line * cleanseLines(Line * head, Strings * strs) {
   int isQuote = 0, escapedQuote = 0, isComment = 0; 
+  char * string = NULL;
+  int stringLength = 0;
+
   Line * prev = NULL;
   Line * l = head;
 
@@ -73,9 +94,21 @@ Line * cleanseLines(Line * head) {
         escapedQuote = 0;
       }
       if (str[i] == '"') {
-        if (isQuote) escapedQuote = 1;
-        else isQuote = 1;
+        if (isQuote) {
+          escapedQuote = 1;
+          newStr[index++] = '#';
+          newStr[index++] = (char) 33 + strs->length;
+          appendString(strs, string);
+          string = NULL;
+          stringLength = 0;
+        } else {
+          int len = getStringLength(str, i + 1);
+          string = (char *) malloc((len + 1) * sizeof(char));
+          string[len] = '\0';
+          isQuote = 1;
+        }
       } else if (str[i] == '#') isComment = 1;
+      else if (isQuote == 1) string[stringLength++] = str[i];
 
       // handle quotes
       if (isQuote == 1);
@@ -100,5 +133,6 @@ Line * cleanseLines(Line * head) {
       l = l->next;
     }
   }
+  if (isQuote) printError("Expected \".", 1);
   return head;
 }

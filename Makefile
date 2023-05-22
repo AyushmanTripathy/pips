@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Iinclude
+EXEC= ./build/main
 
 bulid/main: build build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
 	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -lm -o build/main
@@ -28,9 +29,12 @@ build/hashmaps.o: src/hashmaps.c include/hashmaps.h
 build:
 	mkdir build
 
+test:
+	@sh test.sh $(EXEC)
+
 run:
 	@echo "------------------"
-	@./build/main test.pipescript
+	@$(EXEC) test.pipescript
 	@echo "------------------"
 
 clean:

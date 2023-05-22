@@ -25,6 +25,11 @@ typedef struct Variable_tag {
   struct Variable_tag * next;
 } Variable;
 
+typedef struct {
+  char ** data;
+  int length;
+} Strings;
+
 typedef struct Function_tag {
   char * name;
   int paramsCount;

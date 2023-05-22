@@ -12,21 +12,23 @@ TODO
     [x] hash maps
     [x] create trees
     [x] conditionals
-    [ ] functions
+    [x] functions
     [x] classify scopes
     [ ] free memory
-[ ] execution
+[x] execution
     [x] statments
     [x] if blocks
     [x] variables
-    [ ] functions
-    [ ] recurions
+    [x] functions
+    [x] recurions
 [ ] tail recursion
 
 HANDLE
 ------
   
 [ ] floats and longs
+[ ] more than 91 - 32 strings
+[ ] cleanseLines allocating more than required
 
 TOKEN TYPES
 -----------
