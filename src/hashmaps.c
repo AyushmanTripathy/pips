@@ -52,9 +52,15 @@ Function * getFromFunctions(Function ** buckets, char * name) {
 void freeFunction(Function * fn) {
   if (fn == NULL) return;
   if (fn->next != NULL) freeFunction(fn->next);
-  freeTokenTree(fn->execSeq);
-  for (int i = 0; i < fn->paramsCount; i++)
-    freeToken(fn->params[i]);
+  if (fn->paramsCount < 0) {
+    fn->paramsCount *= -1;
+    for (int i = 0; i < fn->paramsCount; i++)
+      freeTokenTree(fn->params[i]);
+  } else {
+    freeTokenTree(fn->execSeq);
+    for (int i = 0; i < fn->paramsCount; i++)
+      freeToken(fn->params[i]);
+  }
   free(fn->name);
   free(fn);
 }

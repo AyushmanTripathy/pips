@@ -15,7 +15,7 @@ extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
 Token * pass(Tokens t, int l) {
-  return t[0];
+  return copyToken(t[0]);
 }
 
 Token * returnFunc(Tokens t, int l) {

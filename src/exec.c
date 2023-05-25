@@ -108,7 +108,55 @@ Token * execStatment(Token * t, Variable ** vars) {
   return output;
 }
 
+int matchPattern(Token * pattern, Tokens children, int childCount) {
+  int i = 0;
+  while(pattern != NULL) {
+    if (childCount == i) return 0;
+    Token * child = children[i];
+    switch (pattern->type) {
+      case -1:
+        if (pattern->int_data != child->int_data) return 0;
+        break;
+    }
+    i++;
+    pattern = pattern->next;
+  }
+  if (i == childCount) return 1;
+  return 0;
+}
+
+Token * execDef(Function * fn, Tokens children, int childCount) {
+  int patternCount = fn->paramsCount * -1 / 2;
+  Token * execSeq = NULL;
+  Token * param;
+  for (int index = 0; index < patternCount; index++) {
+    Token * pattern = fn->params[index * 2];
+    if (matchPattern(pattern, children, childCount) == 1) {
+      execSeq = fn->params[(index * 2) + 1];
+      param = pattern;
+      break;
+    }
+  }
+ if (execSeq == NULL) printError("No pattern matched", 3);
+ Variable ** vars = initVariables();
+ int i = 0;
+ while (param != NULL) {
+  if (param->type == 0) {
+    Token * child = children[i];
+    addVariable(vars, param->data, child->type, child->int_data);
+  }
+  i++;
+  param = param->next;
+ }
+ Token * output = execStatment(execSeq, vars);
+ freeVariables(vars);
+ return output;
+}
+
 Token * execFunction(Function * fn, Tokens children, int childCount) {
+  if (fn->paramsCount < 0)
+    return execDef(fn, children, childCount);
+
   Variable ** vars = initVariables();
   if (fn->paramsCount != 0) {
     if (fn->paramsCount != childCount)

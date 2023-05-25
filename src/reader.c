@@ -8,8 +8,16 @@ extern int tab_space_count;
 extern char * trimStr(char *);
 extern int calcSpaces(char *);
 
+void printLines(Line * line) {
+  while (line != NULL) {
+    printf("%s \n", line->data);
+    line = line->next;
+  }
+}
+
 void freeLine(Line * l) {
   l->next = NULL;
+  printLines(l);
   free(l->data);
   free(l);
 }
@@ -18,13 +26,6 @@ void freeLines(Line * l) {
   if (l == NULL) return;
   if (l->next != NULL) freeLines(l->next);
   freeLine(l);
-}
-
-void printLines(Line * line) {
-  while (line != NULL) {
-    printf("%s \n", line->data);
-    line = line->next;
-  }
 }
 
 Line *readSourceCode(char * path) {

@@ -226,13 +226,28 @@ Token * parseDefPattern(TokenNode * n) {
   return head;
 }
 
-Token * parseDef(Line * line, int expectedIndent) {
-  Token * head = NULL;
-  Token * curr = NULL;
+Function * parseDef(char * name, Line * line,int expectedIndent) {
+  Function * def = (Function *) malloc(sizeof(Function));
+  def->name = name;
+  def->next = NULL;
+  def->execSeq = NULL;
+
+  int paramsCount = 0;
+  Line * iterator = line;
+  while (iterator != NULL) {
+    if (expectedIndent == iterator->indentation) paramsCount++;
+    else if (expectedIndent > iterator->indentation) break;
+    iterator = iterator->next;
+  }
+  if (paramsCount == 0) printError("Empty Definition.", 1);
+  paramsCount *= 2;
+
+  def->params = (Token **) malloc(paramsCount * sizeof(Token *));
+  def->paramsCount = -1 * paramsCount;
+
+  int index = 0;
   while(line != NULL) {
-    if (expectedIndent != line->indentation) {
-      return head;
-    }
+    if (expectedIndent != line->indentation) break;
     TokenNode * n = parseLine(line);
     TokenNode * pattern = n;
     if (n->next == NULL) printError("Invalid pattern.", 1);
@@ -244,20 +259,11 @@ Token * parseDef(Line * line, int expectedIndent) {
     if (execSeq == NULL) printError("Tokens expected after :.", 1);
     n->next = NULL;
 
-    Token * node = createToken(-12, NULL, 2);
-    node->childTokens[0] = parseDefPattern(pattern);
-    node->childTokens[1] = analyseTokenNode(execSeq);
-
-    if (head == NULL) {
-      curr = node;
-      head = curr;
-    } else {
-      curr->next = node;
-      curr = curr->next;
-    }
+    def->params[index++] = parseDefPattern(pattern);
+    def->params[index++] = analyseTokenNode(execSeq);
     line = line->next;
   }
-  return head;
+  return def;
 }
 
 Token * classifyScopes(Line * line, Function ** functions) {
@@ -314,13 +320,8 @@ Token * classifyScopes(Line * line, Function ** functions) {
           case -246:
             if (n->next == NULL || n->next->data == NULL)
               printError("name is required to define a function.", 1);
-            Token * def = createToken(-11, n->next->data, 1);
-            def->childTokens[0] = parseDef(line->next, indent + 1);
-            if (curr == NULL) curr = def;
-            else {
-              curr->next = def;
-              curr = curr->next;
-            }
+            Function * def = parseDef(n->next->data, line->next, indent + 1);
+            addToFunctions(functions, def);
             break;
         }
       } else {
