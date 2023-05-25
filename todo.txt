@@ -22,6 +22,7 @@ TODO
     [x] functions
     [x] recurions
 [ ] tail recursion
+[ ] higher order functions
 
 HANDLE
 ------
@@ -40,8 +41,8 @@ TOKEN TYPES
 -5 -> null type
 
 -10 -> function types
--11 -> function builtin
--12 -> function params
+-11 -> def functions
+-12 -> def patterns
 -15 -> return value
 
 -21 -> if

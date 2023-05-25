@@ -210,6 +210,56 @@ Token * parseElseStatment(TokenNode * n) {
   return elseToken;
 }
 
+Token * parseDefPattern(TokenNode * n) {
+  Token * head = NULL;
+  Token * curr = NULL;
+  while (n != NULL) {
+    if (curr == NULL) {
+      curr = createToken(n->type, n->data, 0);
+      head = curr;
+    } else {
+      curr->next = createToken(n->type, n->data, 0);
+      curr = curr->next;
+    }
+    n = n->next;
+  }
+  return head;
+}
+
+Token * parseDef(Line * line, int expectedIndent) {
+  Token * head = NULL;
+  Token * curr = NULL;
+  while(line != NULL) {
+    if (expectedIndent != line->indentation) {
+      return head;
+    }
+    TokenNode * n = parseLine(line);
+    TokenNode * pattern = n;
+    if (n->next == NULL) printError("Invalid pattern.", 1);
+    while(n->next->type != 58) {
+      n = n->next;
+      if (n->next == NULL) printError("Expected :.", 1);
+    }
+    TokenNode * execSeq = n->next->next;
+    if (execSeq == NULL) printError("Tokens expected after :.", 1);
+    n->next = NULL;
+
+    Token * node = createToken(-12, NULL, 2);
+    node->childTokens[0] = parseDefPattern(pattern);
+    node->childTokens[1] = analyseTokenNode(execSeq);
+
+    if (head == NULL) {
+      curr = node;
+      head = curr;
+    } else {
+      curr->next = node;
+      curr = curr->next;
+    }
+    line = line->next;
+  }
+  return head;
+}
+
 Token * classifyScopes(Line * line, Function ** functions) {
   int indent = line->indentation; 
  
@@ -224,6 +274,8 @@ Token * classifyScopes(Line * line, Function ** functions) {
       if (n->type <= -200) {
         switch (n->type) {
           case -250:
+            if (indent != 0) 
+              printError("Functions cannot be defined in non global scope.", 3);
             fn = parseFunction(n);
             if(fn->execSeq == NULL )
               fn->execSeq = classifyScopes(line->next, functions);
@@ -258,6 +310,17 @@ Token * classifyScopes(Line * line, Function ** functions) {
               if (line->next->indentation > indent)
               (curr->childTokens)[0] = classifyScopes(line->next, functions);
               else printError("Empty conditional block", 1);
+            break;
+          case -246:
+            if (n->next == NULL || n->next->data == NULL)
+              printError("name is required to define a function.", 1);
+            Token * def = createToken(-11, n->next->data, 1);
+            def->childTokens[0] = parseDef(line->next, indent + 1);
+            if (curr == NULL) curr = def;
+            else {
+              curr->next = def;
+              curr = curr->next;
+            }
             break;
         }
       } else {

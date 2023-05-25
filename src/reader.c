@@ -133,6 +133,5 @@ Line * cleanseLines(Line * head, Strings * strs) {
       l = l->next;
     }
   }
-  if (isQuote) printError("Expected \".", 1);
   return head;
 }

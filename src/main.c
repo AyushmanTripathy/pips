@@ -49,7 +49,7 @@ Token * createToken(int type, char * data, int childCount) {
     case -2:
       t->type = -2;
       t->data = NULL;
-      t->childTokens = 0;
+      t->childTokens = NULL;
       t->childTokensCount = 0;
       t->int_data = childCount;
       return t;
@@ -119,16 +119,17 @@ void printTokenTree(Token * n, int depth) {
   if (depth != 0) printf("|-");
 
   switch (n->type) {
-    case -10: printf("[%s]\n", n->data);
+    case -10: printf("[%s]", n->data);
               break;
-    case -1: printf("%d\n", n->int_data);
+    case -1: printf("%d", n->int_data);
              break;
-    case -2: printf("\"%s\"\n", strings->data[n->int_data]);
+    case -2: printf("\"%s\"", strings->data[n->int_data]);
              break;
-    case -3: printf("%s\n", n->int_data ? "True" : "False");
+    case -3: printf("%s", n->int_data ? "True" : "False");
              break;
-    default: printf("%s\n", n->data);
+    default: printf("%s", n->data);
   }
+  printf("\n");
 
   if (n->childTokensCount != 0) {
     Token ** childrens = n->childTokens;
