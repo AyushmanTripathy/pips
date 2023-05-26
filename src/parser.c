@@ -257,11 +257,14 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
     }
     TokenNode * execSeq = n->next->next;
     if (execSeq == NULL) printError("Tokens expected after :.", 1);
+    free(n->next);
     n->next = NULL;
 
     def->params[index++] = parseDefPattern(pattern);
     def->params[index++] = analyseTokenNode(execSeq);
     line = line->next;
+    freeTokenNode(pattern);
+    freeTokenNode(execSeq);
   }
   return def;
 }

@@ -17,7 +17,6 @@ void printLines(Line * line) {
 
 void freeLine(Line * l) {
   l->next = NULL;
-  printLines(l);
   free(l->data);
   free(l);
 }

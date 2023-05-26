@@ -27,7 +27,7 @@ TODO
 HANDLE
 ------
   
-[ ] mysterious invalid size malloc error
+[ ] function name invalid next error
 [ ] floats and longs
 [ ] x" variable not defined
 [ ] more than 91 - 32 strings
