@@ -27,7 +27,7 @@ Pipescript is a very simple language.
 
 ### basics
 
-1. piping
+#### piping
 
 piping is used to channel output of one function into another.
 
@@ -41,7 +41,7 @@ following gives the same output, but instead of | we are using `code blocks` [].
 print [add 1 2]
 ```
 
-2. variables
+#### variables
 
 variables in pipescript are immutable.
 
@@ -50,7 +50,7 @@ set "x" 10
 print "factorial of" x "is" | factorial x
 ```
 
-3. data types
+#### data types
 
 there are 3 data types in pipescript.
 
@@ -73,7 +73,7 @@ set "x" True
 set "y" False
 ```
 
-4. conditional flow
+#### conditional flow
 
 pipescript has your well know if, else statments
 
@@ -97,7 +97,7 @@ if | eq number 1: print "number is still one"
 function are everything in pipescript.  
 there are two types of functions
 
-1. fn functions
+#### fn functions
 
 these are normal functions
 
@@ -114,7 +114,7 @@ functions can also be one liners
 fn square x: pow x 2
 ```
 
-2. def functions
+#### def functions
 
 these are pattern matching functions.
 
