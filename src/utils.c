@@ -57,7 +57,7 @@ char * getErrorCode(int code) {
     case 2: return "";
     case 3: return "RUNTIME";
     case 4: return "TYPE";
-    case 5: return "INTERNAL";
+    case 5: return "RAISED";
     case 6: return "";
   }
   return NULL;

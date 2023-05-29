@@ -14,6 +14,12 @@ extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
+Token * error(Tokens t, int l) {
+  Token * input = t[0];
+  if (input->type != -2) printError("error function", 4);
+  printError(strings->data[input->int_data], 5);
+}
+
 Token * pass(Tokens t, int l) {
   return copyToken(t[0]);
 }
@@ -52,6 +58,7 @@ Token * boolFunc(Tokens t, int l) {
 Token * not(Tokens t, int l) {
   if (l != 1) printError("not function takes one argument.", 3);
   Token * input = Bool(t[0]);
+  if (input->type != -3) printError("not function", 4);
   if (input->int_data == 0) return trueBooleanToken;
   else return falseBooleanToken;
 }
@@ -91,6 +98,7 @@ Token * and(Tokens t, int l) {
     if (t[0]->int_data && t[1]->int_data) return trueBooleanToken;
     else return falseBooleanToken;
   }
+  printError("and function", 4);
 }
 
 Token * or(Tokens t, int l) {
@@ -99,6 +107,7 @@ Token * or(Tokens t, int l) {
     if (t[0]->int_data || t[1]->int_data) return trueBooleanToken;
     else return falseBooleanToken;
   }
+  printError("or function", 4);
 }
 
 // INT FUNCTIONS
@@ -140,7 +149,7 @@ Token * divide(Tokens t, int l) {
 
 Token * neg(Tokens t, int l) {
   if (l != 1)
-    printError("neg functions requires one argument.", 3);
+    printError("neg function takes one argument.", 3);
   if (t[0]->type != -1) printError("neg Function", 4);
   return createToken(-1, NULL, -1 * t[0]->int_data);
 }
@@ -190,6 +199,7 @@ Token * print(Tokens t, int l) {
 void addDefaultFunctions(FunctionPointer ** map) {
   addToFunctionPointers(map, "pass", &pass);
   addToFunctionPointers(map, "return", &returnFunc);
+  addToFunctionPointers(map, "error", &error);
 
   addToFunctionPointers(map, "bool", &boolFunc);
   addToFunctionPointers(map, "not", &not);  

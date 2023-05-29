@@ -21,6 +21,7 @@ TODO
     [x] variables
     [x] functions
     [x] recurions
+[x] pattern matching functions
 [ ] tail recursion
 [ ] higher order functions
 

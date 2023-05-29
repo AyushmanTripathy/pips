@@ -150,6 +150,10 @@ Token * execDef(Function * fn, Tokens children, int childCount) {
  }
  Token * output = execStatment(execSeq, vars);
  freeVariables(vars);
+ if (output->type == -15) {
+    if (output->childTokensCount == 0) return nullToken;
+    else return output->childTokens[0];
+ }
  return output;
 }
 
