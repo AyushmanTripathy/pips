@@ -3,6 +3,8 @@
 #include <string.h>
 #include "exec.h"
 
+extern int selfMaximumCallCount;
+
 extern void error(char *,short int);
 extern void printTokenTree(Token *, int);
 extern void freeToken(Token *);
@@ -180,8 +182,6 @@ Token * execDef(Function * fn, Tokens children, int childCount) {
 }
 
 Token * self(Function * fn, Variable ** vars, Token * t) {
-  printf("called self\n");
-
   Token * output;
   Token ** children = t->childTokens;
   int childCount = t->childTokensCount;
@@ -189,10 +189,10 @@ Token * self(Function * fn, Variable ** vars, Token * t) {
   t->childTokensCount = 0;
   freeToken(t);
 
-  int count = 0;
+  int count = selfMaximumCallCount;
   while(1) {
-    if (count == 100) error("Overflow", 3);
-    else count++;
+    if (count == 0) error("Self maximum call count exceeded", 3);
+    else count--;
 
     // setting vars
     if (fn->paramsCount != 0) {
@@ -206,6 +206,7 @@ Token * self(Function * fn, Variable ** vars, Token * t) {
     }
     for (int i = 0; i < childCount; i++) freeToken(children[i]);
     free(children);
+
     // execute
     output = execScope(fn->execSeq, vars);
 
@@ -215,8 +216,6 @@ Token * self(Function * fn, Variable ** vars, Token * t) {
       else returnValue = output->childTokens[0];
       freeToken(output);
       if (returnValue->type == -13) {
-        printf("self loop:\n");
-        printTokenTree(returnValue, 1);
         children = returnValue->childTokens;
         childCount = returnValue->childTokensCount;
         free(returnValue);

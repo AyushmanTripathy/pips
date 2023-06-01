@@ -163,13 +163,12 @@ int setVariable(Variable ** map, char * name, int type, int int_data) {
 void mutateVariable(Variable ** map, char * name, int type, int int_data) {
   int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   Variable * iterator = map[hashKey];
-  while (1) {
+  while (iterator != NULL) {
     if (strcmp(iterator->key, name) == 0) {
       iterator->type = type;
       iterator->int_data = int_data;
-      return 1;
+      return;
     }
-    if (iterator->next == NULL) break;
     iterator = iterator->next;
   }
   error("cannot mutate variable", 3);

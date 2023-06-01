@@ -116,6 +116,8 @@ void error(char * msg, short int code) {
             break;
     case 4: printf("TYPE");
             break;
+    case 5: printf("INTERNAL");
+            break;
     default: error("Unknown error code", 0);
   }
   printf(" ERROR ] %s\n", msg);

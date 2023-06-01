@@ -8,6 +8,8 @@ int hashmap_r = 31;
 int variable_hashmap_size = 29;
 int variable_hashmap_r = 3;
 
+int selfMaximumCallCount = 100;
+
 const char keywords[][5] = { "fn", "if", "elif", "else", "def" };
 const int keywordsLength = 5; 
 
