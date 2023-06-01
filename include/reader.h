@@ -9,11 +9,8 @@ typedef struct Line_tag {
   struct Line_tag * next;
 } Line;
 
-Line * readSourceCode(char *);
-Line * cleanseLines(Line *, Strings *);
-
-void freeLine(Line *);
+Line * readFile(char *);
 void freeLines(Line *);
-void printLines(Line *);
+Line * cleanseLines(Line *, Strings *);
 
 #endif

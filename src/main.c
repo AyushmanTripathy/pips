@@ -1,36 +1,49 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 
 #include "main.h"
 
+Strings * strings = NULL;
+Function ** functions = NULL;
+FunctionPointer ** defFunctions = NULL;
+
 Token * nullToken;
-Token * trueBooleanToken;
 Token * falseBooleanToken;
+Token * trueBooleanToken;
 
-Strings * strings;
-Function ** functions;
-FunctionPointer ** defs;
-
-void printError(char * s, int code) {
-  char * c = getErrorCode(code);
-  if (c == NULL) printf("[ERROR] %s\n", s);
-  else printf("[%s ERROR] %s\n", c, s);
-  exit(1);
+void freeStrings(Strings * strs) {
+  if (strs->length != 0) {
+    for (int i = 0; i < strs->length; i++) free(strs->data[i]);
+    free(strs->data);
+  }
+  free(strs);
 }
 
-TokenNode * createTokenNode(char * str, int type) {
-  TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
-  t->data = str;
+void freeToken(Token * t) {
+  if (t->type == -3 || t->type == -5) return;
+  free(t->childTokens);
+  if (t->data != NULL) free(t->data);
+  free(t);
+}
 
-  if (!type) {
-    if (isNumber(str)) type = -1;
-    else type = isKeyword(str); 
-  } 
+void freeTokenTree(Token * t) {
+  if (t == NULL) return;
+  for (int i = 0; i < t->childTokensCount; i++)
+    freeTokenTree(t->childTokens[i]);
+  if (t->next != NULL)
+    freeTokenTree(t->next);
+  freeToken(t);
+}
 
-  t->type = type;
-  t->next = NULL;
-  return t;
+void freeMemory() {
+  if (nullToken != NULL) {
+    free(nullToken);
+    free(trueBooleanToken);
+    free(falseBooleanToken);
+  }
+  if (strings != NULL) freeStrings(strings);
+  if (functions != NULL) freeFunctionHashMap(functions);
+  if (defFunctions != NULL) freeFunctionPointers(defFunctions);
 }
 
 Token * createToken(int type, char * data, int childCount) {
@@ -84,26 +97,6 @@ Token * copyToken(Token * t) {
   return c;
 }
 
-void freeToken(Token * t) {
-  if (t->type == -3 || t->type == -5) return;
-  free(t->childTokens);
-  //if (t->data != NULL) free(t->data);
-  free(t);
-}
-
-void freeTokenTree(Token * t) {
-  for (int i = 0; i < t->childTokensCount; i++)
-    freeTokenTree(t->childTokens[i]);
-  if (t->next != NULL)
-    freeTokenTree(t->next);
-  freeToken(t);
-}
-
-void freeStrings() {
-  for (int i = strings->length - 1; i > -1; i--) free(strings->data[i]);
-  free(strings);
-}
-
 void printTokenNode(TokenNode * n) {
   while(n != NULL) {
     if (n->data) printf("(%s)-> ", n-> data);
@@ -113,20 +106,46 @@ void printTokenNode(TokenNode * n) {
   printf("\n");
 }
 
+void error(char * msg, short int code) {
+  printf("[ ");
+  switch (code) {
+    case 0: break;
+    case 1: printf("PARSING");
+            break;
+    case 3: printf("RUNTIME");
+            break;
+    case 4: printf("TYPE");
+    default: error("Unknown error code", 0);
+  }
+  printf(" ERROR ] %s\n", msg);
+  freeMemory();
+  exit(1);
+}
+
 void printTokenTree(Token * n, int depth) {
+  if (depth > 10) {
+    printf("print overload\n");
+    exit(1);
+  }
   if (n == NULL) return;
   for (int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
 
   switch (n->type) {
-    case -10: printf("[%s]", n->data);
-              break;
     case -1: printf("%d", n->int_data);
              break;
     case -2: printf("\"%s\"", strings->data[n->int_data]);
              break;
     case -3: printf("%s", n->int_data ? "True" : "False");
              break;
+    case -21: printf("IF");
+              break;
+    case -22: printf("ELIF");
+              break;
+    case -23: printf("ELSE");
+              break;
+    case -10: printf("[%s]", n->data);
+              break;
     default: printf("%s", n->data);
   }
   printf("\n");
@@ -143,26 +162,22 @@ void printTokenTree(Token * n, int depth) {
 }
 
 int main(int argc, char *argv[]) {
+  if (argc < 2) error("No Input Specified.", 0);
+
   functions = initFunctionHashMap();
   Token * global = parseFile(argv[1], functions);
   printTokenTree(global, 0);
-  printf("------------------\n");
+  printf("-------------------\n");
+  defFunctions = initFunctionPointers();
+  addDefaultFunctions(defFunctions);
 
   nullToken = createToken(-5, NULL, 0);
-  trueBooleanToken = createToken(-3, NULL, 1);
   falseBooleanToken = createToken(-3, NULL, 0);
+  trueBooleanToken = createToken(-3, NULL, 1);
 
-  defs = initFunctionPointers();
-  addDefaultFunctions(defs);
-
-  execGlobal(global);
-
-  freeFunctionPointers(defs);
-  freeFunctionHashMap(functions);
-  freeStrings();
-
+  int exitCode = execGlobal(global);
+  printf("-------------------\n");
   freeTokenTree(global);
-  freeToken(nullToken);
-  free(falseBooleanToken);
-  free(trueBooleanToken);
+  freeMemory();
+  return exitCode;
 }

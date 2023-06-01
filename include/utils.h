@@ -9,10 +9,8 @@ int isTrimable(char s);
 
 char * getErrorCode(int code);
 
-// HASHMAP
-int hashFunc(char * str);
-
 // STRING FUNCTIONS
+char * mallocStr(char *);
 char * sliceStr(char * str, int start, int end);
 char * trimStr(char * str);
 int calcSpaces(char * str);

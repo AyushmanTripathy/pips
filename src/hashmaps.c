@@ -9,7 +9,7 @@ extern int hashmap_r;
 extern int variable_hashmap_size;
 extern int variable_hashmap_r;
 
-extern void printError(char *, int);
+extern void error(char *, int);
 extern void freeTokenTree(Token *);
 extern void freeToken(Token *);
 
@@ -50,8 +50,8 @@ Function * getFromFunctions(Function ** buckets, char * name) {
 }
 
 void freeFunction(Function * fn) {
-  if (fn == NULL) return;
   if (fn->next != NULL) freeFunction(fn->next);
+
   if (fn->paramsCount < 0) {
     fn->paramsCount *= -1;
     for (int i = 0; i < fn->paramsCount; i++)
@@ -61,12 +61,15 @@ void freeFunction(Function * fn) {
     for (int i = 0; i < fn->paramsCount; i++)
       freeToken(fn->params[i]);
   }
+  free(fn->params);
   free(fn->name);
   free(fn);
 }
  
 void freeFunctionHashMap(Function ** buckets) {
-  for (int i = 0; i < hashmap_size; i++) freeFunction(buckets[i]);
+  for (int i = 0; i < hashmap_size; i++) {
+    if (buckets[i] != NULL) freeFunction(buckets[i]);
+  }
   free(buckets);
 }
 
@@ -108,13 +111,13 @@ FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
 
 void freeFunctionPointer(FunctionPointer * fp) {
   if (fp->next != NULL) freeFunctionPointer(fp->next);
-  free(fp->pointer);
-  free(fp->key);
   free(fp);
 }
 
 void freeFunctionPointers(FunctionPointer ** map) {
-  for (int i = 0; i < hashmap_size; i++) map[i];
+  for (int i = 0; i < hashmap_size; i++) {
+    if (map[i] != NULL) freeFunctionPointer(map[i]);
+  }
   free(map);
 }
 
@@ -162,6 +165,7 @@ Variable ** initVariables() {
   for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
   addVariable(arr, "True", -3, 1);
   addVariable(arr, "False", -3, 0);
+  addVariable(arr, "Null", -5, 0);
   return arr;
 }
 
@@ -184,8 +188,8 @@ Variable * getVariable(Variable ** map, char * name) {
     Variable * iterator = map[hashKey];
     while(strcmp(iterator->key, name) != 0) {
       iterator = iterator->next;
-      if (iterator == NULL) printError("Variable not defined.", 3); 
+      if (iterator == NULL) error("Variable not defined.", 3); 
     }
     return iterator;
-  } else printError("Variable not defined.", 3);
+  } else error("Variable not defined.", 3);
 }

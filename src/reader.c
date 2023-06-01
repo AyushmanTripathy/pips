@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "reader.h"
 
-extern void printError(char *, int);
 extern int tab_space_count;
+
+extern void error(char *, short int);
 extern char * trimStr(char *);
 extern int calcSpaces(char *);
 
@@ -27,14 +29,14 @@ void freeLines(Line * l) {
   freeLine(l);
 }
 
-Line *readSourceCode(char * path) {
+Line * readFile(char * path) {
   // reading source code
   char buff[255];
   FILE *source = fopen(path, "r");
   Line * src = NULL;
   Line * head = NULL;
 
-  if (source == NULL) printError("Invalid File Name", 0);
+  if (source == NULL) error("Invalid File Name", 0);
   while(fgets(buff, 255, source) != NULL) {
     // check for empty lines
     char * data = trimStr(buff);
@@ -53,7 +55,7 @@ Line *readSourceCode(char * path) {
   }
   fclose(source);
 
-  if (src == NULL) printError("input file is empty.", 1);
+  if (src == NULL) error("input file is empty.", 1);
   return src;
 }
 
@@ -70,7 +72,7 @@ void appendString(Strings * strs, char * s) {
 
 int getStringLength(char * str, int x) {
   for (int i = x; 1; i++) {
-    if (str[i] == '\0') printError("Expected \".", 1);
+    if (str[i] == '\0') return -1;
     else if (str[i] == '"') return i - x;
   }
 }
@@ -85,10 +87,11 @@ Line * cleanseLines(Line * head, Strings * strs) {
 
   while (l != NULL) {
     int len = strlen(l->data), index = 0;
-    char * newStr = (char *) malloc(len * sizeof(char));
+    char * newStr = (char *) malloc((len + 1) * sizeof(char));
     char * str = l->data;
 
     for(int i = 0; i < len; i++) {
+      if (isComment == 1) continue;
       if (escapedQuote == 1) {
         isQuote = isQuote ? 0 : 1;
         escapedQuote = 0;
@@ -103,6 +106,11 @@ Line * cleanseLines(Line * head, Strings * strs) {
           stringLength = 0;
         } else {
           int len = getStringLength(str, i + 1);
+          if (len == -1) {
+            freeLines(head);
+            free(newStr);
+            error("Expected \".", 1);
+          }
           string = (char *) malloc((len + 1) * sizeof(char));
           string[len] = '\0';
           isQuote = 1;

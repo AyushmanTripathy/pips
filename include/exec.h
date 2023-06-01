@@ -4,6 +4,6 @@
 #include "types.h"
 #include "hashmaps.h"
 
-void execGlobal(Token *);
+int execGlobal(Token *);
 
 #endif

@@ -5,13 +5,34 @@
 #include "parser.h"
 
 extern Strings * strings;
-extern TokenNode* createTokenNode(char *, int);
-extern Token* createToken(int, char *, int);
-extern void addToFunctions(Function **, Function *);
 
+extern void error(char *, int);
+extern Token* createToken(int, char *, int);
+extern void freeTokenTree(Token *);
+
+extern void addToFunctions(Function **, Function *);
 extern void printTokenTree(Token *, int);
 extern void printTokenNode(TokenNode *);
-extern void printError(char *, int);
+
+TokenNode * createTokenNode(char * str, int type) {
+  TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
+  t->data = str;
+
+  if (!type) {
+    if (isNumber(str)) type = -1;
+    else {
+      type = isKeyword(str); 
+      if (type != 0) {
+        free(str);
+        t->data = NULL;
+      }
+    }
+  } 
+
+  t->type = type;
+  t->next = NULL;
+  return t;
+}
 
 void freeTokenNode(TokenNode * n) {
   TokenNode * next;
@@ -22,6 +43,13 @@ void freeTokenNode(TokenNode * n) {
   }
 }
 
+char * getTrimedString(char * str, int start, int end) {
+  char * sliced = sliceStr(str, start, end);
+  char * trimed = trimStr(sliced);
+  free(sliced);
+  return trimed;
+}
+
 TokenNode * parseLine(Line * l) {
   TokenNode head = { next : NULL };
   TokenNode * t = &head;
@@ -30,7 +58,7 @@ TokenNode * parseLine(Line * l) {
   int len = strlen(str), start = 0;
   for(int i = 0; i < len; i++) {
     if (isSymbol(str[i])) {
-      char * s = trimStr(sliceStr(str, start, i));
+      char * s = getTrimedString(str, start, i);
       if (s != NULL) {
         t->next = createTokenNode(s, 0);
         t = t->next;
@@ -38,11 +66,11 @@ TokenNode * parseLine(Line * l) {
       t->next = createTokenNode(NULL, (int) str[i]);
       start = i + 1;
     } else if (str[i] == ' ' ) {
-      char * s = trimStr(sliceStr(str, start, i + 1));
+      char * s = getTrimedString(str, start, i + 1);
       if (s != NULL) t->next = createTokenNode(s, 0);
       start = i;
     } else if (i + 1 == len) {
-      char * s = trimStr(sliceStr(str, start, i + 1));
+      char * s = getTrimedString(str, start, i + 1);
       if (s != NULL) t->next = createTokenNode(s, 0);
       start = i;
     }
@@ -72,13 +100,13 @@ int getChildCount(TokenNode * t) {
     } else if (!isBlock) count++;
     t = t->next;
   }
-  if (isBlock != 0) printError(" ] Missing!", 1);
+  if (isBlock != 0) error(" ] Missing!", 1);
   return count;
 }
 
 Token * analyseTokenNode(TokenNode * t) {
   int childCount = getChildCount(t);
-  if (t->type > 0) printError("Expected Function.", 1);
+  if (t->type > 0) error("Expected Function.", 1);
   Token * root = createToken(-10, t->data, childCount);
   t = t->next;
   if (t == NULL) return root;
@@ -90,8 +118,8 @@ Token * analyseTokenNode(TokenNode * t) {
       switch ((char) t->type) {
         case '|':
           if (isBlock != 0) break;
-          if (t->next == NULL) printError("Empty pipe.", 1);
-          else if (t->next->type == (int) '|') printError("Double pipe.", 1);
+          if (t->next == NULL) error("Empty pipe.", 1);
+          else if (t->next->type == (int) '|') error("Double pipe.", 1);
           childrens[i++] = analyseTokenNode(t->next);
           return root;
         case '[':
@@ -109,11 +137,16 @@ Token * analyseTokenNode(TokenNode * t) {
       if (t->data[0] == '#') {
         int index = ((int) t->data[1]) - 33;
         childrens[i++] = createToken(-2, NULL, index);
+        free(t->data);
+        t->data = NULL;
       } else if (t->type == 0) {
-        Token * pass = createToken(-10, "%", 1);
+        Token * pass = createToken(-10, mallocStr("%"), 1);
         pass->childTokens[0] = createToken(t->type, t->data, 0);
         childrens[i++] = pass;
-      } else childrens[i++] = createToken(t->type, t->data, 0);
+      } else {
+        childrens[i++] = createToken(t->type, t->data, 0);
+        t->data = NULL;
+      }
     }
     t = t->next;
   }
@@ -128,8 +161,8 @@ Function * parseFunction(TokenNode * n) {
   if (n->next != NULL)  {
     n = n->next;
     if (n->data != NULL && !n->type) fn->name = n->data;
-    else printError("Name is required while declaring function", 0);
-  } else printError(": missing while declaring function", 0);
+    else error("Name is required while declaring function", 0);
+  } else error(": missing while declaring function", 0);
 
   // get params
   TokenNode * iterator = n;
@@ -145,7 +178,7 @@ Function * parseFunction(TokenNode * n) {
     iterator = n->next;
     for(int i = 0; i < paramsCount; i++) {
       if (iterator->type != 0)
-        printError("Name Token expected as function parameter", 1);
+        error("Name Token expected as function parameter", 1);
       params[i] = createToken(iterator->type, iterator->data, 0);
       iterator = iterator->next;
     }
@@ -153,14 +186,16 @@ Function * parseFunction(TokenNode * n) {
   }
 
   fn->execSeq = NULL;
-  if (iterator->type != 58) printError(": missing while declaring function",0);
+  if (iterator->type != 58) error(": missing while declaring function",0);
   if (iterator->next == NULL) return fn;
   fn->execSeq = analyseTokenNode(iterator->next);
   return fn;
 }
 
 Token * parseIfStatment(TokenNode * n, int isElif) {
-  Token * ifToken = isElif ? createToken(-22, "ELIF", 2): createToken(-21, "IF", 2);
+  Token * ifToken = isElif ?
+    createToken(-22, NULL, 2):
+    createToken(-21, NULL, 2);
 
   TokenNode * colonPointer = NULL;
   TokenNode * iterator = n;
@@ -174,24 +209,26 @@ Token * parseIfStatment(TokenNode * n, int isElif) {
     iterator = iterator->next;
   }
   
-  if (colonPointer == NULL) printError(": missing in conditional statment.", 0);
+  if (colonPointer == NULL) error(": missing in conditional statment.", 0);
   else if (colonPointer->next != NULL) {
     (ifToken->childTokens)[1] = analyseTokenNode(colonPointer->next);
   } else (ifToken->childTokens)[1] = NULL;
+  freeTokenNode(colonPointer);
 
   if (n->next != NULL) {
-    TokenNode * passFunc = createTokenNode("bool", 0);
+    TokenNode * passFunc = createTokenNode(mallocStr("bool"), 0);
     passFunc->next = n->next;
     (ifToken->childTokens)[0] = analyseTokenNode(passFunc);
     // for freeing passFunc TokenNode
-    n = passFunc;
-  } else printError("condition missing in conditional statment.", 0);
+    passFunc->next = NULL;
+    freeTokenNode(passFunc);
+  } else error("condition missing in conditional statment.", 0);
 
   return ifToken;
 }
 
 Token * parseElseStatment(TokenNode * n) {
-  Token * elseToken = createToken(-23, "ELSE", 1);
+  Token * elseToken = createToken(-23, NULL,1);
 
   TokenNode * colonPointer = NULL;
   while(n->next != NULL)  {
@@ -202,11 +239,10 @@ Token * parseElseStatment(TokenNode * n) {
     n = n->next;
   }
   
-  if (colonPointer == NULL) printError(": missing in else statment.", 0);
+  if (colonPointer == NULL) error(": missing in else statment.", 0);
   else if (colonPointer->next != NULL) {
     (elseToken->childTokens)[0] = analyseTokenNode(colonPointer->next);
   } else (elseToken->childTokens)[0] = NULL;
-
   return elseToken;
 }
 
@@ -239,7 +275,7 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
     else if (expectedIndent > iterator->indentation) break;
     iterator = iterator->next;
   }
-  if (paramsCount == 0) printError("Empty Definition.", 1);
+  if (paramsCount == 0) error("Empty Definition.", 1);
   paramsCount *= 2;
 
   def->params = (Token **) malloc(paramsCount * sizeof(Token *));
@@ -250,13 +286,13 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
     if (expectedIndent != line->indentation) break;
     TokenNode * n = parseLine(line);
     TokenNode * pattern = n;
-    if (n->next == NULL) printError("Invalid pattern.", 1);
+    if (n->next == NULL) error("Invalid pattern.", 1);
     while(n->next->type != 58) {
       n = n->next;
-      if (n->next == NULL) printError("Expected :.", 1);
+      if (n->next == NULL) error("Expected :.", 1);
     }
     TokenNode * execSeq = n->next->next;
-    if (execSeq == NULL) printError("Tokens expected after :.", 1);
+    if (execSeq == NULL) error("Tokens expected after :.", 1);
     free(n->next);
     n->next = NULL;
 
@@ -269,10 +305,15 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
   return def;
 }
 
+void classifyScopesError(char * msg, TokenNode * n, Token * t) {
+  freeTokenNode(n);
+  freeTokenTree(t);
+  error(msg, 1);
+}
+
 Token * classifyScopes(Line * line, Function ** functions) {
   int indent = line->indentation; 
  
-  Function * fn = NULL;
   Token * head = NULL;
   Token * curr = NULL;
   while(line != NULL) {
@@ -283,11 +324,15 @@ Token * classifyScopes(Line * line, Function ** functions) {
       if (n->type <= -200) {
         switch (n->type) {
           case -250:
+            Function * fn = NULL;
             if (indent != 0) 
-              printError("Functions cannot be defined in non global scope.", 3);
+              classifyScopesError("Functions declared in non global scope.", n, head);
             fn = parseFunction(n);
-            if(fn->execSeq == NULL )
+            if(fn->execSeq == NULL) {
+              if (line->next->indentation <= indent) 
+                classifyScopesError("Empty Function.", n, head);
               fn->execSeq = classifyScopes(line->next, functions);
+            }
             addToFunctions(functions, fn);
             break;
           case -249:
@@ -299,30 +344,30 @@ Token * classifyScopes(Line * line, Function ** functions) {
             if ((curr->childTokens)[1] == NULL) {
               if (line->next->indentation > indent)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
-              else printError("Empty conditional block", 1);
+              else classifyScopesError("Empty conditional block", n, head);
             }
             break;
           case -248:
-            if (curr == NULL) printError("if statement expected.", 1);
+            if (curr == NULL) classifyScopesError("if statement expected.", n, head);
             curr->next = parseIfStatment(n, 1);
             curr = curr->next;
             if ((curr->childTokens)[1] == NULL)
               if (line->next->indentation > indent)
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
-              else printError("Empty conditional block", 1);
+              else classifyScopesError("Empty conditional block", n, head);
             break;
           case -247:
-            if (curr == NULL) printError("if statement expected.", 1);
+            if (curr == NULL) classifyScopesError("if statement expected.", n, head);
             curr->next = parseElseStatment(n);
             curr = curr->next;
             if ((curr->childTokens)[0] == NULL)
               if (line->next->indentation > indent)
               (curr->childTokens)[0] = classifyScopes(line->next, functions);
-              else printError("Empty conditional block", 1);
+              else classifyScopesError("Empty conditional block", n, head);
             break;
           case -246:
             if (n->next == NULL || n->next->data == NULL)
-              printError("name is required to define a function.", 1);
+              classifyScopesError("name is required to define a function.", n, head);
             Function * def = parseDef(n->next->data, line->next, indent + 1);
             addToFunctions(functions, def);
             break;
@@ -345,14 +390,14 @@ Token * classifyScopes(Line * line, Function ** functions) {
 }
 
 Token * parseFile(char * path, Function ** functions) {
-  Line * line = readSourceCode(path);
+  Line * line = readFile(path);
 
   strings = (Strings *) malloc(sizeof(Strings));
   strings->length = 0;
   line = cleanseLines(line, strings);
 
   if (line == NULL) return 0;
-  if (line->indentation > 0) printError("Cannot start from non global scope.", 0);
+  if (line->indentation > 0) error("Cannot start from non global scope.", 0);
 
   Token * global = classifyScopes(line, functions);
   freeLines(line);

@@ -2,6 +2,7 @@
 #define HASHMAP_H
 
 #include "types.h"
+
 Function ** initFunctionHashMap();
 void addToFunctions(Function **, Function *);
 Function * getFromFunctions(Function **, char *);

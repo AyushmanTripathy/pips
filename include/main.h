@@ -1,13 +1,12 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include "types.h"
-
-#include "utils.h"
 #include "config.h"
-#include "defs.h"
-#include "hashmaps.h"
+#include "types.h"
 #include "parser.h"
+#include "utils.h"
+#include "hashmaps.h"
 #include "exec.h"
+#include "defs.h"
 
 #endif

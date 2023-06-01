@@ -1,11 +1,12 @@
-#include "utils.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
+#include "utils.h"
+
 extern int keywordsLength;
 extern char keywords[][5];
-extern void printError(char *, int);
+extern void error(char *, int);
 
 // IS FUNCTIONS
 int isKeyword(char * s) {
@@ -22,7 +23,7 @@ int isNumber(char * str) {
   while(str[i] != '\0') {
     if (!(str[i] >= '0' && str[i] <= '9')) {
       if(i == 0) return 0;
-      else printError("Invalid Name Token", 1);
+      else error("Invalid Name Token", 1);
     }
     i++;
   }
@@ -51,19 +52,15 @@ int isTrimable(char s) {
   return 0;
 }
 
-char * getErrorCode(int code) {
-  switch (code) {
-    case 1: return "PARSING";
-    case 2: return "";
-    case 3: return "RUNTIME";
-    case 4: return "TYPE";
-    case 5: return "RAISED";
-    case 6: return "";
-  }
-  return NULL;
+// STRING FUNCTIONS
+char * mallocStr(char * s) {
+  int len = strlen(s);
+  char * str = (char *) malloc((len + 1) * sizeof(char));
+  for(int i = 0; i < len; i++) str[i] = s[i];
+  str[len] = '\0';
+  return str;
 }
 
-// STRING FUNCTIONS
 char * sliceStr(char * str, int start, int end) {
   char * newStr = (char *) malloc((end - start + 1) * sizeof(char));
   for (int i = 0; (i + start) < end; i++) newStr[i] = str[start + i];
@@ -103,7 +100,7 @@ int calcSpaces(char * str) {
 int nextQuote(char * str, int index) {
   int counter = 0;
   for (int i = index; str[i] != '"'; i++) {
-    if (str[i] == '\0') printError("Unescaped Quote", 1);
+    if (str[i] == '\0') error("Unescaped Quote", 1);
     counter++;
   }
   return counter;
