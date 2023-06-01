@@ -1,25 +1,45 @@
 # PIPESCRIPT
 
 A programming language revolving around piping.  
-Pipescript is a functional, dynamically typed, interpreted, indented programming language.  
+Pipescript is a functional, dynamically weakly typed, interpreted, indented programming language.  
 This is still a work in progress
 
-syntax highlighting is pretty similer to rust's.  
-for vim
+### Believes
 
-```vimscript
-autocmd BufNewFile,BufRead *.pipescript set syntax=rust
-```
+1. useless complexity is waste of time.
+1. using functions for everything.
+1. human readable code.
+1. piping is a great idea.
 
-## installation
+plz report any bugs by creating an issue.
+
+## Features
+
+1. piping
+1. pattern matching functions
+1. pure functions
+1. immutabillity by default
+1. higher order functions (coming soon)
+
+by pure functions i mean functions are idempotent and have no side effects.
+note, printing to stdout is not considered a side effect for simplicity reasons.
+
+## Installation
 
 ```bash
 git clone https://github.com/AyushmanTripathy/pips
 cd pips
-make
+make clean install //with privilege
+pipescript <input file>
 ```
 
-move the `build/main` executable to your bin.
+to change the installation location, change the $INSTALLDIR in Makefile.
+
+syntax highlighting is pretty similer to rust's. so you can change settings in your editor, for example in vim
+
+```vimscript
+autocmd BufNewFile,BufRead *.pipescript set syntax=rust
+```
 
 ## Documentation
 
@@ -27,7 +47,7 @@ Pipescript is a very simple language.
 
 ### basics
 
-#### piping
+### Piping
 
 piping is used to channel output of one function into another.
 
@@ -41,7 +61,7 @@ following gives the same output, but instead of | we are using `code blocks` [].
 print [add 1 2]
 ```
 
-#### variables
+### Variables
 
 variables in pipescript are immutable.
 
@@ -50,7 +70,7 @@ set "x" 10
 print "factorial of" x "is" | factorial x
 ```
 
-#### data types
+### Data types
 
 there are 3 data types in pipescript.
 
@@ -73,7 +93,15 @@ set "x" True
 set "y" False
 ```
 
-#### conditional flow
+4. null
+
+```
+set "x" Null
+```
+
+null value is returned by void functions.
+
+### Conditional flow
 
 pipescript has your well know if, else statments
 
@@ -92,12 +120,12 @@ note the use of code blocks, pipes can also be used.
 if | eq number 1: print "number is still one"
 ```
 
-### functions
+### Functions
 
 function are everything in pipescript.  
 there are two types of functions
 
-#### fn functions
+-   fn functions
 
 these are normal functions
 
@@ -114,7 +142,7 @@ functions can also be one liners
 fn square x: pow x 2
 ```
 
-#### def functions
+-   def functions
 
 these are pattern matching functions.
 
@@ -140,9 +168,13 @@ def factorial
 note pattern matching happens from top to bottom hence the `1 y` case must be
 before `x y` case to work.
 
-### buildin functions
+execution starts with global function (global scope), hence it is possible to
+return out of global scope.  
+if a integer value is returned, it is used as exit code.
 
-1. boolean functions
+### Buildin Functions
+
+1. Boolean functions
 
 | funtion name | argument       | description         |
 | ------------ | -------------- | ------------------- |
@@ -154,7 +186,7 @@ before `x y` case to work.
 | and          | 2 booleans     | equivalent of &&    |
 | or           | 2 booleans     | equivalent of \|\|  |
 
-2. integer functions
+2. Integer functions
 
 | funtion name | argument   | description                         |
 | ------------ | ---------- | ----------------------------------- |
@@ -166,7 +198,7 @@ before `x y` case to work.
 | max          | integer    | gives max of the integers           |
 | min          | integer    | gives min of the integers           |
 
-3. miscellaneous functions
+3. Miscellaneous functions
 
 | funtion name | argument | description                               |
 | ------------ | -------- | ----------------------------------------- |
@@ -175,5 +207,4 @@ before `x y` case to work.
 | return       | any type | returns the first input from the function |
 | error        | 1 string | raises a raised error                     |
 
-thank you for trying out pipescript!  
-report any bugs on [issues](https://github.com/AyushmanTripathy/pips/issues)
+thank you for trying out pipescript! 👍 

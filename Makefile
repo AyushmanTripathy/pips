@@ -1,9 +1,12 @@
 CC = gcc
 CFLAGS = -Iinclude
-EXEC= ./build/main
+EXEC= ./build/pipescript
+INSTALLDIR= /usr/local/bin
 
-bulid/main: build build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
-	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -lm -o build/main
+all: bulid/pipescript
+
+build/pipescript: build build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
+	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -lm -o $(EXEC)
 
 build/main.o: src/main.c include/main.h
 	$(CC) $(CFLAGS) src/main.c -c -o build/main.o
@@ -28,6 +31,16 @@ build/hashmaps.o: src/hashmaps.c include/hashmaps.h
 
 build:
 	mkdir build
+
+install: build/pipescript
+	@echo "Installing Pipescript"
+	@echo "Installing in $(INSTALLDIR)"
+	cp -f $(EXEC) $(INSTALLDIR)/pipescript
+	chmod 755 $(INSTALLDIR)/pipescript
+
+remove:
+	@echo "Removing Pipescript"
+	rm $(INSTALLDIR)/pipescript
 
 test:
 	valgrind --leak-check=full \

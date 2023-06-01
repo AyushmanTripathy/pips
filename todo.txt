@@ -1,29 +1,10 @@
 TODO
 ----
 
-[x] read source code
-    [x] check indentation
-    [x] trim input
-[ ] parsing
-    [x] cleanize
-        [x] comments
-        [x] strings
-    [x] create tokens
-    [x] hash maps
-    [x] create trees
-    [x] conditionals
-    [x] functions
-    [x] classify scopes
-    [ ] free memory
-[x] execution
-    [x] statments
-    [x] if blocks
-    [x] variables
-    [x] functions
-    [x] recurions
 [x] pattern matching functions
 [ ] tail recursion
 [ ] higher order functions
+[ ] data structures
 
 OPTIMISE
 -------
@@ -32,7 +13,6 @@ OPTIMISE
 HANDLE
 ------
   
-[ ] function name invalid next error
 [ ] floats and longs
 [ ] x" variable not defined
 [ ] more than 91 - 32 strings
