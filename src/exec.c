@@ -73,8 +73,8 @@ Token * set(Tokens t, int l, Variable ** vars) {
 }
 
 Token * execStatment(Token * t, Variable ** vars) {
-  if (t == NULL) error("NULL execution", 3);
-  if (t->data == NULL) error("Nameless Function execution.", 3);
+  if (t == NULL) error("NULL execution", 5);
+  if (t->data == NULL) error("Nameless Function execution.", 5);
   if (t->data[0] == '%') {
     Variable * v = getVariable(vars, t->childTokens[0]->data);
     if (v->type == -3) {
@@ -145,6 +145,65 @@ int matchPattern(Token * pattern, Tokens children, int childCount) {
   if (i == childCount) return 1;
   return 0;
 }
+ 
+Token * selfDef(Function * fn, Variable ** vars, Token * t) {
+  int patternCount = fn->paramsCount * -1 / 2;
+  Token * execSeq = NULL;
+  Token * param;
+
+  Token * output;
+  Token ** children = t->childTokens;
+  int childCount = t->childTokensCount;
+  t->childTokens = NULL;
+  t->childTokensCount = 0;
+  freeToken(t);
+
+  int count = selfMaximumCallCount;
+  while(1) {
+    if (count == 0) error("Self maximum call count exceeded", 3);
+    else count--;
+
+    for (int index = 0; index < patternCount; index++) {
+      Token * pattern = fn->params[index * 2];
+      if (matchPattern(pattern, children, childCount) == 1) {
+        execSeq = fn->params[(index * 2) + 1];
+        param = pattern;
+        break;
+      }
+    }
+    if (execSeq == NULL) error("No pattern matched", 3);
+    int i = 0;
+    while (param != NULL) {
+      if (param->type == 0) 
+        mutateVariable(vars, param->data, children[i]->type, children[i]->int_data);
+      i++;
+      param = param->next;
+    }
+
+    for (int i = 0; i < childCount; i++) freeToken(children[i]);
+    free(children);
+
+    output = execStatment(execSeq, vars);
+
+    if (output->type == -15) {
+      Token * returnValue;
+      if (output->childTokensCount == 0) returnValue = nullToken;
+      else if (output->childTokens[0]->type == -13) 
+        returnValue = output->childTokens[0];
+      else returnValue = output->childTokens[0];
+      freeToken(output);
+      output = returnValue;
+    }
+    if (output->type == -13) {
+      children = output->childTokens;
+      childCount = output->childTokensCount;
+      output->childTokens = NULL;
+      free(output);
+    } else break;
+  }
+  freeVariables(vars);
+  return output;
+}
 
 Token * execDef(Function * fn, Tokens children, int childCount) {
   int patternCount = fn->paramsCount * -1 / 2;
@@ -170,18 +229,21 @@ Token * execDef(Function * fn, Tokens children, int childCount) {
    param = param->next;
   }
   Token * output = execStatment(execSeq, vars);
-  freeVariables(vars);
   if (output->type == -15) {
      Token * returnValue;
      if (output->childTokensCount == 0) returnValue = nullToken;
+     else if (output->childTokens[0]->type == -13) 
+       returnValue = output->childTokens[0];
      else returnValue = output->childTokens[0];
      freeToken(output);
-     return returnValue;
-   }
+     output = returnValue;
+  }
+  if (output->type == -13) return selfDef(fn, vars, output);
+  freeVariables(vars);
   return output;
 }
 
-Token * self(Function * fn, Variable ** vars, Token * t) {
+Token * selfFunction(Function * fn, Variable ** vars, Token * t) {
   Token * output;
   Token ** children = t->childTokens;
   int childCount = t->childTokensCount;
@@ -207,7 +269,6 @@ Token * self(Function * fn, Variable ** vars, Token * t) {
     for (int i = 0; i < childCount; i++) freeToken(children[i]);
     free(children);
 
-    // execute
     output = execScope(fn->execSeq, vars);
 
     if (output->type == -15) {
@@ -252,7 +313,7 @@ Token * execFunction(Function * fn, Tokens children, int childCount) {
     if (output->childTokensCount == 0) returnValue = nullToken;
     else returnValue = output->childTokens[0];
     freeToken(output);
-    if (returnValue->type == -13) return self(fn, vars, returnValue);
+    if (returnValue->type == -13) return selfFunction(fn, vars, returnValue);
     else {
       freeVariables(vars);
       return returnValue;
