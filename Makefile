@@ -3,8 +3,6 @@ CFLAGS = -Iinclude
 EXEC= ./build/pipescript
 INSTALLDIR= /usr/local/bin
 
-all: bulid/pipescript
-
 build/pipescript: build build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
 	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -lm -o $(EXEC)
 

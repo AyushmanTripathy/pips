@@ -115,6 +115,7 @@ void error(char * msg, short int code) {
     case 3: printf("RUNTIME");
             break;
     case 4: printf("TYPE");
+            break;
     default: error("Unknown error code", 0);
   }
   printf(" ERROR ] %s\n", msg);
@@ -137,6 +138,8 @@ void printTokenTree(Token * n, int depth) {
     case -2: printf("\"%s\"", strings->data[n->int_data]);
              break;
     case -3: printf("%s", n->int_data ? "True" : "False");
+             break;
+    case -5: printf("Null");
              break;
     case -21: printf("IF");
               break;

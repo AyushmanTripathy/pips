@@ -160,6 +160,21 @@ int setVariable(Variable ** map, char * name, int type, int int_data) {
   return 0;
 }
 
+void mutateVariable(Variable ** map, char * name, int type, int int_data) {
+  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+  Variable * iterator = map[hashKey];
+  while (1) {
+    if (strcmp(iterator->key, name) == 0) {
+      iterator->type = type;
+      iterator->int_data = int_data;
+      return 1;
+    }
+    if (iterator->next == NULL) break;
+    iterator = iterator->next;
+  }
+  error("cannot mutate variable", 3);
+}
+
 Variable ** initVariables() {
   Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
   for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;

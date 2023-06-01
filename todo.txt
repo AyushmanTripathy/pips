@@ -2,7 +2,7 @@ TODO
 ----
 
 [x] pattern matching functions
-[ ] tail recursion
+[ ] self recursion
 [ ] higher order functions
 [ ] data structures
 
@@ -29,6 +29,7 @@ TOKEN TYPES
 -10 -> function types
 -11 -> def functions
 -12 -> def patterns
+-13 -> self call
 -15 -> return value
 
 -21 -> if

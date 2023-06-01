@@ -45,8 +45,6 @@ autocmd BufNewFile,BufRead *.pipescript set syntax=rust
 
 Pipescript is a very simple language.
 
-### basics
-
 ### Piping
 
 piping is used to channel output of one function into another.

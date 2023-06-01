@@ -31,7 +31,7 @@ Token * returnFunc(Tokens t, int l) {
   if (l == 0) return createToken(-15, NULL, 0);
 
   Token * output = createToken(-15, NULL, 1);
-  if (t[0]->type == -3 || t[0]->type == -5)
+  if (t[0]->type == -3 || t[0]->type == -5 || t[0]->type == -13)
     output->childTokens[0] = t[0];
   else output->childTokens[0] = copyToken(t[0]);
   return output;
@@ -192,7 +192,7 @@ Token * print(Tokens t, int l) {
                break;
       case -3: printf("%s ", t[i]->int_data ? "True":"False" );
                break;
-      case -5: printf("NULL ");
+      case -5: printf("Null ");
                break;
       default: error("print collapse", 0);
     }

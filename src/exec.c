@@ -9,6 +9,7 @@ extern void freeToken(Token *);
 extern void freeTokenTree(Token *);
 
 extern Token * createToken(int, char *, int);
+extern Token * copyToken(Token *);
 extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
@@ -72,7 +73,6 @@ Token * set(Tokens t, int l, Variable ** vars) {
 Token * execStatment(Token * t, Variable ** vars) {
   if (t == NULL) error("NULL execution", 3);
   if (t->data == NULL) error("Nameless Function execution.", 3);
-
   if (t->data[0] == '%') {
     Variable * v = getVariable(vars, t->childTokens[0]->data);
     if (v->type == -3) {
@@ -102,7 +102,16 @@ Token * execStatment(Token * t, Variable ** vars) {
       output = execFunction(fn, childrenCopy, t->childTokensCount);
     else if (strcmp(t->data, "set") == 0)
       output = set(childrenCopy, t->childTokensCount, vars);
-    else error("Function not found!", 3);
+    else if (strcmp(t->data, "self") == 0) {
+      Token * self = createToken(-13, NULL, t->childTokensCount);
+      free(self->childTokens);
+      for (int i = 0; i < t->childTokensCount; i++) {
+        if (copied[i] == 0) childrenCopy[i] = copyToken(childrenCopy[i]);
+      }
+      self->childTokens = childrenCopy;
+      free(copied);
+      return self;
+    } else error("Function not found!", 3);
   } else {
     if (childrenCopy[0] == NULL) printf("self calling %s\n", t->data);
     output = (fp->pointer)(childrenCopy, t->childTokensCount);
@@ -110,7 +119,7 @@ Token * execStatment(Token * t, Variable ** vars) {
 
   // freeing childrens
   for (int i = 0; i < t->childTokensCount; i++) {
-    if (copied[i] == 1) freeToken(childrenCopy[i]);
+    if (copied[i] == 1 && childrenCopy[i]->type != -13) freeToken(childrenCopy[i]);
   }
 
   free(childrenCopy);
@@ -147,53 +156,110 @@ Token * execDef(Function * fn, Tokens children, int childCount) {
       break;
     }
   }
- if (execSeq == NULL) error("No pattern matched", 3);
- Variable ** vars = initVariables();
- int i = 0;
- while (param != NULL) {
-  if (param->type == 0) {
-    Token * child = children[i];
-    addVariable(vars, param->data, child->type, child->int_data);
+  if (execSeq == NULL) error("No pattern matched", 3);
+  Variable ** vars = initVariables();
+  int i = 0;
+  while (param != NULL) {
+   if (param->type == 0) {
+     Token * child = children[i];
+     addVariable(vars, param->data, child->type, child->int_data);
+   }
+   i++;
+   param = param->next;
   }
-  i++;
-  param = param->next;
- }
- Token * output = execStatment(execSeq, vars);
- freeVariables(vars);
- if (output->type == -15) {
-    Token * returnValue;
-    if (output->childTokensCount == 0) returnValue = nullToken;
-    else returnValue = output->childTokens[0];
-    freeToken(output);
-    return returnValue;
+  Token * output = execStatment(execSeq, vars);
+  freeVariables(vars);
+  if (output->type == -15) {
+     Token * returnValue;
+     if (output->childTokensCount == 0) returnValue = nullToken;
+     else returnValue = output->childTokens[0];
+     freeToken(output);
+     return returnValue;
+   }
+  return output;
+}
+
+Token * self(Function * fn, Variable ** vars, Token * t) {
+  printf("called self\n");
+
+  Token * output;
+  Token ** children = t->childTokens;
+  int childCount = t->childTokensCount;
+  t->childTokens = NULL;
+  t->childTokensCount = 0;
+  freeToken(t);
+
+  int count = 0;
+  while(1) {
+    if (count == 100) error("Overflow", 3);
+    else count++;
+
+    // setting vars
+    if (fn->paramsCount != 0) {
+      if (fn->paramsCount != childCount)
+        error("Invalid no of arguments for self.", 3);
+      for (int i = 0; i < childCount; i++) {
+        char * name = fn->params[i]->data;
+        Token * child = children[i];
+        mutateVariable(vars, name, child->type, child->int_data);
+      }
+    }
+    for (int i = 0; i < childCount; i++) freeToken(children[i]);
+    free(children);
+    // execute
+    output = execScope(fn->execSeq, vars);
+
+    if (output->type == -15) {
+      Token * returnValue;
+      if (output->childTokensCount == 0) returnValue = nullToken;
+      else returnValue = output->childTokens[0];
+      freeToken(output);
+      if (returnValue->type == -13) {
+        printf("self loop:\n");
+        printTokenTree(returnValue, 1);
+        children = returnValue->childTokens;
+        childCount = returnValue->childTokensCount;
+        free(returnValue);
+      } else {
+        output = returnValue;
+        break;
+      }
+    } else break;
   }
- return output;
+
+  freeVariables(vars);
+  return output;
 }
 
 Token * execFunction(Function * fn, Tokens children, int childCount) {
   if (fn->paramsCount < 0)
     return execDef(fn, children, childCount);
-
+  
   Variable ** vars = initVariables();
   if (fn->paramsCount != 0) {
     if (fn->paramsCount != childCount)
-      error("Not sufficient arguments for function.", 3);
+      error("Invalid no of arguments for function.", 3);
     for (int i = 0; i < fn->paramsCount; i++) {
       char * name = fn->params[i]->data;
       Token * child = children[i];
       addVariable(vars, name, child->type, child->int_data);
     }
   }
+
   Token * output = execScope(fn->execSeq, vars);
-  freeVariables(vars);
 
   if (output->type == -15) {
     Token * returnValue;
     if (output->childTokensCount == 0) returnValue = nullToken;
     else returnValue = output->childTokens[0];
     freeToken(output);
-    return returnValue;
+    if (returnValue->type == -13) return self(fn, vars, returnValue);
+    else {
+      freeVariables(vars);
+      return returnValue;
+    }
   }
+  freeVariables(vars);
   return nullToken;
 }
 
