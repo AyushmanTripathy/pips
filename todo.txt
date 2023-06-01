@@ -25,6 +25,10 @@ TODO
 [ ] tail recursion
 [ ] higher order functions
 
+OPTIMISE
+-------
+[ ] copied arr of ints
+
 HANDLE
 ------
   
