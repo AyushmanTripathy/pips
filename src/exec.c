@@ -147,7 +147,7 @@ int matchPattern(Token * pattern, Tokens children, int childCount) {
 }
  
 Token * selfDef(Function * fn, Variable ** vars, Token * t) {
-  int patternCount = fn->paramsCount * -1 / 2;
+  int patternCount = fn->paramsCount * -1;
   Token * execSeq = NULL;
   Token * param;
 
@@ -163,11 +163,13 @@ Token * selfDef(Function * fn, Variable ** vars, Token * t) {
     if (count == 0) error("Self maximum call count exceeded", 3);
     else count--;
 
+    int match;
     for (int index = 0; index < patternCount; index++) {
-      Token * pattern = fn->params[index * 2];
+      Token * pattern = fn->params[index]->childTokens[0];
       if (matchPattern(pattern, children, childCount) == 1) {
-        execSeq = fn->params[(index * 2) + 1];
+        execSeq = fn->params[index]->childTokens[1];
         param = pattern;
+        match = index;
         break;
       }
     }
@@ -179,10 +181,19 @@ Token * selfDef(Function * fn, Variable ** vars, Token * t) {
       i++;
       param = param->next;
     }
-
     for (int i = 0; i < childCount; i++) freeToken(children[i]);
     free(children);
 
+    param = fn->params[match];
+    while(param->next != NULL) {
+      param = param->next;
+      Token * condition = execStatment(param->childTokens[0], vars);
+      if (condition->type != -3) error("Guard condition should be boolean", 3);
+      if (condition->int_data == 1) {
+        execSeq = param->childTokens[1];
+        break;
+      }
+    }
     output = execStatment(execSeq, vars);
 
     if (output->type == -15) {
@@ -206,14 +217,16 @@ Token * selfDef(Function * fn, Variable ** vars, Token * t) {
 }
 
 Token * execDef(Function * fn, Tokens children, int childCount) {
-  int patternCount = fn->paramsCount * -1 / 2;
+  int patternCount = fn->paramsCount * -1;
   Token * execSeq = NULL;
   Token * param;
+  int match;
   for (int index = 0; index < patternCount; index++) {
-    Token * pattern = fn->params[index * 2];
+    Token * pattern = fn->params[index]->childTokens[0];
     if (matchPattern(pattern, children, childCount) == 1) {
-      execSeq = fn->params[(index * 2) + 1];
+      execSeq = fn->params[index]->childTokens[1];
       param = pattern;
+      match = index;
       break;
     }
   }
@@ -227,6 +240,17 @@ Token * execDef(Function * fn, Tokens children, int childCount) {
    }
    i++;
    param = param->next;
+  }
+  // check for gaurds
+  param = fn->params[match];
+  while(param->next != NULL) {
+    param = param->next;
+    Token * condition = execStatment(param->childTokens[0], vars);
+    if (condition->type != -3) error("Guard condition should be boolean", 3);
+    if (condition->int_data == 1) {
+      execSeq = param->childTokens[1];
+      break;
+    }
   }
   Token * output = execStatment(execSeq, vars);
   if (output->type == -15) {

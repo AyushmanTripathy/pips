@@ -276,14 +276,13 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
     iterator = iterator->next;
   }
   if (paramsCount == 0) error("Empty Definition.", 1);
-  paramsCount *= 2;
-
   def->params = (Token **) malloc(paramsCount * sizeof(Token *));
   def->paramsCount = -1 * paramsCount;
 
   int index = 0;
+  Token * guardPosition = NULL;
   while(line != NULL) {
-    if (expectedIndent != line->indentation) break;
+    if (expectedIndent > line->indentation) break;
     TokenNode * n = parseLine(line);
     TokenNode * pattern = n;
     if (n->next == NULL) error("Invalid pattern.", 1);
@@ -296,8 +295,19 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
     free(n->next);
     n->next = NULL;
 
-    def->params[index++] = parseDefPattern(pattern);
-    def->params[index++] = analyseTokenNode(execSeq);
+    if (expectedIndent == line->indentation) {
+      Token * patternToken = createToken(-12, NULL, 2);
+      patternToken->childTokens[0] = parseDefPattern(pattern);
+      patternToken->childTokens[1] = analyseTokenNode(execSeq);
+      def->params[index++] = patternToken;
+      guardPosition = patternToken;
+    } else {
+      Token * guard = createToken(-12, NULL, 2);
+      guard->childTokens[0] = analyseTokenNode(pattern);
+      guard->childTokens[1] = analyseTokenNode(execSeq);
+      guardPosition->next = guard;
+      guardPosition = guard;
+    }
     line = line->next;
     freeTokenNode(pattern);
     freeTokenNode(execSeq);
