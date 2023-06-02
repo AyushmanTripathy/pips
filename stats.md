@@ -5,6 +5,7 @@ I tried to somewhat measure performance of pipescript by trying to calculate
 
 - [hardware](https://support.hp.com/in-en/document/c06410947)
 - Arch Linux with X org
+- tools: valgrind and time
 
 ### Conclusions
 
@@ -54,7 +55,7 @@ print(fibb(30, 1, 1, 0))
 
 1. pipescript without tail recursion
 
-```
+```rust
 fn fibb x:
   if [eq x 1]: return 1
   elif [eq x 0]: return 0
@@ -65,7 +66,7 @@ print | fibb 30
 
 2. python without tail recursion
 
-```
+```python
 def fibb(x):
     if (x == 1): return 1
     elif (x == 0): return 0
