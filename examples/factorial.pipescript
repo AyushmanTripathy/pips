@@ -1,0 +1,22 @@
+
+// simple factorial
+fn factorial x:
+  if [eq x 1]: return 1
+  return | multiply x | factorial [add x -1]
+
+// tail recursion factorial
+fn tailFactorial x y:
+  if [eq x 1]: return y
+  return | self [add x -1] [multiply x y]
+
+// pattern matching
+def patternFactorial
+  x: self x 1
+  1 y: pass y
+  x y: self [add x -1] [multiply x y]
+
+set "x" 5
+print "factorial of" x "is"
+print | factorial x
+print | tailFactorial x 1
+print | patternFactorial x

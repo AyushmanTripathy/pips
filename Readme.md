@@ -44,6 +44,7 @@ autocmd BufNewFile,BufRead *.pipescript set syntax=rust
 ## Documentation
 
 Pipescript is a very simple language.
+pipescript supports `#` and `//` comments
 
 ### Piping
 
@@ -170,6 +171,28 @@ execution starts with global function (global scope), hence it is possible to
 return out of global scope.  
 if a integer value is returned, it is used as exit code.
 
+-   tail recursion with self
+
+self keyword is used to call the parent function. this is used to mark a tail
+recurison which is more efficient and faster than normal recursion.
+
+```rust
+fn factorial x y:
+    if [eq x 1]: return y
+    return | self [add x -1] [multiply x y]
+```
+
+note: a return should always follow self calls (tail recursion fashion).
+
+```rust
+fn factorial x:
+    if [eq x 1]: return 1
+    return | multiply | self [add x -1]
+```
+
+doing something like this will result in a type error or a function collapse
+error (error raised when function cannot give an output).
+
 ### Buildin Functions
 
 1. Boolean functions
@@ -205,4 +228,4 @@ if a integer value is returned, it is used as exit code.
 | return       | any type | returns the first input from the function |
 | error        | 1 string | raises a raised error                     |
 
-thank you for trying out pipescript! 👍 
+thank you for trying out pipescript! 👍

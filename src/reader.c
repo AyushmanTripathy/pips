@@ -115,7 +115,7 @@ Line * cleanseLines(Line * head, Strings * strs) {
           string[len] = '\0';
           isQuote = 1;
         }
-      } else if (str[i] == '#') isComment = 1;
+      } else if (str[i] == '#' || str[i] == '/') isComment = 1;
       else if (isQuote == 1) string[stringLength++] = str[i];
 
       // handle quotes
