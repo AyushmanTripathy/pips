@@ -171,7 +171,7 @@ void mutateVariable(Variable ** map, char * name, int type, int int_data) {
     }
     iterator = iterator->next;
   }
-  error("cannot mutate variable", 3);
+  setVariable(map, name, type, int_data);
 }
 
 Variable ** initVariables() {
