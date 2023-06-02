@@ -2,7 +2,7 @@ TODO
 ----
 
 [x] pattern matching functions
-[ ] self recursion
+[x] self recursion
 [ ] higher order functions
 [ ] data structures
 

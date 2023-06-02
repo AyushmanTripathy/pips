@@ -122,12 +122,12 @@ if | eq number 1: print "number is still one"
 
 ### Functions
 
-function are everything in pipescript.  
+function are king in pipescript.  
 there are two types of functions
 
 -   fn functions
 
-these are normal functions
+these are good old functions
 
 ```rust
 fn factorial x:
@@ -142,37 +142,7 @@ functions can also be one liners
 fn square x: pow x 2
 ```
 
--   def functions
-
-these are pattern matching functions.
-
-```rust
-def foo
-    0: pass "Even"
-    1: pass "Odd"
-    x: foo | reminder x 2
-
-print 10 "is" | foo 10
-```
-
-return function can be used instead of pass if you like.  
-for example a tail recursion for fibbonnacci can be implemented as such
-
-```rust
-def factorial
-    x: factorial x 1
-    1 y: pass y
-    x y: factorial [add x -1] [multiply x y]
-```
-
-note pattern matching happens from top to bottom hence the `1 y` case must be
-before `x y` case to work.
-
-execution starts with global function (global scope), hence it is possible to
-return out of global scope.  
-if a integer value is returned, it is used as exit code.
-
--   tail recursion with self
+-   self (tail recursions)
 
 self keyword is used to call the parent function. this is used to mark a tail
 recurison which is more efficient and faster than normal recursion.
@@ -193,6 +163,58 @@ fn factorial x:
 
 doing something like this will result in a type error or a function collapse
 error (error raised when function cannot give an output).
+
+-   def functions
+
+these are pattern matching functions.
+
+```python
+def foo
+    0: pass "Even"
+    1: pass "Odd"
+    x: foo | reminder x 2
+
+print 10 "is" | foo 10
+```
+
+return function can be used instead of pass if you like.  
+for example a factorial be implemented as such
+
+```python
+def factorial
+    x: factorial x 1
+    1 y: pass y
+    x y: self [add x -1] [multiply x y]
+```
+
+note pattern matching happens from top to bottom hence the `1 y` case must be
+before `x y` case to work.
+
+for more advanded pattern we use guards, for example fibbonacci can be implemented as such.
+
+```python
+def patternFibb
+  x: patternFibb x 1 1 0
+  target x a b: self target [add x 1] [add a b] a
+    eq target x: pass a
+```
+
+if no guards match then default statment is executed.
+
+```python
+def trickFibb
+  target: self 1 1 0
+  x a b: self [add x 1] [add a b] a
+    eq target x: pass a
+```
+
+this is a handy little trick, note the use of self in first pattern case. when
+function is called with self, variables from earlier instances are saved unless
+overwritten.
+
+execution starts with global function (global scope), hence it is possible to
+return out of global scope.  
+if a integer value is returned, it is used as exit code.
 
 ### Buildin Functions
 
