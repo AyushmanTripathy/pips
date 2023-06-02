@@ -2,10 +2,10 @@
 #define TYPES_H
 
 typedef struct Token_tag {
-  int type;
+  short int type;
   char * data;
   int int_data;
-  int childTokensCount;
+  short int childTokensCount;
   struct Token_tag * next;
   struct Token_tag ** childTokens;
 } Token;
@@ -13,26 +13,26 @@ typedef struct Token_tag {
 typedef Token ** Tokens;
 
 typedef struct TokenNode_tag {
-  int type;
+  short int type;
   char * data;
   struct TokenNode_tag * next;
 } TokenNode;
 
 typedef struct Variable_tag {
   char * key;
-  int type;
+  short int type;
   int int_data;
   struct Variable_tag * next;
 } Variable;
 
 typedef struct {
   char ** data;
-  int length;
+  short int length;
 } Strings;
 
 typedef struct Function_tag {
   char * name;
-  int paramsCount;
+  short int paramsCount;
   Token ** params;
   Token * execSeq;
   struct Function_tag * next;
@@ -40,7 +40,7 @@ typedef struct Function_tag {
 
 typedef struct FunctionPointer_tag {
   char * key;
-  Token * (* pointer)(Token **, int);
+  Token * (* pointer)(Token **, short int);
   struct FunctionPointer_tag * next;
 } FunctionPointer;
 

@@ -5,7 +5,7 @@
 
 typedef struct Line_tag {
   char * data;
-  int indentation;
+  short int indentation;
   struct Line_tag * next;
 } Line;
 

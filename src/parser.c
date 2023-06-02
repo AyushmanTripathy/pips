@@ -6,15 +6,15 @@
 
 extern Strings * strings;
 
-extern void error(char *, int);
-extern Token* createToken(int, char *, int);
+extern void error(char *, short int);
+extern Token* createToken(short int, char *, int);
 extern void freeTokenTree(Token *);
 
 extern void addToFunctions(Function **, Function *);
-extern void printTokenTree(Token *, int);
+extern void printTokenTree(Token *, short int);
 extern void printTokenNode(TokenNode *);
 
-TokenNode * createTokenNode(char * str, int type) {
+TokenNode * createTokenNode(char * str, short int type) {
   TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
   t->data = str;
 
@@ -63,7 +63,7 @@ TokenNode * parseLine(Line * l) {
         t->next = createTokenNode(s, 0);
         t = t->next;
       }
-      t->next = createTokenNode(NULL, (int) str[i]);
+      t->next = createTokenNode(NULL, (short int) str[i]);
       start = i + 1;
     } else if (str[i] == ' ' ) {
       char * s = getTrimedString(str, start, i + 1);
@@ -79,9 +79,9 @@ TokenNode * parseLine(Line * l) {
   return head.next; 
 }
 
-int getChildCount(TokenNode * t) {
-  int count = -1;
-  int isBlock = 0;
+short int getChildCount(TokenNode * t) {
+  short int count = -1;
+  short int isBlock = 0;
   while (t != NULL) {
     if (t->type > 0) {
       switch ((char) t->type) {
@@ -105,13 +105,13 @@ int getChildCount(TokenNode * t) {
 }
 
 Token * analyseTokenNode(TokenNode * t) {
-  int childCount = getChildCount(t);
+  short int childCount = getChildCount(t);
   if (t->type > 0) error("Expected Function.", 1);
   Token * root = createToken(-10, t->data, childCount);
   t = t->next;
   if (t == NULL) return root;
 
-  int i = 0, isBlock = 0; 
+  short int i = 0, isBlock = 0; 
   Token ** childrens = root->childTokens;
   while(t != NULL) {
     if (t->type > 0) {
@@ -119,12 +119,11 @@ Token * analyseTokenNode(TokenNode * t) {
         case '|':
           if (isBlock != 0) break;
           if (t->next == NULL) error("Empty pipe.", 1);
-          else if (t->next->type == (int) '|') error("Double pipe.", 1);
+          else if (t->next->type == (short int) '|') error("Double pipe.", 1);
           childrens[i++] = analyseTokenNode(t->next);
           return root;
         case '[':
-          if (isBlock == 0)
-            childrens[i++] = analyseTokenNode(t->next); 
+          if (isBlock == 0) childrens[i++] = analyseTokenNode(t->next); 
           isBlock++;
           break;
         case ']':
@@ -166,7 +165,7 @@ Function * parseFunction(TokenNode * n) {
 
   // get params
   TokenNode * iterator = n;
-  int paramsCount = -1;
+  short int paramsCount = -1;
   while(iterator != NULL && iterator->type != 58) {
     paramsCount++;
     iterator = iterator->next;
@@ -176,7 +175,7 @@ Function * parseFunction(TokenNode * n) {
   else {
     Token ** params = (Token **) malloc(sizeof(Token));
     iterator = n->next;
-    for(int i = 0; i < paramsCount; i++) {
+    for(short int i = 0; i < paramsCount; i++) {
       if (iterator->type != 0)
         error("Name Token expected as function parameter", 1);
       params[i] = createToken(iterator->type, iterator->data, 0);
@@ -192,7 +191,7 @@ Function * parseFunction(TokenNode * n) {
   return fn;
 }
 
-Token * parseIfStatment(TokenNode * n, int isElif) {
+Token * parseIfStatment(TokenNode * n, short int isElif) {
   Token * ifToken = isElif ?
     createToken(-22, NULL, 2):
     createToken(-21, NULL, 2);
@@ -262,13 +261,13 @@ Token * parseDefPattern(TokenNode * n) {
   return head;
 }
 
-Function * parseDef(char * name, Line * line,int expectedIndent) {
+Function * parseDef(char * name, Line * line, short int expectedIndent) {
   Function * def = (Function *) malloc(sizeof(Function));
   def->name = name;
   def->next = NULL;
   def->execSeq = NULL;
 
-  int paramsCount = 0;
+  short int paramsCount = 0;
   Line * iterator = line;
   while (iterator != NULL) {
     if (expectedIndent == iterator->indentation) paramsCount++;
@@ -279,7 +278,7 @@ Function * parseDef(char * name, Line * line,int expectedIndent) {
   def->params = (Token **) malloc(paramsCount * sizeof(Token *));
   def->paramsCount = -1 * paramsCount;
 
-  int index = 0;
+  short int index = 0;
   Token * guardPosition = NULL;
   while(line != NULL) {
     if (expectedIndent > line->indentation) break;
@@ -322,7 +321,7 @@ void classifyScopesError(char * msg, TokenNode * n, Token * t) {
 }
 
 Token * classifyScopes(Line * line, Function ** functions) {
-  int indent = line->indentation; 
+  short int indent = line->indentation; 
  
   Token * head = NULL;
   Token * curr = NULL;

@@ -1,6 +1,7 @@
 TODO
 ----
 
+[ ] floats and bigger numbers
 [x] pattern matching functions
 [x] self recursion
 [ ] higher order functions

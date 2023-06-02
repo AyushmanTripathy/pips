@@ -4,20 +4,20 @@
 
 #include "utils.h"
 
-extern int keywordsLength;
+extern short int keywordsLength;
 extern char keywords[][5];
 extern void error(char *, int);
 
 // IS FUNCTIONS
-int isKeyword(char * s) {
+short int isKeyword(char * s) {
   for (int i = 0; i < keywordsLength; i++) {
     if (!strcmp(s, keywords[i])) return -250 + i;
   }
   return 0;
 }
 
-int isNumber(char * str) {
-  int i = 0;
+short int isNumber(char * str) {
+  short int i = 0;
   if (str[i] == '-') i++;
 
   while(str[i] != '\0') {
@@ -30,7 +30,7 @@ int isNumber(char * str) {
   return 1;
 }
 
-int isSymbol(char s) {
+short int isSymbol(char s) {
   switch (s) {
     case ':': return 1;
     case ']': return 1;
@@ -40,7 +40,7 @@ int isSymbol(char s) {
   return 0;
 }
 
-int isTrimable(char s) {
+short int isTrimable(char s) {
   switch (s) {
     case ' ': return 1;
     case '\t': return 1;
@@ -88,8 +88,9 @@ char * trimStr(char * str) {
   return newStr;
 }
 
-int calcSpaces(char * str) {
-  int count = 0, len = strlen(str);
+short int calcSpaces(char * str) {
+  short int count = 0;
+  int len = strlen(str);
   for(int i = 0; i < len; i++) {
     if (str[i] == ' ') count++;
     else break;
@@ -97,8 +98,8 @@ int calcSpaces(char * str) {
   return count;
 }
 
-int nextQuote(char * str, int index) {
-  int counter = 0;
+short int nextQuote(char * str, int index) {
+  short int counter = 0;
   for (int i = index; str[i] != '"'; i++) {
     if (str[i] == '\0') error("Unescaped Quote", 1);
     counter++;

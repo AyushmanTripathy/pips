@@ -47,8 +47,8 @@ print(fibb(30, 1, 1, 0))
 
 | subject       | time | total memory usage | allocations | frees |
 | ------------- | ---- | ------------------ | ----------- | ----- |
-| fn functions  | 5ms  | 33,186 bytes       | 965         | 965   |
-| def functions | 5ms  | 32,001 bytes       | 802         | 802   |
+| fn functions  | 5ms  | 32,298 bytes       | 962         | 962   |
+| def functions | 5ms  | 31,317 bytes       | 799         | 799   |
 | python        | 30ms | 1,608,940 bytes    | 3,407       | 3,404 |
 
 ## WITHOUT TAIL RECURSION

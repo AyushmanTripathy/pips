@@ -13,7 +13,7 @@ Token * trueBooleanToken;
 
 void freeStrings(Strings * strs) {
   if (strs->length != 0) {
-    for (int i = 0; i < strs->length; i++) free(strs->data[i]);
+    for (short int i = 0; i < strs->length; i++) free(strs->data[i]);
     free(strs->data);
   }
   free(strs);
@@ -28,7 +28,7 @@ void freeToken(Token * t) {
 
 void freeTokenTree(Token * t) {
   if (t == NULL) return;
-  for (int i = 0; i < t->childTokensCount; i++)
+  for (short int i = 0; i < t->childTokensCount; i++)
     freeTokenTree(t->childTokens[i]);
   if (t->next != NULL)
     freeTokenTree(t->next);
@@ -46,7 +46,7 @@ void freeMemory() {
   if (defFunctions != NULL) freeFunctionPointers(defFunctions);
 }
 
-Token * createToken(int type, char * data, int childCount) {
+Token * createToken(short int type, char * data, int childCount) {
   Token * t = (Token *) malloc(sizeof(Token));
   t->next = NULL;
 
@@ -125,13 +125,13 @@ void error(char * msg, short int code) {
   exit(1);
 }
 
-void printTokenTree(Token * n, int depth) {
+void printTokenTree(Token * n, short int depth) {
   if (depth > 10) {
     printf("print overload\n");
     exit(1);
   }
   if (n == NULL) return;
-  for (int i = 1; i < depth; i++) printf("  ");
+  for (short int i = 1; i < depth; i++) printf("  ");
   if (depth != 0) printf("|-");
 
   switch (n->type) {
@@ -157,7 +157,7 @@ void printTokenTree(Token * n, int depth) {
 
   if (n->childTokensCount != 0) {
     Token ** childrens = n->childTokens;
-    for (int i = 0; i < n->childTokensCount; i++) {
+    for (short int i = 0; i < n->childTokensCount; i++) {
       printTokenTree(childrens[i] , depth + 1);
     }
   }
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
   falseBooleanToken = createToken(-3, NULL, 0);
   trueBooleanToken = createToken(-3, NULL, 1);
 
-  int exitCode = execGlobal(global);
+  short int exitCode = execGlobal(global);
   printf("-------------------\n");
   freeTokenTree(global);
   freeMemory();

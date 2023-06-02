@@ -9,15 +9,15 @@ Function * getFromFunctions(Function **, char *);
 void freeFunctionHashMap(Function **);
 
 FunctionPointer ** initFunctionPointers();
-void addToFunctionPointers(FunctionPointer **, char *, Token* (*)(Token **, int));
+void addToFunctionPointers(FunctionPointer **, char *, Token* (*)(Token **, short int));
 FunctionPointer * getFromFunctionPointers(FunctionPointer **, char *);
 void freeFunctionPointers(FunctionPointer **);
 
 Variable ** initVariables();
 Variable * getVariable(Variable **, char *);
-void addVariable(Variable **, char *, int, int);
-int setVariable(Variable **, char *, int, int);
-void mutateVariable(Variable **, char *, int, int);
+void addVariable(Variable **, char *, short int, int);
+short int setVariable(Variable **, char *, short int, int);
+void mutateVariable(Variable **, char *, short int, int);
 void freeVariables(Variable ** );
 
 #endif

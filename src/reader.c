@@ -4,11 +4,11 @@
 
 #include "reader.h"
 
-extern int tab_space_count;
+extern short int tab_space_count;
 
 extern void error(char *, short int);
 extern char * trimStr(char *);
-extern int calcSpaces(char *);
+extern short int calcSpaces(char *);
 
 void printLines(Line * line) {
   while (line != NULL) {
@@ -70,7 +70,7 @@ void appendString(Strings * strs, char * s) {
   strs->data = newArr;
 }
 
-int getStringLength(char * str, int x) {
+short int getStringLength(char * str, int x) {
   for (int i = x; 1; i++) {
     if (str[i] == '\0') return -1;
     else if (str[i] == '"') return i - x;
@@ -78,9 +78,9 @@ int getStringLength(char * str, int x) {
 }
 
 Line * cleanseLines(Line * head, Strings * strs) {
-  int isQuote = 0, escapedQuote = 0, isComment = 0; 
+  short int isQuote = 0, escapedQuote = 0, isComment = 0; 
   char * string = NULL;
-  int stringLength = 0;
+  short int stringLength = 0;
 
   Line * prev = NULL;
   Line * l = head;
@@ -105,7 +105,7 @@ Line * cleanseLines(Line * head, Strings * strs) {
           string = NULL;
           stringLength = 0;
         } else {
-          int len = getStringLength(str, i + 1);
+          short int len = getStringLength(str, i + 1);
           if (len == -1) {
             freeLines(head);
             free(newStr);

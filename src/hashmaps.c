@@ -4,31 +4,31 @@
 #include <string.h>
 #include "hashmaps.h"
 
-extern int hashmap_size;
-extern int hashmap_r;
-extern int variable_hashmap_size;
-extern int variable_hashmap_r;
+extern short int hashmap_size;
+extern short int hashmap_r;
+extern short int variable_hashmap_size;
+extern short int variable_hashmap_r;
 
-extern void error(char *, int);
+extern void error(char *, short int);
 extern void freeTokenTree(Token *);
 extern void freeToken(Token *);
 
 // HASHMAP
-int hashFunc(char * str, int size, int r) {
-  int hash = 0;
+short int hashFunc(char * str, short int size, short int r) {
+  short int hash = 0;
   for (int i = 0; str[i] != '\0'; i++)
-    hash = ((r * hash) + (int) str[i]) % size;
+    hash = ((r * hash) + (short int) str[i]) % size;
   return hash;
 }
 
 Function ** initFunctionHashMap() {
   Function ** buckets = (Function **) malloc(hashmap_size * sizeof(Function *));
-  for (int i = 0; i < hashmap_size; i++) buckets[i] = NULL;
+  for (short int i = 0; i < hashmap_size; i++) buckets[i] = NULL;
   return buckets;
 }
 
 void addToFunctions(Function ** buckets, Function * fn) {
-  int hashKey = hashFunc(fn->name, hashmap_size, hashmap_r);
+  short int hashKey = hashFunc(fn->name, hashmap_size, hashmap_r);
   if (buckets[hashKey] == NULL) buckets[hashKey] = fn;
   else {
     Function * iterator = buckets[hashKey];
@@ -38,7 +38,7 @@ void addToFunctions(Function ** buckets, Function * fn) {
 }
 
 Function * getFromFunctions(Function ** buckets, char * name) {
-  int hashKey = hashFunc(name, hashmap_size, hashmap_r);
+  short int hashKey = hashFunc(name, hashmap_size, hashmap_r);
   if (buckets[hashKey] != NULL) {
     Function * iterator = buckets[hashKey];
     while(strcmp(iterator->name, name) != 0) {
@@ -54,11 +54,11 @@ void freeFunction(Function * fn) {
 
   if (fn->paramsCount < 0) {
     fn->paramsCount *= -1;
-    for (int i = 0; i < fn->paramsCount; i++)
+    for (short int i = 0; i < fn->paramsCount; i++)
       freeTokenTree(fn->params[i]);
   } else {
     freeTokenTree(fn->execSeq);
-    for (int i = 0; i < fn->paramsCount; i++)
+    for (short int i = 0; i < fn->paramsCount; i++)
       freeToken(fn->params[i]);
   }
   free(fn->params);
@@ -67,7 +67,7 @@ void freeFunction(Function * fn) {
 }
  
 void freeFunctionHashMap(Function ** buckets) {
-  for (int i = 0; i < hashmap_size; i++) {
+  for (short int i = 0; i < hashmap_size; i++) {
     if (buckets[i] != NULL) freeFunction(buckets[i]);
   }
   free(buckets);
@@ -76,12 +76,12 @@ void freeFunctionHashMap(Function ** buckets) {
 FunctionPointer ** initFunctionPointers() {
   FunctionPointer ** arr 
     = (FunctionPointer **) malloc(hashmap_size * sizeof(FunctionPointer));
-  for (int i = 0; i < hashmap_size; i++) arr[i] = NULL;
+  for (short int i = 0; i < hashmap_size; i++) arr[i] = NULL;
   return arr;
 }
 
-void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Tokens, int)) {
-  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
+void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Tokens, short int)) {
+  short int hashKey = hashFunc(key, hashmap_size, hashmap_r);
   
   FunctionPointer * fp = (FunctionPointer *) malloc(sizeof(FunctionPointer));
   fp->next = NULL;
@@ -97,7 +97,7 @@ void addToFunctionPointers(FunctionPointer ** map, char * key, Token* (*fn)(Toke
 }
 
 FunctionPointer * getFromFunctionPointers(FunctionPointer ** map, char * key) {
-  int hashKey = hashFunc(key, hashmap_size, hashmap_r);
+  short int hashKey = hashFunc(key, hashmap_size, hashmap_r);
   
   if (map[hashKey] != NULL) {
     FunctionPointer * iterator = map[hashKey];
@@ -115,14 +115,14 @@ void freeFunctionPointer(FunctionPointer * fp) {
 }
 
 void freeFunctionPointers(FunctionPointer ** map) {
-  for (int i = 0; i < hashmap_size; i++) {
+  for (short int i = 0; i < hashmap_size; i++) {
     if (map[i] != NULL) freeFunctionPointer(map[i]);
   }
   free(map);
 }
 
-void addVariable(Variable ** map, char * name, int type, int int_data) {
-  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+void addVariable(Variable ** map, char * name, short int type, int int_data) {
+  short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   Variable * v = (Variable *) malloc(sizeof(Variable));
   v->next = NULL;
@@ -138,8 +138,8 @@ void addVariable(Variable ** map, char * name, int type, int int_data) {
   }
 }
 
-int setVariable(Variable ** map, char * name, int type, int int_data) {
-  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+short int setVariable(Variable ** map, char * name, short int type, int int_data) {
+  short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   Variable * v = (Variable *) malloc(sizeof(Variable));
   v->next = NULL;
@@ -160,8 +160,8 @@ int setVariable(Variable ** map, char * name, int type, int int_data) {
   return 0;
 }
 
-void mutateVariable(Variable ** map, char * name, int type, int int_data) {
-  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+void mutateVariable(Variable ** map, char * name, short int type, int int_data) {
+  short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   Variable * iterator = map[hashKey];
   while (iterator != NULL) {
     if (strcmp(iterator->key, name) == 0) {
@@ -176,7 +176,7 @@ void mutateVariable(Variable ** map, char * name, int type, int int_data) {
 
 Variable ** initVariables() {
   Variable ** arr = (Variable **) malloc(variable_hashmap_size * sizeof(Variable));
-  for (int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
+  for (short int i = 0; i < variable_hashmap_size; i++) arr[i] = NULL;
   addVariable(arr, "True", -3, 1);
   addVariable(arr, "False", -3, 0);
   addVariable(arr, "Null", -5, 0);
@@ -189,14 +189,14 @@ void freeVariable(Variable * v) {
 }
 
 void freeVariables(Variable ** map) {
-  for (int i = 0; i < variable_hashmap_size; i++) {
+  for (short int i = 0; i < variable_hashmap_size; i++) {
     if (map[i] != NULL) freeVariable(map[i]);
   }
   free(map);
 }
 
 Variable * getVariable(Variable ** map, char * name) {
-  int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
+  short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   if (map[hashKey] != NULL) {
     Variable * iterator = map[hashKey];
