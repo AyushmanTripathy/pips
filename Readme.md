@@ -11,7 +11,8 @@ This is still a work in progress
 1. human readable code.
 1. piping is a great idea.
 
-plz report any bugs by creating an issue.
+plz report any bugs by creating an issue.  
+for getting an idea about performance of pipescript [check out.](./stats.md)
 
 ## Features
 

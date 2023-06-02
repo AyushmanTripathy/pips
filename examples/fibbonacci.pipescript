@@ -1,0 +1,23 @@
+
+// simple fibbonacci
+fn fibb x:
+  if [eq x 1]: return 1
+  elif [eq x 0]: return 0
+  return | add [fibb [add x -1]] [fibb [add x -2]]
+
+// tail recursion fibbonacci
+fn tailFibb target x a b:
+  if [eq target x]: return a
+  return | self target [add x 1] [add a b] a
+
+// pattern matching fibbonacci
+def patternFibb
+  o: patternFibb o 1 1 0
+  t x a b: self t [add x 1] [add a b] a
+    eq t x: pass a
+
+set "x" 27
+print "factorial of" x "is"
+print | fibb x
+print | tailFibb x 1 1 0
+print | patternFibb x
