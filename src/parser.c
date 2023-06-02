@@ -7,14 +7,14 @@
 extern Strings * strings;
 
 extern void error(char *, short int);
-extern Token* createToken(short int, char *, int);
+extern Token* createToken(char, char *, int);
 extern void freeTokenTree(Token *);
 
 extern void addToFunctions(Function **, Function *);
 extern void printTokenTree(Token *, short int);
 extern void printTokenNode(TokenNode *);
 
-TokenNode * createTokenNode(char * str, short int type) {
+TokenNode * createTokenNode(char * str, char type) {
   TokenNode * t = (TokenNode *) malloc(sizeof(TokenNode)); 
   t->data = str;
 
@@ -63,7 +63,7 @@ TokenNode * parseLine(Line * l) {
         t->next = createTokenNode(s, 0);
         t = t->next;
       }
-      t->next = createTokenNode(NULL, (short int) str[i]);
+      t->next = createTokenNode(NULL, (char) str[i]);
       start = i + 1;
     } else if (str[i] == ' ' ) {
       char * s = getTrimedString(str, start, i + 1);
@@ -115,11 +115,11 @@ Token * analyseTokenNode(TokenNode * t) {
   Token ** childrens = root->childTokens;
   while(t != NULL) {
     if (t->type > 0) {
-      switch ((char) t->type) {
+      switch (t->type) {
         case '|':
           if (isBlock != 0) break;
           if (t->next == NULL) error("Empty pipe.", 1);
-          else if (t->next->type == (short int) '|') error("Double pipe.", 1);
+          else if (t->next->type == '|') error("Double pipe.", 1);
           childrens[i++] = analyseTokenNode(t->next);
           return root;
         case '[':
@@ -330,9 +330,9 @@ Token * classifyScopes(Line * line, Function ** functions) {
     else if (indent < line->indentation);
     else {
       TokenNode * n = parseLine(line);
-      if (n->type <= -200) {
+      if (n->type <= -80) {
         switch (n->type) {
-          case -250:
+          case -100:
             Function * fn = NULL;
             if (indent != 0) 
               classifyScopesError("Functions declared in non global scope.", n, head);
@@ -344,7 +344,7 @@ Token * classifyScopes(Line * line, Function ** functions) {
             }
             addToFunctions(functions, fn);
             break;
-          case -249:
+          case -99:
             if (head == NULL) curr = parseIfStatment(n, 0);
             else {
               curr->next = parseIfStatment(n, 0);
@@ -356,7 +356,7 @@ Token * classifyScopes(Line * line, Function ** functions) {
               else classifyScopesError("Empty conditional block", n, head);
             }
             break;
-          case -248:
+          case -98:
             if (curr == NULL) classifyScopesError("if statement expected.", n, head);
             curr->next = parseIfStatment(n, 1);
             curr = curr->next;
@@ -365,7 +365,7 @@ Token * classifyScopes(Line * line, Function ** functions) {
               (curr->childTokens)[1] = classifyScopes(line->next, functions);
               else classifyScopesError("Empty conditional block", n, head);
             break;
-          case -247:
+          case -97:
             if (curr == NULL) classifyScopesError("if statement expected.", n, head);
             curr->next = parseElseStatment(n);
             curr = curr->next;
@@ -374,7 +374,7 @@ Token * classifyScopes(Line * line, Function ** functions) {
               (curr->childTokens)[0] = classifyScopes(line->next, functions);
               else classifyScopesError("Empty conditional block", n, head);
             break;
-          case -246:
+          case -96:
             if (n->next == NULL || n->next->data == NULL)
               classifyScopesError("name is required to define a function.", n, head);
             Function * def = parseDef(n->next->data, line->next, indent + 1);

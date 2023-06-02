@@ -121,7 +121,7 @@ void freeFunctionPointers(FunctionPointer ** map) {
   free(map);
 }
 
-void addVariable(Variable ** map, char * name, short int type, int int_data) {
+void addVariable(Variable ** map, char * name, char type, int int_data) {
   short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   Variable * v = (Variable *) malloc(sizeof(Variable));
@@ -138,7 +138,7 @@ void addVariable(Variable ** map, char * name, short int type, int int_data) {
   }
 }
 
-short int setVariable(Variable ** map, char * name, short int type, int int_data) {
+short int setVariable(Variable ** map, char * name, char type, int int_data) {
   short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   
   Variable * v = (Variable *) malloc(sizeof(Variable));
@@ -160,7 +160,7 @@ short int setVariable(Variable ** map, char * name, short int type, int int_data
   return 0;
 }
 
-void mutateVariable(Variable ** map, char * name, short int type, int int_data) {
+void mutateVariable(Variable ** map, char * name, char type, int int_data) {
   short int hashKey = hashFunc(name, variable_hashmap_size, variable_hashmap_r);
   Variable * iterator = map[hashKey];
   while (iterator != NULL) {

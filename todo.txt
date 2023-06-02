@@ -9,7 +9,7 @@ TODO
 
 OPTIMISE
 -------
-[ ] copied arr of ints
+[x] copied arr of ints
 
 HANDLE
 ------
@@ -38,4 +38,4 @@ TOKEN TYPES
 -23 -> else
 
 +ve number -> ascii number of special characters
--250 + keywordIndex -> keywords
+-100 + keywordIndex -> keywords

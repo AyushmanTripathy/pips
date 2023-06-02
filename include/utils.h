@@ -2,7 +2,7 @@
 #define UTILS_H
 
 // IS FUNCTIONS
-short int isKeyword(char * s);
+char isKeyword(char * s);
 short int isNumber(char * s);
 short int isSymbol(char s);
 short int isTrimable(char s);

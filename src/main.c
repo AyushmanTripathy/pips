@@ -46,7 +46,7 @@ void freeMemory() {
   if (defFunctions != NULL) freeFunctionPointers(defFunctions);
 }
 
-Token * createToken(short int type, char * data, int childCount) {
+Token * createToken(char type, char * data, int childCount) {
   Token * t = (Token *) malloc(sizeof(Token));
   t->next = NULL;
 

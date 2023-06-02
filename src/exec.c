@@ -86,7 +86,7 @@ Token * execStatment(Token * t, Variable ** vars) {
 
   Token ** children = t->childTokens;
   Tokens childrenCopy = (Tokens) malloc(t->childTokensCount * sizeof(Token *));
-  short int * copied = (short int *) malloc(t->childTokensCount * sizeof(short int));
+  char * copied = (char *) malloc(t->childTokensCount * sizeof(char));
   for (short int i = 0; i < t->childTokensCount; i++) copied[i] = 0;
 
   for (short int i = 0; i < t->childTokensCount; i++) {

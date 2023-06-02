@@ -2,7 +2,7 @@
 #define TYPES_H
 
 typedef struct Token_tag {
-  short int type;
+  char type;
   char * data;
   int int_data;
   short int childTokensCount;
@@ -13,14 +13,14 @@ typedef struct Token_tag {
 typedef Token ** Tokens;
 
 typedef struct TokenNode_tag {
-  short int type;
+  char type;
   char * data;
   struct TokenNode_tag * next;
 } TokenNode;
 
 typedef struct Variable_tag {
   char * key;
-  short int type;
+  char type;
   int int_data;
   struct Variable_tag * next;
 } Variable;

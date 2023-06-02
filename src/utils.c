@@ -9,9 +9,9 @@ extern char keywords[][5];
 extern void error(char *, int);
 
 // IS FUNCTIONS
-short int isKeyword(char * s) {
+char isKeyword(char * s) {
   for (int i = 0; i < keywordsLength; i++) {
-    if (!strcmp(s, keywords[i])) return -250 + i;
+    if (!strcmp(s, keywords[i])) return -100 + i;
   }
   return 0;
 }
