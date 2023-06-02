@@ -12,7 +12,7 @@ This is still a work in progress
 1. piping is a great idea.
 
 plz report any bugs by creating an issue.  
-for getting an idea about performance of pipescript [check out.](./stats.md)
+for getting an idea about performance of pipescript [check out.](./extras/stats.md)
 
 ## Features
 
@@ -34,13 +34,8 @@ make clean install //with privilege
 pipescript <input file>
 ```
 
-to change the installation location, change the $INSTALLDIR in Makefile.
-
-syntax highlighting is pretty similer to rust's. so you can change settings in your editor, for example in vim
-
-```vimscript
-autocmd BufNewFile,BufRead *.pipescript set syntax=rust
-```
+to change the installation location, change the $INSTALLDIR in Makefile.  
+intrested in syntax highlighting [check out.](./extras/syntax_highlighting.md)
 
 ## Documentation
 
