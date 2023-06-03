@@ -2,6 +2,8 @@
 #define CONFIG_H
 
 short const int tab_space_count = 2;
+short const int number_packet_count = 5;
+short const int number_packet_size = 30;
 
 short const int hashmap_size = 113;
 short const int hashmap_r = 31;

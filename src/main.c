@@ -7,6 +7,9 @@ Strings * strings = NULL;
 Function ** functions = NULL;
 FunctionPointer ** defFunctions = NULL;
 
+double ** numbers = NULL;
+short int numberCurrentIndex = 0;
+
 Token * nullToken;
 Token * falseBooleanToken;
 Token * trueBooleanToken;
@@ -35,6 +38,21 @@ void freeTokenTree(Token * t) {
   freeToken(t);
 }
 
+double ** initNumbers() {
+  double ** nums = (double **) malloc(number_packet_count * sizeof(double *));
+  for (short int i = 0; i < number_packet_count; i++)
+    nums[i] = NULL;
+  return nums;
+}
+
+void freeNumbers(double ** num) {
+  int packetIndex = 0;
+  for (short int x = 0; x < number_packet_count; x++) {
+    if (num[x] != NULL) free(num[x]);
+  }
+  free(num);
+}
+
 void freeMemory() {
   if (nullToken != NULL) {
     free(nullToken);
@@ -44,6 +62,23 @@ void freeMemory() {
   if (strings != NULL) freeStrings(strings);
   if (functions != NULL) freeFunctionHashMap(functions);
   if (defFunctions != NULL) freeFunctionPointers(defFunctions);
+  if (numbers != NULL) freeNumbers(numbers);
+}
+
+double getNumber(short int index) {
+  short int x = index / number_packet_size;
+  short int i = index % number_packet_size;
+  return numbers[x][i]; 
+}
+
+short int addNumber(double num) {
+  short int x = numberCurrentIndex / number_packet_size;
+  if (numbers[x] == NULL) 
+    numbers[x] = (double *) malloc(number_packet_size * sizeof(double));
+  short int i = numberCurrentIndex  % number_packet_size;
+  numbers[x][i] = num;
+  numberCurrentIndex++;
+  return numberCurrentIndex - 1;
 }
 
 Token * createToken(char type, char * data, int childCount) {
@@ -53,7 +88,8 @@ Token * createToken(char type, char * data, int childCount) {
   switch (type) {
     case -1:
       t->type = -1;
-      t->int_data = data == NULL ? childCount: atoi(data);
+      if (data == NULL) t->int_data = childCount;
+      else t->int_data = addNumber(strtof(data, NULL));
       t->data = NULL;
       t->childTokens = NULL;
       t->childTokensCount = 0;
@@ -135,7 +171,7 @@ void printTokenTree(Token * n, short int depth) {
   if (depth != 0) printf("|-");
 
   switch (n->type) {
-    case -1: printf("%d", n->int_data);
+    case -1: printf("%lf", getNumber(n->int_data));
              break;
     case -2: printf("\"%s\"", strings->data[n->int_data]);
              break;
@@ -169,6 +205,7 @@ void printTokenTree(Token * n, short int depth) {
 int main(int argc, char *argv[]) {
   if (argc < 2) error("No Input Specified.", 0);
 
+  numbers = initNumbers();
   functions = initFunctionHashMap();
   Token * global = parseFile(argv[1], functions);
   printTokenTree(global, 0);

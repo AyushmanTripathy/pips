@@ -14,6 +14,9 @@ extern Token * nullToken;
 extern Token * trueBooleanToken;
 extern Token * falseBooleanToken;
 
+extern int addNumber(double);
+extern double getNumber(int);
+
 Token * errorFunc(Tokens t, int l) {
   Token * input = t[0];
   if (input->type != -2) error("error function", 4);
@@ -76,7 +79,8 @@ void checkInputForBoolFuncs(Tokens t, int l, char * name) {
 Token * eq(Tokens t, int l) {
   checkInputForBoolFuncs(t, l, "eq function");
   if (t[0]->type == -1 || t[0]->type == -3) {
-    if (t[0]->int_data == t[1]->int_data) return trueBooleanToken;
+    if (getNumber(t[0]->int_data) == getNumber(t[1]->int_data))
+      return trueBooleanToken;
     else return falseBooleanToken;
   }
 }
@@ -119,23 +123,23 @@ Token * or(Tokens t, int l) {
 Token * add(Tokens t, int l) {
   if (l < 1)
     error("add function requires atleast one argument", 3);
-  int sum = 0;
-  for(int i = 0; i < l; i++) {
+  double sum = 0;
+  for(short int i = 0; i < l; i++) {
     if (t[i]->type != -1) error("add function", 4);
-    else sum += t[i]->int_data;
+    else sum += getNumber(t[i]->int_data);
   }
-  return createToken(-1, NULL, sum);
+  return createToken(-1, NULL, addNumber(sum));
 }
 
 Token * multiply(Tokens t, int l) {
   if (l < 1)
     error("multiply function requires atleast one argument", 3);
-  int sum = 1;
-  for(int i = 0; i < l; i++) {
+  double sum = 1;
+  for(short int i = 0; i < l; i++) {
     if (t[i]->type != -1) error("add function", 4);
-    else sum *= t[i]->int_data;
+    else sum *= getNumber(t[i]->int_data);
   }
-  return createToken(-1, NULL, sum);
+  return createToken(-1, NULL, addNumber(sum));
 }
 
 Token * reminder(Tokens t, int l) {
@@ -186,7 +190,7 @@ Token * print(Tokens t, int l) {
   for (int i = 0; i < l; i++) {
     switch (t[i]->type) {
       case  0: printf("%s ", t[i]->data);
-      case -1: printf("%d ", t[i]->int_data);
+      case -1: printf("%lf ", getNumber(t[i]->int_data));
                break;
       case -2: printf("%s ", strings->data[t[i]->int_data]);
                break;

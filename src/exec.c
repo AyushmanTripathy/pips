@@ -9,6 +9,7 @@ extern void error(char *,short int);
 extern void printTokenTree(Token *, short int);
 extern void freeToken(Token *);
 extern void freeTokenTree(Token *);
+extern double getNumber(short int);
 
 extern Token * createToken(short int, char *, int);
 extern Token * copyToken(Token *);
@@ -136,7 +137,8 @@ short int matchPattern(Token * pattern, Tokens children, int childCount) {
     Token * child = children[i];
     switch (pattern->type) {
       case -1:
-        if (pattern->int_data != child->int_data) return 0;
+        if (pattern->int_data != getNumber(child->int_data))
+          return 0;
         break;
     }
     i++;
