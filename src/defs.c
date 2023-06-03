@@ -21,8 +21,9 @@ extern double getNumber(int);
 char comp(int a, int b) {
   double diff = getNumber(a) - getNumber(b);
   if (diff < 0) {
-    if (diff * 1 < FLT_EPSILON) return 0;
+    if (diff * -1 < FLT_EPSILON) return 0;
   } else if (diff < FLT_EPSILON) return 0;
+
   if (diff > 0) return -1;
   return 1;
 }
@@ -226,7 +227,7 @@ Token * print(Tokens t, int l) {
   for (int i = 0; i < l; i++) {
     switch (t[i]->type) {
       case  0: printf("%s ", t[i]->data);
-      case -1: printf("%lg ", getNumber(t[i]->int_data));
+      case -1: printf("%lf ", getNumber(t[i]->int_data));
                break;
       case -2: printf("%s ", strings->data[t[i]->int_data]);
                break;
