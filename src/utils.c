@@ -21,7 +21,7 @@ short int isNumber(char * str) {
   if (str[i] == '-') i++;
 
   while(str[i] != '\0') {
-    if (!(str[i] >= '0' && str[i] <= '9')) {
+    if (!(str[i] >= '0' && str[i] <= '9' || str[i] == '.')) {
       if(i == 0) return 0;
       else error("Invalid Name Token", 1);
     }

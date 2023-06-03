@@ -206,7 +206,9 @@ int main(int argc, char *argv[]) {
   if (argc < 2) error("No Input Specified.", 0);
 
   numbers = initNumbers();
+  addNumber(0.0);
   functions = initFunctionHashMap();
+
   Token * global = parseFile(argv[1], functions);
   printTokenTree(global, 0);
   printf("-------------------\n");
