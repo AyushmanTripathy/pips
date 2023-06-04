@@ -67,12 +67,13 @@ print "factorial of" x "is" | factorial x
 
 ### Data types
 
-there are 3 data types in pipescript.
+there are 4 data types in pipescript.
 
-1. integer
+1. numbers
 
 ```
 set "x" 101
+add .1 .2 //gives 0.3
 ```
 
 2. strings
@@ -209,7 +210,7 @@ overwritten.
 
 execution starts with global function (global scope), hence it is possible to
 return out of global scope.  
-if a integer value is returned, it is used as exit code.
+if a number value is returned, it is used as exit code.
 
 ### Buildin Functions
 
@@ -225,17 +226,17 @@ if a integer value is returned, it is used as exit code.
 | and          | 2 booleans     | equivalent of &&    |
 | or           | 2 booleans     | equivalent of \|\|  |
 
-2. Integer functions
+2. Number functions
 
 | funtion name | argument   | description                         |
 | ------------ | ---------- | ----------------------------------- |
-| neg          | 1 integer  | gives negative of a integer         |
-| add          | integers   | add all up integers                 |
-| multiply     | integers   | multiplies all integers             |
-| divide       | 2 integers | divides first by secound            |
-| reminder     | 2 integers | reminder of first divied by secound |
-| max          | integer    | gives max of the integers           |
-| min          | integer    | gives min of the integers           |
+| neg          | 1 number  | gives negative of a number         |
+| add          | numbers   | add all up numbers                 |
+| multiply     | numbers   | multiplies all numbers             |
+| divide       | 2 numbers | divides first by secound            |
+| reminder     | 2 numbers | reminder of first divied by secound |
+| max          | number    | gives max of the numbers           |
+| min          | number    | gives min of the numbers           |
 
 3. Miscellaneous functions
 
