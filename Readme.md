@@ -31,7 +31,7 @@ note, printing to stdout is not considered a side effect for simplicity reasons.
 git clone https://github.com/AyushmanTripathy/pips
 cd pips
 make clean install //with privilege
-pipescript <input file>
+pips <input file>
 ```
 
 to change the installation location, change the $INSTALLDIR in Makefile.  
