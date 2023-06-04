@@ -1,19 +1,14 @@
 TODO
 ----
 
-[ ] floats and bigger numbers
-[x] pattern matching functions
-[x] self recursion
+[ ] garbage collection
 [ ] higher order functions
-[ ] data structures
-
-OPTIMISE
--------
-[x] copied arr of ints
+[ ] persistant data structures
 
 HANDLE
 ------
   
+[ ] min and max functions
 [ ] floats and longs
 [ ] x" variable not defined
 [ ] more than 91 - 32 strings

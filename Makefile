@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -Iinclude
-EXEC= ./build/pipescript
+EXEC= ./build/pips
 INSTALLDIR= /usr/local/bin
 
-build/pipescript: build build/main.o include/config.h build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
+build/pips: build build/main.o include/config.h include/config.h build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o include/types.h
 	$(CC) build/main.o build/exec.o build/parser.o build/utils.o build/defs.o build/reader.o build/hashmaps.o -lm -o $(EXEC)
 
 build/main.o: src/main.c include/main.h
@@ -30,11 +30,11 @@ build/hashmaps.o: src/hashmaps.c include/hashmaps.h
 build:
 	mkdir build
 
-install: build/pipescript
+install: build/pips
 	@echo "Installing Pipescript"
 	@echo "Installing in $(INSTALLDIR)"
-	cp -f $(EXEC) $(INSTALLDIR)/pipescript
-	chmod 755 $(INSTALLDIR)/pipescript
+	cp -f $(EXEC) $(INSTALLDIR)/pips
+	chmod 755 $(INSTALLDIR)/pips
 
 remove:
 	@echo "Removing Pipescript"

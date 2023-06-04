@@ -10,6 +10,7 @@ extern void printTokenTree(Token *, short int);
 extern void freeToken(Token *);
 extern void freeTokenTree(Token *);
 extern double getNumber(short int);
+extern void freeNumber(short int);
 
 extern Token * createToken(short int, char *, int);
 extern Token * copyToken(Token *);
@@ -122,7 +123,8 @@ Token * execStatment(Token * t, Variable ** vars) {
 
   // freeing childrens
   for (short int i = 0; i < t->childTokensCount; i++) {
-    if (copied[i] == 1 && childrenCopy[i]->type != -13) freeToken(childrenCopy[i]);
+    if (copied[i] == 1 && childrenCopy[i]->type != -13)
+      freeToken(childrenCopy[i]);
   }
 
   free(childrenCopy);
