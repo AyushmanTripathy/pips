@@ -2,6 +2,7 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "defs.h"
 
@@ -159,6 +160,15 @@ Token * add(Tokens t, int l) {
         ));
 }
 
+Token * subtract(Tokens t, int l) {
+  if (l != 2) error("subtract function takes two argument.", 3);
+  if (t[0]->type != t[1]->type || t[1]->type != -1)
+    error("Subtract function", 4);
+  return createToken(-1, NULL, addNumber(
+          getNumber(t[0]->int_data) - getNumber(t[1]->int_data)
+        ));
+}
+
 Token * multiply(Tokens t, int l) {
   if (l < 1)
     error("multiply function requires atleast one argument", 3);
@@ -179,11 +189,29 @@ Token * divide(Tokens t, int l) {
         ));
 }
 
+Token * powFunc(Tokens t, int l) {
+  if (l != 2) error("pow function takes two argument.", 3);
+  if (t[0]->type != t[1]->type || t[1]->type != -1)
+    error("Pow function", 4);
+  double base = getNumber(t[0]->int_data);
+  double exp = getNumber(t[1]->int_data);
+  return createToken(-1, NULL, addNumber(pow(base, exp)));
+}
+
 Token * neg(Tokens t, int l) {
   if (l != 1)
     error("neg function takes one argument.", 3);
   if (t[0]->type != -1) error("neg Function", 4);
   return createToken(-1, NULL, addNumber(-1 * getNumber(t[0]->int_data)));
+}
+
+Token * absFunc(Tokens t, int l) {
+  if (l != 1)
+    error("abs function takes one argument.", 3);
+  if (t[0]->type != -1) error("Abs Function", 4);
+  double x = getNumber(t[0]->int_data);
+  if (x >= 0) return createToken(-1, NULL, t[0]->int_data);
+  return createToken(-1, NULL, addNumber(-1 * x));
 }
 
 Token * max(Tokens t, int l) {
@@ -257,10 +285,13 @@ void addDefaultFunctions(FunctionPointer ** map) {
   addToFunctionPointers(map, "or", &or); 
 
   addToFunctionPointers(map, "sum", &sum);
+  addToFunctionPointers(map, "subtract", &subtract);
   addToFunctionPointers(map, "add", &add);
   addToFunctionPointers(map, "multiply", &multiply);
   addToFunctionPointers(map, "divide", &divide);
+  addToFunctionPointers(map, "pow", &powFunc);
   addToFunctionPointers(map, "neg", &neg);
+  addToFunctionPointers(map, "abs", &absFunc);
   addToFunctionPointers(map, "max", &max);
   addToFunctionPointers(map, "min", &min);
 
