@@ -1,13 +1,10 @@
-fn nextGuess x a: return | divide [add x [divide a x]] 2
+# using Netwon's method for calculating root
 
-fn findRoot x a e:
-  set "xn" | nextGuess x a
-  if [lt [subtract [pow xn 2] 2] e]: return x
-  return | findRoot xn a e
+fn nextGuess x a: return | divide [add x [divide a x]] 2
 
 def root
   x: self x x 0.00001
   x a e: self [nextGuess x a] a e
-    lt [abs | subtract [pow x 2] 2] e: pass x
+    lt [abs | subtract [sq x] 2] e: pass x
 
-print | root 2
+print | root 0.04

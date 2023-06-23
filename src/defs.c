@@ -205,6 +205,20 @@ Token * neg(Tokens t, int l) {
   return createToken(-1, NULL, addNumber(-1 * getNumber(t[0]->int_data)));
 }
 
+Token * sq(Tokens t, int l) {
+  if (l != 1)
+    error("sq function takes one argument.", 3);
+  if (t[0]->type != -1) error("sq Function", 4);
+  return createToken(-1, NULL, addNumber(pow(getNumber(t[0]->int_data), 2)));
+}
+
+Token * root(Tokens t, int l) {
+  if (l != 1)
+    error("root function takes one argument.", 3);
+  if (t[0]->type != -1) error("Root Function", 4);
+  return createToken(-1, NULL, addNumber(pow(getNumber(t[0]->int_data), 0.5)));
+}
+
 Token * absFunc(Tokens t, int l) {
   if (l != 1)
     error("abs function takes one argument.", 3);
@@ -291,6 +305,8 @@ void addDefaultFunctions(FunctionPointer ** map) {
   addToFunctionPointers(map, "divide", &divide);
   addToFunctionPointers(map, "pow", &powFunc);
   addToFunctionPointers(map, "neg", &neg);
+  addToFunctionPointers(map, "sq", &sq);
+  addToFunctionPointers(map, "root", &root);
   addToFunctionPointers(map, "abs", &absFunc);
   addToFunctionPointers(map, "max", &max);
   addToFunctionPointers(map, "min", &min);
