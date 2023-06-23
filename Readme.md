@@ -228,15 +228,21 @@ if a number value is returned, it is used as exit code.
 
 2. Number functions
 
-| funtion name | argument   | description                         |
-| ------------ | ---------- | ----------------------------------- |
-| neg          | 1 number  | gives negative of a number         |
-| add          | numbers   | add all up numbers                 |
-| multiply     | numbers   | multiplies all numbers             |
+| funtion name | argument  | description                         |
+| ------------ | --------- | ----------------------------------- |
+| neg          | 1 number  | gives negative of a number          |
+| abs          | 1 number  | gives the absolute value            |
+| sum          | numbers   | add all up numbers                  |
+| add          | 2 numbers | add the 2 number                    |
+| subtract     | 2 number  | first subtracted by secound         |
+| pow          | 2 numbers | first raised to secound             |
+| root         | 1 number  | root of number                      |
+| sq           | 1 number  | square of number                    |
+| multiply     | numbers   | multiplies all numbers              |
 | divide       | 2 numbers | divides first by secound            |
 | reminder     | 2 numbers | reminder of first divied by secound |
-| max          | number    | gives max of the numbers           |
-| min          | number    | gives min of the numbers           |
+| max          | number    | gives max of the numbers            |
+| min          | number    | gives min of the numbers            |
 
 3. Miscellaneous functions
 
